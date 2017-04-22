@@ -1,0 +1,33 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title" id="myModalLabel">More About {{user.name.first}}</h4>
+    </div>
+    <div class="modal-body">
+        <center>
+            <div style="height:140px; width:140px;overflow:hidden;">
+                <img ng-src="{{'https://storage.googleapis.com/mates-web-image-bucket/' +user._id+ '.jpg'}}" name="aboutme" class="img-circle profile-picture-style large" onerror="this.src='images/profile_picture_placeholder.png';"></a>
+            </div>
+            <h3 class="media-heading">{{user.name.first}} {{user.name.last}} <small>{{user.uni.name}}</small></h3>
+            <span class="label label-success">{{user.uni.course}}</span>
+            <span ng-repeat="tag in user.description.descriptiveWords">
+                    <span class="label label-info">{{tag}}</span>
+            </span>
+        </center>
+        <hr>
+        <center>
+            <p class="text-left"><strong>Bio: </strong>
+                <br> {{user.description.bio}}
+            </p>
+            <br>
+        </center>
+    </div>
+    <div class="modal-footer">
+        <center>
+            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="close()">Close</button>
+            <button type="button" class="btn btn-primary" ng-if="InviteButtonStatus==1"><i class="fa fa-refresh fa-spin" /> Loading...</button>
+            <button type="button" class="btn btn-primary" ng-if="InviteButtonStatus==2" ng-click="cancelInvite()">Invite Sent</button>
+            <button type="button" class="btn btn-primary" ng-if="InviteButtonStatus==3" ng-click="invite()">Invite To Join</button>
+        </center>
+    </div>
+</div>
