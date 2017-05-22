@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    
+</head>
+<body ng-app="gridListDemo1" ng-cloak>
+ <div ng-controller="AppCtrl as appCtrl" ng-cloak>
+
+       
+  <md-grid-list
+        md-cols-xs="3" md-cols-sm="3" md-cols-md="3" md-cols-gt-md="3"
+        md-row-height-gt-md="2:1" md-row-height="1:1"
+        md-gutter="12px" md-gutter-gt-sm="1px" >
+
+    <md-grid-tile class="white">
+        <ng-md-icon icon="fast_rewind" style="fill: pink" size="100"></ng-md-icon> 
+    </md-grid-tile>
+
+    <md-grid-tile class="white">
+        <ng-md-icon icon="play_circle_outline" style="fill: pink" size="100"></ng-md-icon> 
+    </md-grid-tile>
+
+    <md-grid-tile class="white">
+        <ng-md-icon icon="fast_forward" style="fill: pink" size="100"></ng-md-icon> 
+    </md-grid-tile>
+
+  </md-grid-list>
+     
+    
+    
+  <md-grid-list ng-repeat="layer in layers track by $index"
+        md-cols-xs="6" md-cols-sm="6" md-cols-md="6" md-cols-gt-md="6"
+        md-row-height-gt-md="1.5:1" md-row-height="2:2"
+        md-gutter="12px" md-gutter-gt-sm="1px" >
+      
+    <md-grid-tile class="white">
+       <h2>ExamFail</h2> 
+    </md-grid-tile>
+
+    <md-grid-tile class="red">
+    </md-grid-tile>
+
+    <md-grid-tile class="red">
+    </md-grid-tile>
+
+    <md-grid-tile class="red">
+    </md-grid-tile>
+
+    <md-grid-tile class="red">
+    </md-grid-tile>
+
+    <md-grid-tile class="red">
+    </md-grid-tile>
+  </md-grid-list>
+     
+ <ng-md-icon icon="add_circle_outline" style="fill: pink" size="100" layout="row" layout-align="center" ng-if="isAdd==1" ng-click="addLayer()"></ng-md-icon> 
+ <ng-md-icon icon="file_upload" style="fill: pink" size="100" layout="row" layout-align="center" ng-if="isAdd==0" ng-click="addLayer()"></ng-md-icon> 
+
+     
+     
+     
+</div>
+    
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-material-icons/0.7.1/angular-material-icons.min.js"></script> 
+  <script src="//cdnjs.cloudflare.com/ajax/libs/SVG-Morpheus/0.3.2/svg-morpheus.js"></script> 
+
+
+  <!-- Angular Material Library -->
+  <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+  
+  <!-- Your application bootstrap  -->
+  <script type="text/javascript">    
+    /**
+     * You must include the dependency on 'ngMaterial' 
+     */
+   //angular.module('gridListDemo1', ['ngMdIcons']);
+   angular.module('gridListDemo1', ['ngMaterial', 'ngMdIcons'])
+.controller('AppCtrl', function($scope) {
+       $scope.isAdd = 1;
+       $scope.layers = [];
+       $scope.addLayer = function(){
+        if($scope.isAdd == 1){
+            $scope.layers.push("layer");
+            $scope.isAdd = 0;
+        }else{
+            $scope.isAdd = 1;
+        }
+           
+       }  
+   });
+  </script>
+  
+</body>
+</html>
