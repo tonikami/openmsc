@@ -1,33 +1,43 @@
  md-grid-list {
-  margin: 8px; }
-
+     margin: 8px;
+ }
+ 
  .gray {
-  background: #f5f5f5; }
-
+     background: #f5f5f5;
+ }
+ 
  .green {
-  background: #b9f6ca; }
-
+     background: #b9f6ca;
+ }
+ 
  .yellow {
-  background: #FFFF00; }
-
+     background: #FFFF00;
+ }
+ 
  .blue {
-  background: #84ffff; }
-
+     background: #84ffff;
+ }
+ 
  .purple {
-  background: #b388ff; }
-
+     background: #b388ff;
+ }
+ 
  .red {
-  background: #ff8a80; }
-
-.darkred {
-  background: #FF0000; }
-
-.orange {
-  background: #ffa500; }
-
-.indigo {
-  background: #4b0082; }
-
-
+     background: #ff8a80;
+ }
+ 
+ .darkred {
+     background: #FF0000;
+ }
+ 
+ .orange {
+     background: #ffa500;
+ }
+ 
+ .indigo {
+     background: #9932CC;
+ }
+ 
  md-grid-tile {
-  transition: all 400ms ease-out 50ms; }
+     transition: all 400ms ease-out 50ms;
+ }
