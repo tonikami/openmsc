@@ -35,28 +35,23 @@
         md-cols-xs="5" md-cols-sm="5" md-cols-md="5" md-cols-gt-md="5"
         md-row-height-gt-md="1.5:1" md-row-height="2:2"
         md-gutter="12px" md-gutter-gt-sm="1px" >
+      
+      <md-grid-tile ng-repeat="block in layer.blocks track by $index" ng-class="block">
+    </md-grid-tile>
+      
+  </md-grid-list>
+     <md-grid-list ng-if="isAdd==0"
+        md-cols-xs="5" md-cols-sm="5" md-cols-md="5" md-cols-gt-md="5"
+        md-row-height-gt-md="1.5:1" md-row-height="2:2"
+        md-gutter="12px" md-gutter-gt-sm="1px" >
+         
+    <md-grid-tile ng-repeat="block in currentLayer.blocks track by $index" ng-class="block" ng-click="showTabDialog($event, $index)">
+    </md-grid-tile>
     
-    <md-grid-tile class="red">
-    </md-grid-tile>
-
-    <md-grid-tile class="red">
-    </md-grid-tile>
-
-    <md-grid-tile class="red">
-    </md-grid-tile>
-
-    <md-grid-tile class="red">
-    </md-grid-tile>
-
-    <md-grid-tile class="red">
-    </md-grid-tile>
   </md-grid-list>
      
  <ng-md-icon icon="add_circle_outline" style="fill: pink" size="100" layout="row" layout-align="center" ng-if="isAdd==1" ng-click="addLayer()"></ng-md-icon> 
- <ng-md-icon icon="file_upload" style="fill: pink" size="100" layout="row" layout-align="center" ng-if="isAdd==0" ng-click="addLayer()"></ng-md-icon> 
-
-     
-     
+ <ng-md-icon icon="file_upload" style="fill: pink" size="100" layout="row" layout-align="center" ng-if="isAdd==0" ng-click="submitLayer()"></ng-md-icon>      
      
 </div>
     
@@ -79,19 +74,82 @@
      */
    //angular.module('gridListDemo1', ['ngMdIcons']);
    angular.module('gridListDemo1', ['ngMaterial', 'ngMdIcons'])
-.controller('AppCtrl', function($scope) {
+.controller('AppCtrl', function($scope, $mdDialog) {
        $scope.isAdd = 1;
        $scope.layers = [];
+       $scope.currentLayer = [];
+       $scope.status = '  ';
+       $scope.customFullscreen = false;
+       
        $scope.addLayer = function(){
-        if($scope.isAdd == 1){
-            $scope.layers.push("layer");
+            var blocks = new Array(5);
+            for(var i = 0; i < blocks.length; i++){
+                blocks[i] = "red";
+            }
+            $scope.currentLayer = {blocks: blocks};
             $scope.isAdd = 0;
-        }else{
+       };
+       
+       $scope.submitLayer = function(){
+            $scope.layers.push($scope.currentLayer);
+            $scope.currentLayer = [];
             $scope.isAdd = 1;
+       }
+       
+       $scope.showTabDialog = function(ev, index) {
+        $mdDialog.show({
+          controller: DialogController,
+          templateUrl: '/html/editBlock.html',
+          parent: angular.element(document.body),
+          targetEvent: ev,
+          clickOutsideToClose:false
+        })
+        .then(function(answer) {
+          if(answer != "none"){
+             $scope.currentLayer.blocks[index] = answer;
+          }
+          
+        }, function() {
+          $scope.status = 'You cancelled the dialog.';
+        });
+      };
+       
+  function DialogController($scope, $mdDialog) {
+    $scope.isSelected = -1;
+    $scope.color = "none";
+      
+    $scope.select = function(note){
+        $scope.isSelected = note;
+    };
+    $scope.hide = function() {
+      $mdDialog.hide();
+    };
+
+    $scope.cancel = function() {
+      $mdDialog.cancel();
+    };
+
+    $scope.answer = function(answer) {
+        if($scope.isSelected == 0){
+            $scope.color = "darkred";
+        }else if($scope.isSelected == 1){
+            $scope.color = "orange";  
+        }else if($scope.isSelected == 2){
+            $scope.color = "yellow";
+        }else if($scope.isSelected == 3){
+            $scope.color = "green";
+        }else if($scope.isSelected == 4){
+            $scope.color = "blue";
+        }else if($scope.isSelected == 5){
+            $scope.color = "indigo";
+        }else if($scope.isSelected == 6){
+            $scope.color = "purple";
         }
-           
-       }  
+      $mdDialog.hide($scope.color);
+    };
+  };
    });
+       
   </script>
   
 </body>
