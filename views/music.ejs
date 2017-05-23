@@ -31,12 +31,12 @@
 
 
         <!-- Block Layers -->
-        <md-grid-list ng-repeat="layer in layers track by $index" md-cols-xs="5" md-cols-sm="5" md-cols-md="5" md-cols-gt-md="5" md-row-height-gt-md="1.5:1" md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="1px">
+        <md-grid-list ng-repeat="layer in layers track by $index" md-cols-xs="{{noBlocksInLayer}}" md-cols-sm="{{noBlocksInLayer}}" md-cols-md="{{noBlocksInLayer}}" md-cols-gt-md="{{noBlocksInLayer}}" md-row-height-gt-md="1.5:1" md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="1px">
             <md-grid-tile ng-repeat="block in layer.blocks track by $index" ng-class="block">
             </md-grid-tile>
         </md-grid-list>
 
-        <md-grid-list ng-if="justAdded==true" md-cols-xs="5" md-cols-sm="5" md-cols-md="5" md-cols-gt-md="5" md-row-height-gt-md="1.5:1" md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="1px">
+        <md-grid-list ng-if="justAdded==true" md-cols-xs="{{noBlocksInLayer}}" md-cols-sm="{{noBlocksInLayer}}" md-cols-md="{{noBlocksInLayer}}" md-cols-gt-md="{{noBlocksInLayer}}" md-row-height-gt-md="1.5:1" md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="1px">
             <md-grid-tile ng-repeat="block in currentLayer.blocks track by $index" ng-class="block" ng-click="showTabDialog($event, $index)">
             </md-grid-tile>
         </md-grid-list>
@@ -46,12 +46,13 @@
         <ng-md-icon icon="file_upload" style="fill: pink" size="100" layout="row" layout-align="center" ng-if="justAdded==true" ng-click="submitLayer()"></ng-md-icon>
 
     </div>
+
+
     <!-- Angular Material requires Angular.js Libraries -->
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/SVG-Morpheus/0.3.2/svg-morpheus.js"></script>
 
 
     <!-- Angular Material Library -->
@@ -67,6 +68,7 @@
                 $scope.layers = [];
                 $scope.currentLayer = [];
 
+                <!-- Adds a layer of blocks -->
                 $scope.addLayer = function() {
                     var blocks = new Array($scope.noBlocksInLayer);
                     for (var i = 0; i < blocks.length; i++) {
@@ -78,15 +80,17 @@
                     $scope.justAdded = true;
                 };
 
+                <!-- Submits a layer of blocks(changes can no longer be made) -->
                 $scope.submitLayer = function() {
                     $scope.layers.push($scope.currentLayer);
                     $scope.currentLayer = [];
                     $scope.justAdded = false;
                 }
 
+                <!-- Shows Popup to edit block -->
                 $scope.showTabDialog = function(ev, index) {
                     $mdDialog.show({
-                            controller: DialogController,
+                            controller: editBlockController,
                             templateUrl: '/html/editBlock.html',
                             parent: angular.element(document.body),
                             targetEvent: ev,
@@ -99,21 +103,19 @@
                         });
                 };
 
-                function DialogController($scope, $mdDialog) {
+                <!-- Controller for edit block popup -->
+                function editBlockController($scope, $mdDialog) {
                     $scope.color = "none";
 
                     $scope.select = function(color) {
                         $scope.color = color;
-                    };
-                    $scope.hide = function() {
-                        $mdDialog.hide();
                     };
 
                     $scope.cancel = function() {
                         $mdDialog.cancel();
                     };
 
-                    $scope.answer = function() {
+                    $scope.save = function() {
                         $mdDialog.hide($scope.color);
                     };
                 };

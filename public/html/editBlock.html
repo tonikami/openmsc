@@ -8,10 +8,11 @@
         </md-toolbar>
         <md-dialog-content style="max-width:800px;max-height:810px; ">
             <md-tabs md-dynamic-height md-border-bottom>
+                <!-- First Tab -->
                 <md-tab label="Basic">
                     <md-content class="md-padding">
+                        <!-- Blocks of musical notes -->
                         <md-grid-list md-cols-xs="7" md-cols-sm="7" md-cols-md="7" md-cols-gt-md="7" md-row-height-gt-md="1.5:1" md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="1px">
-
                             <md-grid-tile class="darkred" ng-click="select('darkred')">
                                 <h2 style="color:white;">C</h2>
                             </md-grid-tile>
@@ -34,8 +35,17 @@
                                 <h2 style="color:white;">B</h2>
                             </md-grid-tile>
                         </md-grid-list>
+
+                        <md-slider-container flex>
+                            <md-input-container>
+                                <input flex type="number" ng-model="vol" aria-label="volume" aria-controls="volume-slider">
+                            </md-input-container>
+                            <md-slider ng-model="vol" min="0" max="100" aria-label="volume" id="volume-slider" class="md-accent" md-horizontal md-range></md-slider>
+                            <h5>Volume</h5>
+                        </md-slider-container>
                     </md-content>
                 </md-tab>
+                <!-- Second Tab -->
                 <md-tab label="Advanced">
                     <md-content class="md-padding">
                     </md-content>
@@ -44,7 +54,7 @@
         </md-dialog-content>
 
         <md-dialog-actions layout="row">
-            <md-button ng-click="answer()">
+            <md-button ng-click="save()">
                 Save
             </md-button>
             <md-button ng-click="cancel()" style="margin-right:20px;">
