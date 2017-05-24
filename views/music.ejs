@@ -20,7 +20,7 @@
             </md-grid-tile>
 
             <md-grid-tile class="white">
-                <ng-md-icon icon="play_circle_outline" style="fill: pink" size="100"></ng-md-icon>
+                <ng-md-icon icon="play_circle_outline" style="fill: pink" size="100" ng-click="playAudio()"></ng-md-icon>
             </md-grid-tile>
 
             <md-grid-tile class="white">
@@ -65,7 +65,31 @@
                 $scope.noBlocksInLayer = 5;
                 $scope.justAdded = false;
                 $scope.layers = [];
+                $scope.musicalLayers = [];
                 $scope.currentLayer = [];
+                $scope.currentMusicalLayer = [];
+                $scope.notes = [];
+
+                $scope.innit = function() {
+                    <!-- Add Sounds to Array -->
+                    var sound1 = new Audio('audio/sound1.wav');
+                    var sound2 = new Audio('audio/sound2.wav');
+                    var sound3 = new Audio('audio/sound3.wav');
+                    var sound4 = new Audio('audio/sound4.wav');
+                    var sound5 = new Audio('audio/sound5.wav');
+                    var sound6 = new Audio('audio/sound6.wav');
+                    var sound7 = new Audio('audio/sound7.wav');
+                    $scope.notes.push(sound1);
+                    $scope.notes.push(sound2);
+                    $scope.notes.push(sound3);
+                    $scope.notes.push(sound4);
+                    $scope.notes.push(sound5);
+                    $scope.notes.push(sound6);
+                    $scope.notes.push(sound7);
+
+                }
+
+                $scope.innit();
 
                 $scope.addLayer = function() {
                     var blocks = new Array($scope.noBlocksInLayer);
@@ -75,6 +99,12 @@
                     $scope.currentLayer = {
                         blocks: blocks
                     };
+
+                    var notes = new Array($scope.noBlocksInLayer);
+                    $scope.currentMusicalLayer = {
+                        notes: notes
+                    };
+
                     $scope.justAdded = true;
                 };
 
@@ -82,6 +112,20 @@
                     $scope.layers.push($scope.currentLayer);
                     $scope.currentLayer = [];
                     $scope.justAdded = false;
+                };
+
+                $scope.playAudio = function() {
+                    $scope.currentMusicalLayer.notes[0].play();
+                    for (var i = 0; i < $scope.currentMusicalLayer.notes.length - 1; i++) {
+                        addEndListener(i);
+                    }
+                };
+
+                function addEndListener(index) {
+                    $scope.currentMusicalLayer.notes[index].addEventListener('ended', function() {
+                        $scope.currentMusicalLayer.notes[index + 1].play();
+                    });
+
                 }
 
                 $scope.showTabDialog = function(ev, index) {
@@ -92,18 +136,23 @@
                             targetEvent: ev,
                             clickOutsideToClose: false
                         })
-                        .then(function(answer) {
-                            if (answer != "none") {
-                                $scope.currentLayer.blocks[index] = answer;
+                        .then(function(response) {
+                            if (response.color != "none") {
+                                $scope.currentLayer.blocks[index] = response.color;
+                            }
+                            if (response.sound != "none") {
+                                $scope.currentMusicalLayer.notes[index] = $scope.notes[response.sound];
                             }
                         });
                 };
 
                 function DialogController($scope, $mdDialog) {
                     $scope.color = "none";
+                    $scope.sound = "none";
 
-                    $scope.select = function(color) {
+                    $scope.select = function(color, sound) {
                         $scope.color = color;
+                        $scope.sound = sound;
                     };
                     $scope.hide = function() {
                         $mdDialog.hide();
@@ -114,7 +163,10 @@
                     };
 
                     $scope.answer = function() {
-                        $mdDialog.hide($scope.color);
+                        $mdDialog.hide({
+                            color: $scope.color,
+                            sound: $scope.sound
+                        });
                     };
                 };
             });
