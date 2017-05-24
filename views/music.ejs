@@ -65,46 +65,19 @@
                 $scope.noBlocksInLayer = 5;
                 $scope.justAdded = false;
                 $scope.layers = [];
-                $scope.musicalLayers = [];
                 $scope.currentLayer = [];
-                $scope.currentMusicalLayer = [];
-                $scope.notes = [];
-
-                $scope.innit = function() {
-                    <!-- Add Sounds to Array -->
-                    var sound1 = new Audio('audio/sound1.wav');
-                    var sound2 = new Audio('audio/sound2.wav');
-                    var sound3 = new Audio('audio/sound3.wav');
-                    var sound4 = new Audio('audio/sound4.wav');
-                    var sound5 = new Audio('audio/sound5.wav');
-                    var sound6 = new Audio('audio/sound6.wav');
-                    var sound7 = new Audio('audio/sound7.wav');
-                    $scope.notes.push(sound1);
-                    $scope.notes.push(sound2);
-                    $scope.notes.push(sound3);
-                    $scope.notes.push(sound4);
-                    $scope.notes.push(sound5);
-                    $scope.notes.push(sound6);
-                    $scope.notes.push(sound7);
-
-                }
-
-                $scope.innit();
 
                 $scope.addLayer = function() {
                     var blocks = new Array($scope.noBlocksInLayer);
+                    var notes = new Array($scope.noBlocksInLayer);
                     for (var i = 0; i < blocks.length; i++) {
                         blocks[i] = "red";
+                        notes[i] = new Audio('audio/silent.wav');
                     }
                     $scope.currentLayer = {
-                        blocks: blocks
-                    };
-
-                    var notes = new Array($scope.noBlocksInLayer);
-                    $scope.currentMusicalLayer = {
+                        blocks: blocks,
                         notes: notes
                     };
-
                     $scope.justAdded = true;
                 };
 
@@ -115,17 +88,18 @@
                 };
 
                 $scope.playAudio = function() {
-                    $scope.currentMusicalLayer.notes[0].play();
-                    for (var i = 0; i < $scope.currentMusicalLayer.notes.length - 1; i++) {
+                    console.log($scope.currentLayer);
+                    $scope.currentLayer.notes[0].play();
+                    for (var i = 0; i < $scope.currentLayer.notes.length - 1; i++) {
                         addEndListener(i);
                     }
                 };
 
                 function addEndListener(index) {
-                    $scope.currentMusicalLayer.notes[index].addEventListener('ended', function() {
-                        $scope.currentMusicalLayer.notes[index + 1].play();
+                    console.log(index);
+                    $scope.currentLayer.notes[index].addEventListener('ended', function() {
+                        $scope.currentLayer.notes[index + 1].play();
                     });
-
                 }
 
                 $scope.showTabDialog = function(ev, index) {
@@ -140,9 +114,7 @@
                             if (response.color != "none") {
                                 $scope.currentLayer.blocks[index] = response.color;
                             }
-                            if (response.sound != "none") {
-                                $scope.currentMusicalLayer.notes[index] = $scope.notes[response.sound];
-                            }
+                            $scope.currentLayer.notes[index] = response.sound;
                         });
                 };
 
@@ -163,10 +135,54 @@
                     };
 
                     $scope.answer = function() {
-                        $mdDialog.hide({
-                            color: $scope.color,
-                            sound: $scope.sound
-                        });
+                        if ($scope.sound == "none") {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/silent.wav')
+                            });
+                        };
+                        if ($scope.sound == 1) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound1.wav')
+                            });
+                        };
+                        if ($scope.sound == 2) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound2.wav')
+                            });
+                        };
+                        if ($scope.sound == 3) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound3.wav')
+                            });
+                        };
+                        if ($scope.sound == 4) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound4.wav')
+                            });
+                        };
+                        if ($scope.sound == 5) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound5.wav')
+                            });
+                        };
+                        if ($scope.sound == 6) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound6.wav')
+                            });
+                        };
+                        if ($scope.sound == 7) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound7.wav')
+                            });
+                        }
                     };
                 };
             });
