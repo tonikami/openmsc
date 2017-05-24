@@ -10,7 +10,7 @@
 </head>
 
 <body ng-app="musicCollab" ng-cloak>
-    <div ng-controller="AppCtrl as appCtrl" ng-cloak>
+    <div ng-controller="AppCtrl" ng-cloak>
 
         <!-- Play Forward Rewind -->
         <md-grid-list md-cols-xs="3" md-cols-sm="3" md-cols-md="3" md-cols-gt-md="3" md-row-height-gt-md="2:1" md-row-height="1:1" md-gutter="12px" md-gutter-gt-sm="1px">
@@ -27,9 +27,17 @@
                 <ng-md-icon icon="fast_forward" style="fill: pink" size="100"></ng-md-icon>
             </md-grid-tile>
 
+
+
         </md-grid-list>
 
-
+        <md-slider-container style="margin: 30px;" flex>
+            <md-input-container>
+                <input flex type="number" ng-model="vol" aria-label="tempo" aria-controls="volume-slider">
+            </md-input-container>
+            <md-slider ng-model="vol" min="0.5" max="10" aria-label="tempo" id="volume-slider" class="md-accent" md-horizontol md-range></md-slider>
+            <h5>Tempo</h5>
+        </md-slider-container>
         <!-- Block Layers -->
         <md-grid-list ng-repeat="layer in layers track by $index" md-cols-xs="5" md-cols-sm="5" md-cols-md="5" md-cols-gt-md="5" md-row-height-gt-md="1.5:1" md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="1px">
             <md-grid-tile ng-repeat="block in layer.blocks track by $index" ng-class="block">
@@ -62,6 +70,7 @@
     <script type="text/javascript">
         angular.module('musicCollab', ['ngMaterial', 'ngMdIcons'])
             .controller('AppCtrl', function($scope, $mdDialog) {
+                $scope.vol = 1;
                 $scope.noBlocksInLayer = 5;
                 $scope.justAdded = false;
                 $scope.layers = [];
@@ -88,7 +97,11 @@
                 };
 
                 $scope.playAudio = function() {
-                    console.log($scope.currentLayer);
+                    console.log($scope.vol);
+                    for (var i = 0; i < $scope.currentLayer.notes.length; i++) {
+                        $scope.currentLayer.notes[i].playbackRate = $scope.vol;
+                    }
+
                     $scope.currentLayer.notes[0].play();
                     for (var i = 0; i < $scope.currentLayer.notes.length - 1; i++) {
                         addEndListener(i);
@@ -96,7 +109,6 @@
                 };
 
                 function addEndListener(index) {
-                    console.log(index);
                     $scope.currentLayer.notes[index].addEventListener('ended', function() {
                         $scope.currentLayer.notes[index + 1].play();
                     });
