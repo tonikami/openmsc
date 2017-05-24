@@ -10,7 +10,7 @@
 </head>
 
 <body ng-app="musicCollab" ng-cloak>
-    <div ng-controller="AppCtrl as appCtrl" ng-cloak>
+    <div ng-controller="AppCtrl" ng-cloak>
 
         <!-- Play Forward Rewind -->
         <md-grid-list md-cols-xs="3" md-cols-sm="3" md-cols-md="3" md-cols-gt-md="3" md-row-height-gt-md="2:1" md-row-height="1:1" md-gutter="12px" md-gutter-gt-sm="1px">
@@ -20,16 +20,24 @@
             </md-grid-tile>
 
             <md-grid-tile class="white">
-                <ng-md-icon icon="play_circle_outline" style="fill: pink" size="100"></ng-md-icon>
+                <ng-md-icon icon="play_circle_outline" style="fill: pink" size="100" ng-click="playAudio()"></ng-md-icon>
             </md-grid-tile>
 
             <md-grid-tile class="white">
                 <ng-md-icon icon="fast_forward" style="fill: pink" size="100"></ng-md-icon>
             </md-grid-tile>
 
+
+
         </md-grid-list>
 
-
+        <md-slider-container style="margin: 30px;" flex>
+            <md-input-container>
+                <input flex type="number" ng-model="vol" aria-label="tempo" aria-controls="volume-slider">
+            </md-input-container>
+            <md-slider ng-model="vol" min="0.5" max="10" aria-label="tempo" id="volume-slider" class="md-accent" md-horizontol md-range></md-slider>
+            <h5>Tempo</h5>
+        </md-slider-container>
         <!-- Block Layers -->
         <md-grid-list ng-repeat="layer in layers track by $index" md-cols-xs="{{noBlocksInLayer}}" md-cols-sm="{{noBlocksInLayer}}" md-cols-md="{{noBlocksInLayer}}" md-cols-gt-md="{{noBlocksInLayer}}" md-row-height-gt-md="1.5:1" md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="1px">
             <md-grid-tile ng-repeat="block in layer.blocks track by $index" ng-class="block">
@@ -63,6 +71,7 @@
     <script type="text/javascript">
         angular.module('musicCollab', ['ngMaterial', 'ngMdIcons'])
             .controller('AppCtrl', function($scope, $mdDialog) {
+                $scope.vol = 1;
                 $scope.noBlocksInLayer = 5;
                 $scope.justAdded = false;
                 $scope.layers = [];
@@ -71,11 +80,14 @@
                 <!-- Adds a layer of blocks -->
                 $scope.addLayer = function() {
                     var blocks = new Array($scope.noBlocksInLayer);
+                    var notes = new Array($scope.noBlocksInLayer);
                     for (var i = 0; i < blocks.length; i++) {
                         blocks[i] = "red";
+                        notes[i] = new Audio('audio/silent.wav');
                     }
                     $scope.currentLayer = {
-                        blocks: blocks
+                        blocks: blocks,
+                        notes: notes
                     };
                     $scope.justAdded = true;
                 };
@@ -85,6 +97,24 @@
                     $scope.layers.push($scope.currentLayer);
                     $scope.currentLayer = [];
                     $scope.justAdded = false;
+                };
+
+                $scope.playAudio = function() {
+                    console.log($scope.vol);
+                    for (var i = 0; i < $scope.currentLayer.notes.length; i++) {
+                        $scope.currentLayer.notes[i].playbackRate = $scope.vol;
+                    }
+
+                    $scope.currentLayer.notes[0].play();
+                    for (var i = 0; i < $scope.currentLayer.notes.length - 1; i++) {
+                        addEndListener(i);
+                    }
+                };
+
+                function addEndListener(index) {
+                    $scope.currentLayer.notes[index].addEventListener('ended', function() {
+                        $scope.currentLayer.notes[index + 1].play();
+                    });
                 }
 
                 <!-- Shows Popup to edit block -->
@@ -96,19 +126,22 @@
                             targetEvent: ev,
                             clickOutsideToClose: false
                         })
-                        .then(function(answer) {
-                            if (answer != "none") {
-                                $scope.currentLayer.blocks[index] = answer;
+                        .then(function(response) {
+                            if (response.color != "none") {
+                                $scope.currentLayer.blocks[index] = response.color;
                             }
+                            $scope.currentLayer.notes[index] = response.sound;
                         });
                 };
 
                 <!-- Controller for edit block popup -->
                 function editBlockController($scope, $mdDialog) {
                     $scope.color = "none";
+                    $scope.sound = "none";
 
-                    $scope.select = function(color) {
+                    $scope.select = function(color, sound) {
                         $scope.color = color;
+                        $scope.sound = sound;
                     };
 
                     $scope.cancel = function() {
@@ -116,7 +149,54 @@
                     };
 
                     $scope.save = function() {
-                        $mdDialog.hide($scope.color);
+                        if ($scope.sound == "none") {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/silent.wav')
+                            });
+                        };
+                        if ($scope.sound == 1) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound1.wav')
+                            });
+                        };
+                        if ($scope.sound == 2) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound2.wav')
+                            });
+                        };
+                        if ($scope.sound == 3) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound3.wav')
+                            });
+                        };
+                        if ($scope.sound == 4) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound4.wav')
+                            });
+                        };
+                        if ($scope.sound == 5) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound5.wav')
+                            });
+                        };
+                        if ($scope.sound == 6) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound6.wav')
+                            });
+                        };
+                        if ($scope.sound == 7) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound7.wav')
+                            });
+                        }
                     };
                 };
             });
