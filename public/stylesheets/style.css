@@ -30,12 +30,36 @@
      background: #FF0000;
  }
  
+ .redOrange {
+     background: #FF4500;
+ }
+ 
+ .orangeYellow {
+     background: #FFD700;
+ }
+ 
+ .blueGreen {
+     background: #ADD8E6;
+ }
+ 
+ .bluePurple {
+     background: #DA70D6;
+ }
+ 
+ .lightPurple {
+     background: #FF00FF;
+ }
+ 
  .orange {
      background: #ffa500;
  }
  
  .indigo {
      background: #9932CC;
+ }
+ 
+ .brown {
+     background: #f4a460;
  }
  
  md-grid-tile {

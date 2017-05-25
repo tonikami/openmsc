@@ -8,6 +8,7 @@ var http = require('http');
 
 var index = require('./routes/index');
 var music = require('./routes/music');
+var api = require('./routes/api');
 
 var app = express();
 
@@ -27,6 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/music', music);
+app.use('/api', api);
 
 var port = 8000;
 
