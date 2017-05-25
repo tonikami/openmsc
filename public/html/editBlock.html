@@ -10,27 +10,46 @@
             <md-tabs md-dynamic-height md-border-bottom>
                 <md-tab label="Basic">
                     <md-content class="md-padding">
+                        <!-- Black Keys -->
                         <md-grid-list md-cols-xs="7" md-cols-sm="7" md-cols-md="7" md-cols-gt-md="7" md-row-height-gt-md="1.5:1" md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="1px">
+                            <md-grid-tile style="margin: 50px;" class="redOrange" ng-click="select('redOrange', 'c#')">
+                                <h2 style="color:white;">C#</h2>
+                            </md-grid-tile>
+                            <md-grid-tile style="margin: 50px;" class="orangeYellow" ng-click="select('orangeYellow', 'd#')">
+                                <h2 style="color:white;">D#</h2>
+                            </md-grid-tile>
+                            <md-grid-tile style="margin: 120px;" class="blueGreen" ng-click="select('blueGreen', 'f#')">
+                                <h2 style="color:white;">F#</h2>
+                            </md-grid-tile>
+                            <md-grid-tile style="margin: 120px;" class="bluePurple" ng-click="select('bluePurple', 'g#')">
+                                <h2 style="color:white;">G#</h2>
+                            </md-grid-tile>
+                            <md-grid-tile style="margin: 120px;" class="lightPurple" ng-click="select('lightPurple', 'a#')">
+                                <h2 style="color:white;">A#</h2>
+                            </md-grid-tile>
+                        </md-grid-list>
 
-                            <md-grid-tile class="darkred" ng-click="select('darkred', 1)">
+                        <!-- White Keys -->
+                        <md-grid-list md-cols-xs="7" md-cols-sm="7" md-cols-md="7" md-cols-gt-md="7" md-row-height-gt-md="1.5:1" md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="1px">
+                            <md-grid-tile class="darkred" ng-click="select('darkred', 'c')">
                                 <h2 style="color:white;">C</h2>
                             </md-grid-tile>
-                            <md-grid-tile class="orange" ng-click="select('orange', 2)">
+                            <md-grid-tile class="orange" ng-click="select('orange', 'd')">
                                 <h2 style="color:white;">D</h2>
                             </md-grid-tile>
-                            <md-grid-tile class="yellow" ng-click="select('yellow', 3)">
+                            <md-grid-tile class="yellow" ng-click="select('yellow', 'e')">
                                 <h2 style="color:white;">E</h2>
                             </md-grid-tile>
-                            <md-grid-tile class="green" ng-click="select('green', 4)">
+                            <md-grid-tile class="green" ng-click="select('green', 'f')">
                                 <h2 style="color:white;">F</h2>
                             </md-grid-tile>
-                            <md-grid-tile class="blue" ng-click="select('blue', 5)">
+                            <md-grid-tile class="blue" ng-click="select('blue', 'g')">
                                 <h2 style="color:white;">G</h2>
                             </md-grid-tile>
-                            <md-grid-tile class="indigo" ng-click="select('indigo', 6)">
+                            <md-grid-tile class="indigo" ng-click="select('indigo', 'a')">
                                 <h2 style="color:white;">A</h2>
                             </md-grid-tile>
-                            <md-grid-tile class="purple" ng-click="select('purple', 7)">
+                            <md-grid-tile class="purple" ng-click="select('purple', 'b')">
                                 <h2 style="color:white;">B</h2>
                             </md-grid-tile>
                         </md-grid-list>
@@ -44,7 +63,7 @@
         </md-dialog-content>
 
         <md-dialog-actions layout="row">
-            <md-button ng-click="answer()">
+            <md-button ng-click="save()">
                 Save
             </md-button>
             <md-button ng-click="cancel()" style="margin-right:20px;">
