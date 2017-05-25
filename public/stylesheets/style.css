@@ -58,6 +58,10 @@
      background: #9932CC;
  }
  
+ .brown {
+     background: #f4a460;
+ }
+ 
  md-grid-tile {
      transition: all 400ms ease-out 50ms;
  }

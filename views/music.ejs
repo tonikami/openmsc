@@ -365,6 +365,15 @@
                     $mdDialog.cancel();
                 };
 
+                $scope.save = function() {
+                    var audio = $scope.getAudio($scope.notesName);
+                    $mdDialog.hide({
+                        color: $scope.color,
+                        sound: $scope.getAudio($scope.notesName),
+                        notesName: $scope.notesName
+                    });
+                };
+
                 $scope.getAudio = function(notesName) {
                     var sound;
                     if ($scope.notesName == 'silent') {
@@ -408,100 +417,6 @@
                     }
                     return sound;
                 }
-
-                $scope.save = function() {
-                    if ($scope.notesName == "silent") {
-                        $mdDialog.hide({
-                            color: $scope.color,
-                            sound: $scope.getAudio($scope.notesName),
-                            notesName: $scope.notesName
-                        });
-                    };
-                    if ($scope.notesName == 'c') {
-                        $mdDialog.hide({
-                            color: $scope.color,
-                            sound: $scope.getAudio($scope.notesName),
-                            notesName: $scope.notesName
-                        });
-                    };
-                    if ($scope.notesName == 'c#') {
-                        $mdDialog.hide({
-                            color: $scope.color,
-                            sound: $scope.getAudio($scope.notesName),
-                            notesName: $scope.notesName
-                        });
-                    };
-                    if ($scope.notesName == 'd') {
-                        $mdDialog.hide({
-                            color: $scope.color,
-                            sound: $scope.getAudio($scope.notesName),
-                            notesName: $scope.notesName
-                        });
-                    };
-                    if ($scope.notesName == 'd#') {
-                        $mdDialog.hide({
-                            color: $scope.color,
-                            sound: $scope.getAudio($scope.notesName),
-                            notesName: $scope.notesName
-                        });
-                    };
-                    if ($scope.notesName == 'e') {
-                        $mdDialog.hide({
-                            color: $scope.color,
-                            sound: $scope.getAudio($scope.notesName),
-                            notesName: $scope.notesName
-                        });
-                    };
-                    if ($scope.notesName == 'f') {
-                        $mdDialog.hide({
-                            color: $scope.color,
-                            sound: $scope.getAudio($scope.notesName),
-                            notesName: $scope.notesName
-                        });
-                    };
-                    if ($scope.notesName == 'f#') {
-                        $mdDialog.hide({
-                            color: $scope.color,
-                            sound: $scope.getAudio($scope.notesName),
-                            notesName: $scope.notesName
-                        });
-                    }
-                    if ($scope.notesName == 'g') {
-                        $mdDialog.hide({
-                            color: $scope.color,
-                            sound: $scope.getAudio($scope.notesName),
-                            notesName: $scope.notesName
-                        });
-                    }
-                    if ($scope.notesName == 'g#') {
-                        $mdDialog.hide({
-                            color: $scope.color,
-                            sound: $scope.getAudio($scope.notesName),
-                            notesName: $scope.notesName
-                        });
-                    }
-                    if ($scope.notesName == 'a') {
-                        $mdDialog.hide({
-                            color: $scope.color,
-                            sound: $scope.getAudio($scope.notesName),
-                            notesName: $scope.notesName
-                        });
-                    }
-                    if ($scope.notesName == 'a#') {
-                        $mdDialog.hide({
-                            color: $scope.color,
-                            sound: $scope.getAudio($scope.notesName),
-                            notesName: $scope.notesName
-                        });
-                    }
-                    if ($scope.notesName == 'b') {
-                        $mdDialog.hide({
-                            color: $scope.color,
-                            sound: $scope.getAudio($scope.notesName),
-                            notesName: $scope.notesName
-                        });
-                    }
-                };
             };
         });
 
