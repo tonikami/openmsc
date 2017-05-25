@@ -316,28 +316,46 @@
             $scope.showTabDialog = function(ev, index) {
                 $mdDialog.show({
                         controller: DialogController,
+                        locals: {
+                            currentLayer: $scope.currentLayer,
+                            index: index
+                        },
                         templateUrl: '/html/editBlock.html',
                         parent: angular.element(document.body),
                         targetEvent: ev,
                         clickOutsideToClose: false
                     })
                     .then(function(response) {
-                        if (response.color != "none") {
-                            $scope.currentLayer.blocks[index] = response.color;
-                        }
+                        $scope.currentLayer.blocks[index] = response.color;
                         $scope.currentLayer.notes[index] = response.sound;
                         $scope.currentLayer.notesNames[index] = response.notesName;
                     });
             };
 
-            function DialogController($scope, $mdDialog) {
-                $scope.color = "none";
-                $scope.sound = "none";
-                $scope.notesName = "none";
+            function DialogController($scope, $mdDialog, currentLayer, index) {
+                $scope.currentLayer = currentLayer;
+                $scope.index = index;
+                $scope.color = "red";
+                $scope.sound;
+                $scope.notesName = "silent";
 
-                $scope.select = function(color, sound) {
-                    $scope.color = color;
-                    $scope.sound = sound;
+                $scope.init = function() {
+                    if ($scope.currentLayer.blocks[$scope.index] != 'red') {
+                        $scope.color = $scope.currentLayer.blocks[$scope.index];
+                        $scope.notesName = $scope.currentLayer.notes[$scope.index];
+                    }
+                }
+                $scope.init();
+
+                $scope.select = function(color, notesName) {
+                    if ($scope.color != color) {
+                        $scope.color = color;
+                        $scope.notesName = notesName;
+                        $scope.getAudio(notesName).play();
+                    } else {
+                        $scope.color = "red";
+                        $scope.notesName = "silent";
+                    }
                 };
                 $scope.hide = function() {
                     $mdDialog.hide();
@@ -347,96 +365,140 @@
                     $mdDialog.cancel();
                 };
 
+                $scope.getAudio = function(notesName) {
+                    var sound;
+                    if ($scope.notesName == 'silent') {
+                        sound = new Audio('audio/silent.wav');
+                    };
+                    if ($scope.notesName == 'c') {
+                        sound = new Audio('audio/c.wav');
+                    };
+                    if ($scope.notesName == 'c#') {
+                        sound = new Audio('audio/csharp.wav');
+                    };
+                    if ($scope.notesName == 'd') {
+                        sound = new Audio('audio/d.wav');
+                    };
+                    if ($scope.notesName == 'd#') {
+                        sound = new Audio('audio/dsharp.wav');
+                    };
+                    if ($scope.notesName == 'e') {
+                        sound = new Audio('audio/e.wav');
+                    };
+                    if ($scope.notesName == 'f') {
+                        sound = new Audio('audio/f.wav');
+                    };
+                    if ($scope.notesName == 'f#') {
+                        sound = new Audio('audio/fsharp.wav');
+                    }
+                    if ($scope.notesName == 'g') {
+                        sound = new Audio('audio/g.wav');
+                    }
+                    if ($scope.notesName == 'g#') {
+                        sound = new Audio('audio/gsharp.wav');
+                    }
+                    if ($scope.notesName == 'a') {
+                        sound = new Audio('audio/a.wav');
+                    }
+                    if ($scope.notesName == 'a#') {
+                        sound = new Audio('audio/asharp.wav');
+                    }
+                    if ($scope.notesName == 'b') {
+                        sound = new Audio('audio/b.wav');
+                    }
+                    return sound;
+                }
+
                 $scope.save = function() {
-                    if ($scope.sound == "none") {
+                    if ($scope.notesName == "silent") {
                         $mdDialog.hide({
                             color: $scope.color,
-                            sound: new Audio('audio/silent.wav'),
-                            notesName: "silent"
+                            sound: $scope.getAudio($scope.notesName),
+                            notesName: $scope.notesName
                         });
                     };
-                    if ($scope.sound == 'c') {
+                    if ($scope.notesName == 'c') {
                         $mdDialog.hide({
                             color: $scope.color,
-                            sound: new Audio('audio/c.wav'),
-                            notesName: "c"
+                            sound: $scope.getAudio($scope.notesName),
+                            notesName: $scope.notesName
                         });
                     };
-                    if ($scope.sound == 'c#') {
+                    if ($scope.notesName == 'c#') {
                         $mdDialog.hide({
                             color: $scope.color,
-                            sound: new Audio('audio/csharp.wav'),
-                            notesName: "c#"
+                            sound: $scope.getAudio($scope.notesName),
+                            notesName: $scope.notesName
                         });
                     };
-                    if ($scope.sound == 'd') {
+                    if ($scope.notesName == 'd') {
                         $mdDialog.hide({
                             color: $scope.color,
-                            sound: new Audio('audio/d.wav'),
-                            notesName: "d"
+                            sound: $scope.getAudio($scope.notesName),
+                            notesName: $scope.notesName
                         });
                     };
-                    if ($scope.sound == 'd#') {
+                    if ($scope.notesName == 'd#') {
                         $mdDialog.hide({
                             color: $scope.color,
-                            sound: new Audio('audio/dsharp.wav'),
-                            notesName: "d#"
+                            sound: $scope.getAudio($scope.notesName),
+                            notesName: $scope.notesName
                         });
                     };
-                    if ($scope.sound == 'e') {
+                    if ($scope.notesName == 'e') {
                         $mdDialog.hide({
                             color: $scope.color,
-                            sound: new Audio('audio/e.wav'),
-                            notesName: "e"
+                            sound: $scope.getAudio($scope.notesName),
+                            notesName: $scope.notesName
                         });
                     };
-                    if ($scope.sound == 'f') {
+                    if ($scope.notesName == 'f') {
                         $mdDialog.hide({
                             color: $scope.color,
-                            sound: new Audio('audio/f.wav'),
-                            notesName: "f"
+                            sound: $scope.getAudio($scope.notesName),
+                            notesName: $scope.notesName
                         });
                     };
-                    if ($scope.sound == 'f#') {
+                    if ($scope.notesName == 'f#') {
                         $mdDialog.hide({
                             color: $scope.color,
-                            sound: new Audio('audio/fsharp.wav'),
-                            notesName: "f#"
+                            sound: $scope.getAudio($scope.notesName),
+                            notesName: $scope.notesName
                         });
                     }
-                    if ($scope.sound == 'g') {
+                    if ($scope.notesName == 'g') {
                         $mdDialog.hide({
                             color: $scope.color,
-                            sound: new Audio('audio/g.wav'),
-                            notesName: "g"
+                            sound: $scope.getAudio($scope.notesName),
+                            notesName: $scope.notesName
                         });
                     }
-                    if ($scope.sound == 'g#') {
+                    if ($scope.notesName == 'g#') {
                         $mdDialog.hide({
                             color: $scope.color,
-                            sound: new Audio('audio/gsharp.wav'),
-                            notesName: "g#"
+                            sound: $scope.getAudio($scope.notesName),
+                            notesName: $scope.notesName
                         });
                     }
-                    if ($scope.sound == 'a') {
+                    if ($scope.notesName == 'a') {
                         $mdDialog.hide({
                             color: $scope.color,
-                            sound: new Audio('audio/a.wav'),
-                            notesName: "a"
+                            sound: $scope.getAudio($scope.notesName),
+                            notesName: $scope.notesName
                         });
                     }
-                    if ($scope.sound == 'a#') {
+                    if ($scope.notesName == 'a#') {
                         $mdDialog.hide({
                             color: $scope.color,
-                            sound: new Audio('audio/asharp.wav'),
-                            notesName: "a#"
+                            sound: $scope.getAudio($scope.notesName),
+                            notesName: $scope.notesName
                         });
                     }
-                    if ($scope.sound == 'b') {
+                    if ($scope.notesName == 'b') {
                         $mdDialog.hide({
                             color: $scope.color,
-                            sound: new Audio('audio/b.wav'),
-                            notesName: "b"
+                            sound: $scope.getAudio($scope.notesName),
+                            notesName: $scope.notesName
                         });
                     }
                 };

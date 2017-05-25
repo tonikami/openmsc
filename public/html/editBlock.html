@@ -12,44 +12,44 @@
                     <md-content class="md-padding">
                         <!-- Black Keys -->
                         <md-grid-list md-cols-xs="7" md-cols-sm="7" md-cols-md="7" md-cols-gt-md="7" md-row-height-gt-md="1.5:1" md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="1px">
-                            <md-grid-tile style="margin: 50px;" class="redOrange" ng-click="select('redOrange', 'c#')">
+                            <md-grid-tile style="margin: 50px;" class="redOrange" ng-style="color=='redOrange' && {'border-style': 'solid'}" ng-click="select('redOrange', 'c#')">
                                 <h2 style="color:white;">C#</h2>
                             </md-grid-tile>
-                            <md-grid-tile style="margin: 50px;" class="orangeYellow" ng-click="select('orangeYellow', 'd#')">
+                            <md-grid-tile style="margin: 50px;" class="orangeYellow" ng-style="color=='orangeYellow' && {'border-style': 'solid'}" ng-click="select('orangeYellow', 'd#')">
                                 <h2 style="color:white;">D#</h2>
                             </md-grid-tile>
-                            <md-grid-tile style="margin: 120px;" class="blueGreen" ng-click="select('blueGreen', 'f#')">
+                            <md-grid-tile style="margin: 120px;" class="blueGreen" ng-style="color=='blueGreen' && {'border-style': 'solid'}" ng-click="select('blueGreen', 'f#')">
                                 <h2 style="color:white;">F#</h2>
                             </md-grid-tile>
-                            <md-grid-tile style="margin: 120px;" class="bluePurple" ng-click="select('bluePurple', 'g#')">
+                            <md-grid-tile style="margin: 120px;" class="bluePurple" ng-style="color=='bluePurple' && {'border-style': 'solid'}" ng-click="select('bluePurple', 'g#')">
                                 <h2 style="color:white;">G#</h2>
                             </md-grid-tile>
-                            <md-grid-tile style="margin: 120px;" class="lightPurple" ng-click="select('lightPurple', 'a#')">
+                            <md-grid-tile style="margin: 120px;" class="lightPurple" ng-style="color=='lightPurple' && {'border-style': 'solid'}" ng-click="select('lightPurple', 'a#')">
                                 <h2 style="color:white;">A#</h2>
                             </md-grid-tile>
                         </md-grid-list>
 
                         <!-- White Keys -->
                         <md-grid-list md-cols-xs="7" md-cols-sm="7" md-cols-md="7" md-cols-gt-md="7" md-row-height-gt-md="1.5:1" md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="1px">
-                            <md-grid-tile class="darkred" ng-click="select('darkred', 'c')">
+                            <md-grid-tile class="darkred" ng-style="color=='darkred' && {'border-style': 'solid'}" ng-click="select('darkred', 'c')">
                                 <h2 style="color:white;">C</h2>
                             </md-grid-tile>
-                            <md-grid-tile class="orange" ng-click="select('orange', 'd')">
+                            <md-grid-tile class="orange" ng-style="color=='orange' && {'border-style': 'solid'}" ng-click="select('orange', 'd')">
                                 <h2 style="color:white;">D</h2>
                             </md-grid-tile>
-                            <md-grid-tile class="yellow" ng-click="select('yellow', 'e')">
+                            <md-grid-tile class="yellow" ng-style="color=='yellow' && {'border-style': 'solid'}" ng-click="select('yellow', 'e')">
                                 <h2 style="color:white;">E</h2>
                             </md-grid-tile>
-                            <md-grid-tile class="green" ng-click="select('green', 'f')">
+                            <md-grid-tile class="green" ng-style="color=='green' && {'border-style': 'solid'}" ng-click="select('green', 'f')">
                                 <h2 style="color:white;">F</h2>
                             </md-grid-tile>
-                            <md-grid-tile class="blue" ng-click="select('blue', 'g')">
+                            <md-grid-tile class="blue" ng-style="color=='blue' && {'border-style': 'solid'}" ng-click="select('blue', 'g')">
                                 <h2 style="color:white;">G</h2>
                             </md-grid-tile>
-                            <md-grid-tile class="indigo" ng-click="select('indigo', 'a')">
+                            <md-grid-tile class="indigo" ng-style="color=='indigo' && {'border-style': 'solid'}" ng-style="showBorder && {'border-style': 'solid'}" ng-click="select('indigo', 'a')">
                                 <h2 style="color:white;">A</h2>
                             </md-grid-tile>
-                            <md-grid-tile class="purple" ng-click="select('purple', 'b')">
+                            <md-grid-tile class="purple" ng-style="color=='purple' && {'border-style': 'solid'}" ng-click="select('purple', 'b')">
                                 <h2 style="color:white;">B</h2>
                             </md-grid-tile>
                         </md-grid-list>
