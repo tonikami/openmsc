@@ -26,8 +26,8 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'bower_components')));
-app.use('/', index);
-app.use('/music', music);
+
+app.use('/', music);
 app.use('/api', api);
 
 var port = 8000;

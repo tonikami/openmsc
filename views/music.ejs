@@ -86,13 +86,16 @@
     <!-- Angular Material Library -->
     <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-material-icons/0.7.1/angular-material-icons.min.js"></script>
+    <script src="/ngWebAudio/src/ngWebAudio.js"></script>
+    <script src="/shared/SoundPlayer.js"></script>
+
 
     <!-- Grid Stuff -->
     <script src="https://slimseun.com/js/vendor/angular-gridster/angular-gridster.min.js"></script>
 
     <!-- Your application bootstrap  -->
     <script type="text/javascript">
-        var musicCollab = angular.module('musicCollab', ['ngMaterial', 'ngMdIcons', 'ngResource', 'gridster']);
+        var musicCollab = angular.module('musicCollab', ['ngMaterial', 'ngMdIcons', 'ngResource', 'gridster', 'sound.player']);
 
         musicCollab.factory("Increment_Vote", function($resource) {
             return $resource('/api/:layerid/vote/increment', {
@@ -113,7 +116,7 @@
         musicCollab.factory("Upload_Layer", function($resource) {
             return $resource('/api/upload/layer')
         });
-        musicCollab.controller('AppCtrl', function($scope, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer) {
+        musicCollab.controller('AppCtrl', function($scope, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer, SoundPlayerService) {
             $scope.editable = true;
             $scope.splitFactor = 50;
             $scope.vol = 1;
@@ -122,6 +125,71 @@
             $scope.currentLayer = null;
 
             $scope.init = function() {
+
+                var testNotes = [{
+                        x: 0,
+                        length: 4,
+                        path: "fs.wav"
+                    },
+                    {
+                        x: 0,
+                        length: 4,
+                        path: "a.wav"
+                    },
+                    {
+                        x: 0,
+                        length: 4,
+                        path: "cs.wav"
+                    },
+                    {
+                        x: 4,
+                        length: 4,
+                        path: "d.wav"
+                    },
+                    {
+                        x: 4,
+                        length: 4,
+                        path: "fs.wav"
+                    },
+                    {
+                        x: 4,
+                        length: 4,
+                        path: "a.wav"
+                    },
+                    {
+                        x: 8,
+                        length: 4,
+                        path: "a.wav"
+                    },
+                    {
+                        x: 8,
+                        length: 4,
+                        path: "cs.wav"
+                    },
+                    {
+                        x: 8,
+                        length: 4,
+                        path: "e.wav"
+                    },
+                    {
+                        x: 12,
+                        length: 4,
+                        path: "e.wav"
+                    },
+                    {
+                        x: 12,
+                        length: 4,
+                        path: "gs.wav"
+                    },
+                    {
+                        x: 12,
+                        length: 4,
+                        path: "b.wav"
+                    },
+                ];
+
+                SoundPlayerService.play(testNotes, 20, 150);
+
                 Layers.query(function(response) {
                     for (var i = 0; i < response.length; i++) {
                         for (var j = 0; j < response[i].notes.length; j++) {
@@ -362,6 +430,7 @@
             }
             $scope.init();
 
+
             $scope.select = function(color, notesName) {
                 if (color != 'brown') {
                     $scope.color = color;
@@ -374,6 +443,7 @@
                     });
                 }
             };
+
             $scope.cancel = function() {
                 $mdDialog.cancel();
             };
