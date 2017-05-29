@@ -95,7 +95,7 @@
 
     <!-- Your application bootstrap  -->
     <script type="text/javascript">
-        var musicCollab = angular.module('musicCollab', ['ngMaterial', 'ngMdIcons', 'ngResource', 'gridster', 'sound.player']);
+        var musicCollab = angular.module('musicCollab', ['ngMaterial', 'ngMdIcons', 'ngResource', 'gridster', 'sound.player', 'ngWebAudio']);
 
         musicCollab.factory("Increment_Vote", function($resource) {
             return $resource('/api/:layerid/vote/increment', {
@@ -116,7 +116,7 @@
         musicCollab.factory("Upload_Layer", function($resource) {
             return $resource('/api/upload/layer')
         });
-        musicCollab.controller('AppCtrl', function($scope, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer, SoundPlayerService) {
+        musicCollab.controller('AppCtrl', function($scope, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer, SoundPlayerService, WebAudio) {
             $scope.editable = true;
             $scope.splitFactor = 50;
             $scope.vol = 1;
@@ -188,8 +188,6 @@
                     },
                 ];
 
-                SoundPlayerService.play(testNotes, 20, 150);
-
                 Layers.query(function(response) {
                     for (var i = 0; i < response.length; i++) {
                         for (var j = 0; j < response[i].notes.length; j++) {
@@ -206,6 +204,21 @@
             }
             $scope.init();
 
+            $scope.playAudio = function() {
+                var totalNotes = [];
+                for (var i = 0; i < $scope.layers.length; i++) {
+                    totalNotes = totalNotes.concat($scope.layers[i].notes);
+                }
+
+                if ($scope.currentLayer) {
+                    totalNotes = totalNotes.concat($scope.currentLayer.notes);
+                }
+                for (var i = 0; i < totalNotes.length; i++) {
+                    totalNotes[i].x = totalNotes[i].col;
+                    totalNotes[i].length = totalNotes[i].sizeX;
+                }
+                SoundPlayerService.play(totalNotes, $scope.splitFactor, 150);
+            }
 
             $scope.gridsterOpts = {
                 minRows: 1, // the minimum height of the grid, in rows
@@ -416,7 +429,7 @@
 
 
         <!-- Controller for edit block popup -->
-        function editBlockController($scope, $mdDialog, currentLayer, index) {
+        function editBlockController($scope, $mdDialog, currentLayer, index, WebAudio) {
             $scope.currentLayer = currentLayer;
             $scope.index = index;
             $scope.color;
@@ -438,7 +451,7 @@
                     $scope.getAudio(notesName).play();
                 } else {
                     var customSound = document.getElementById('soundFile');
-                    temp.addEventListener('change', function() {;
+                    temp.addEventListener('change', function() {
                         console.log('done');
                     });
                 }
@@ -460,34 +473,30 @@
 
             $scope.getAudio = function(notesName) {
                 var sound;
-                if ($scope.notesName == 'silent') {
-                    sound = new Audio('audio/silent.wav');
-                } else if ($scope.notesName == 'c') {
-                    sound = new Audio('audio/c.wav');
-                } else if ($scope.notesName == 'c#') {
-                    sound = new Audio('audio/csharp.wav');
-                } else if ($scope.notesName == 'd') {
-                    sound = new Audio('audio/d.wav');
-                } else if ($scope.notesName == 'd#') {
-                    sound = new Audio('audio/dsharp.wav');
-                } else if ($scope.notesName == 'e') {
-                    sound = new Audio('audio/e.wav');
-                } else if ($scope.notesName == 'f') {
-                    sound = new Audio('audio/f.wav');
-                } else if ($scope.notesName == 'f#') {
-                    sound = new Audio('audio/fsharp.wav');
-                } else if ($scope.notesName == 'g') {
-                    sound = new Audio('audio/g.wav');
-                } else if ($scope.notesName == 'g#') {
-                    sound = new Audio('audio/gsharp.wav');
-                } else if ($scope.notesName == 'a') {
-                    sound = new Audio('audio/a.wav');
-                } else if ($scope.notesName == 'a#') {
-                    sound = new Audio('audio/asharp.wav');
-                } else if ($scope.notesName == 'b') {
-                    sound = new Audio('audio/b.wav');
-                } else {
-
+                if ($scope.notesName == 'c.wav') {
+                    sound = WebAudio('sound/c.wav');
+                } else if ($scope.notesName == 'cs.wav') {
+                    sound = WebAudio('sound/cs.wav');
+                } else if ($scope.notesName == 'd.wav') {
+                    sound = WebAudio('sound/d.wav');
+                } else if ($scope.notesName == 'eb.wav') {
+                    sound = WebAudio('sound/eb.wav');
+                } else if ($scope.notesName == 'e.wav') {
+                    sound = WebAudio('sound/e.wav');
+                } else if ($scope.notesName == 'f.wav') {
+                    sound = WebAudio('sound/f.wav');
+                } else if ($scope.notesName == 'fs.wav') {
+                    sound = WebAudio('sound/fs.wav');
+                } else if ($scope.notesName == 'g.wav') {
+                    sound = WebAudio('sound/g.wav');
+                } else if ($scope.notesName == 'gs.wav') {
+                    sound = WebAudio('sound/gs.wav');
+                } else if ($scope.notesName == 'a.wav') {
+                    sound = WebAudio('sound/a.wav');
+                } else if ($scope.notesName == 'bb.wav') {
+                    sound = WebAudio('sound/bb.wav');
+                } else if ($scope.notesName == 'b.wav') {
+                    sound = WebAudio('sound/b.wav');
                 }
                 return sound;
             }
