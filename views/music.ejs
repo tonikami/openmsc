@@ -75,39 +75,108 @@
     <!-- Angular Material Library -->
     <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-material-icons/0.7.1/angular-material-icons.min.js"></script>
+    <script src="/ngWebAudio/src/ngWebAudio.js"></script>
+    <script src="/shared/SoundPlayer.js"></script>
+
 
     <!-- Your application bootstrap  -->
     <script type="text/javascript">
-        var musicCollab = angular.module('musicCollab', ['ngMaterial', 'ngMdIcons', 'ngResource']);
+        var musicCollab = angular.module('musicCollab', ['ngMaterial', 'ngMdIcons', 'ngResource', 'sound.player']);
 
-        musicCollab.factory("Increment_Vote", function($resource) {
+        musicCollab.factory("Increment_Vote", function ($resource) {
             return $resource('/api/:layerid/vote/increment', {
                 layerid: '@layerid'
             });
         });
 
-        musicCollab.factory("Decrement_Vote", function($resource) {
+        musicCollab.factory("Decrement_Vote", function ($resource) {
             return $resource('/api/:layerid/vote/decrement', {
                 layerid: '@layerid'
             });
         });
 
-        musicCollab.factory("Layers", function($resource) {
+        musicCollab.factory("Layers", function ($resource) {
             return $resource('/api/layers')
         });
 
-        musicCollab.factory("Upload_Layer", function($resource) {
+        musicCollab.factory("Upload_Layer", function ($resource) {
             return $resource('/api/upload/layer')
         });
-        musicCollab.controller('AppCtrl', function($scope, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer) {
+        musicCollab.controller('AppCtrl', function ($scope, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer, SoundPlayerService) {
             $scope.vol = 1;
             $scope.noBlocksInLayer = 9;
             $scope.justAdded = false;
             $scope.layers = [];
             $scope.currentLayer = null;
 
-            $scope.init = function() {
-                Layers.query(function(response) {
+            $scope.init = function () {
+
+                var testNotes = [
+                    {
+                        x: 0,
+                        length: 4,
+                        path: "fs.wav"
+                    },
+                    {
+                        x: 0,
+                        length: 4,
+                        path: "a.wav"
+                    },
+                    {
+                        x: 0,
+                        length: 4,
+                        path: "cs.wav"
+                    },
+                    {
+                        x: 4,
+                        length: 4,
+                        path: "d.wav"
+                    },
+                    {
+                        x: 4,
+                        length: 4,
+                        path: "fs.wav"
+                    },
+                    {
+                        x: 4,
+                        length: 4,
+                        path: "a.wav"
+                    },
+                    {
+                        x: 8,
+                        length: 4,
+                        path: "a.wav"
+                    },
+                    {
+                        x: 8,
+                        length: 4,
+                        path: "cs.wav"
+                    },
+                    {
+                        x: 8,
+                        length: 4,
+                        path: "e.wav"
+                    },
+                    {
+                        x: 12,
+                        length: 4,
+                        path: "e.wav"
+                    },
+                    {
+                        x: 12,
+                        length: 4,
+                        path: "gs.wav"
+                    },
+                    {
+                        x: 12,
+                        length: 4,
+                        path: "b.wav"
+                    },
+                ];
+
+                SoundPlayerService.play(testNotes, 20, 150);
+
+                Layers.query(function (response) {
                     for (var i = 0; i < response.length; i++) {
                         var sound;
                         for (var j = 0; j < response[i].notes.length; j++) {
@@ -159,7 +228,7 @@
             }
             $scope.init();
             <!-- Submits a layer of blocks(changes can no longer be made) -->
-            $scope.addLayer = function() {
+            $scope.addLayer = function () {
                 var blocks = new Array($scope.noBlocksInLayer);
                 var notes = new Array($scope.noBlocksInLayer);
                 var notesNames = new Array($scope.noBlocksInLayer);
@@ -179,13 +248,13 @@
                 $scope.justAdded = true;
             };
 
-            $scope.submitLayer = function() {
+            $scope.submitLayer = function () {
                 $scope.layers.push($scope.currentLayer);
                 $scope.justAdded = false;
                 Upload_Layer.save({}, {
                     blocks: $scope.currentLayer.blocks,
                     notes: $scope.currentLayer.notesNames,
-                }).$promise.then(function() {
+                }).$promise.then(function () {
                     $mdToast.show(
                         $mdToast.simple()
                         .textContent("Succesfully Added")
@@ -198,7 +267,7 @@
             }
 
 
-            $scope.voteUp = function(index) {
+            $scope.voteUp = function (index) {
                 if ($scope.layers[index].votedUp == null) {
                     $scope.layers[index].votes++;
                     Increment_Vote.get({
@@ -224,7 +293,7 @@
                 }
             }
 
-            $scope.voteDown = function(index) {
+            $scope.voteDown = function (index) {
                 if ($scope.layers[index].votedUp == null) {
                     $scope.layers[index].votes--;
                     Decrement_Vote.get({
@@ -250,7 +319,7 @@
                 }
             }
 
-            $scope.playAudio = function() {
+            $scope.playAudio = function () {
                 if ($scope.layers) {
                     for (var i = 0; i < $scope.layers.length; i++) {
                         for (var j = 0; j < $scope.layers[i].notes.length; j++) {
@@ -272,8 +341,8 @@
             };
 
 
-            $scope.runQueries = function(queries, currentBlock) {
-                $q.all(queries).then(function() {
+            $scope.runQueries = function (queries, currentBlock) {
+                $q.all(queries).then(function () {
                     currentBlock++;
                     if (currentBlock < $scope.noBlocksInLayer) {
                         queries = [];
@@ -283,7 +352,7 @@
                 });
             }
 
-            $scope.addToQueries = function(queries, index) {
+            $scope.addToQueries = function (queries, index) {
                 if ($scope.layers) {
                     for (var i = 0; i < $scope.layers.length; i++) {
                         queries.push(runSound($scope.layers[i].notes[index]));
@@ -298,14 +367,14 @@
             function runSound(sound) {
                 var d = $q.defer();
                 sound.play();
-                sound.addEventListener('ended', function() {
+                sound.addEventListener('ended', function () {
                     d.resolve();
                 });
                 return d.promise;
             }
 
 
-            $scope.showTabDialog = function(ev, index) {
+            $scope.showTabDialog = function (ev, index) {
                 $mdDialog.show({
                         controller: editBlockController,
                         locals: {
@@ -317,7 +386,7 @@
                         targetEvent: ev,
                         clickOutsideToClose: false
                     })
-                    .then(function(response) {
+                    .then(function (response) {
                         $scope.currentLayer.blocks[index] = response.color;
                         $scope.currentLayer.notes[index] = response.sound;
                         $scope.currentLayer.notesNames[index] = response.notesName;
@@ -335,7 +404,7 @@
             $scope.color = "red";
             $scope.notesName = "silent";
 
-            $scope.init = function() {
+            $scope.init = function () {
                 if ($scope.currentLayer.blocks[$scope.index] != 'red') {
                     $scope.color = $scope.currentLayer.blocks[$scope.index];
                     $scope.notesName = $scope.currentLayer.notes[$scope.index];
@@ -343,7 +412,7 @@
             }
             $scope.init();
 
-            $scope.select = function(color, notesName) {
+            $scope.select = function (color, notesName) {
                 if ($scope.color != color && $scope.color != 'brown') {
                     $scope.color = color;
                     $scope.notesName = notesName;
@@ -354,11 +423,11 @@
                 }
             };
 
-            $scope.cancel = function() {
+            $scope.cancel = function () {
                 $mdDialog.cancel();
             };
 
-            $scope.save = function() {
+            $scope.save = function () {
                 var audio = $scope.getAudio($scope.notesName);
                 $mdDialog.hide({
                     color: $scope.color,
@@ -367,7 +436,7 @@
                 });
             };
 
-            $scope.getAudio = function(notesName) {
+            $scope.getAudio = function (notesName) {
                 var sound;
                 if ($scope.notesName == 'silent') {
                     sound = new Audio('audio/silent.wav');
@@ -411,7 +480,6 @@
                 return sound;
             }
         };
-
     </script>
 
 </body>
