@@ -59,8 +59,8 @@
 
         <div gridster="gridsterOpts" style="background:darkred" ng-if="justAdded==true">
             <ul>
-                <li gridster-item="item" ng-repeat="block in currentLayer.blocks track by $index" ng-class="block">
-                    <div class="ddd" style="width:70%; background:black; padding: 10px 0px"></div>
+                <li gridster-item="item" ng-repeat="block in currentLayer.blocks track by $index" ng-class="block" ng-click="showTabDialog($event, $index)">
+                    <ng-md-icon icon="drag_handle"> </ng-md-icon>
                 </li>
             </ul>
         </div>
@@ -110,8 +110,8 @@
         musicCollab.factory("Upload_Layer", function($resource) {
             return $resource('/api/upload/layer')
         });
-        musicCollab.controller('AppCtrl', function($scope, $log, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer) {
-            $scope.showPop = true;
+        musicCollab.controller('AppCtrl', function($scope, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer) {
+            $scope.editable = true;
             $scope.splitFactor = 5;
             $scope.vol = 1;
             $scope.noBlocksInLayer = 9;
@@ -189,7 +189,9 @@
                     enabled: true,
                     start: function(event, uiWidget, $element) {}, // optional callback fired when resize is started,
                     resize: function(event, uiWidget, $element) {}, // optional callback fired when item is resized,
-                    stop: function(event, uiWidget, $element) {} // optional callback fired when item is finished resizing
+                    stop: function(event, uiWidget, $element) {
+                        $scope.editable = false;
+                    } // optional callback fired when item is finished resizing
                 },
                 draggable: {
                     enabled: true, // whether dragging items is supported
@@ -197,7 +199,7 @@
                     start: function(event, uiWidget, $element) {}, // optional callback fired when drag is started,
                     drag: function(event, uiWidget, $element) {}, // optional callback fired when item is moved,
                     stop: function(event, uiWidget, $element) {
-                        $scope.showPop = true;
+                        $scope.editable = false;
                     } // optional callback fired when item is finished dragging
                 }
             };
@@ -367,7 +369,7 @@
 
 
             $scope.showTabDialog = function(ev, index) {
-                if ($scope.showPop) {
+                if ($scope.editable) {
                     $mdDialog.show({
                             controller: editBlockController,
                             locals: {
@@ -384,7 +386,9 @@
                             $scope.currentLayer.notes[index] = response.sound;
                             $scope.currentLayer.notesNames[index] = response.notesName;
                         });
-                };
+                } else {
+                    $scope.editable = true;
+                }
             }
         });
 
