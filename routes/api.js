@@ -60,6 +60,7 @@ router.get('/layers', function (req, res, next) {
 });
 
 router.post('/upload/layer', function (req, res, next) {
+    console.log(req.body);
     var notes = [];
     for (var i = 0; i < req.body.notes.length; i++) {
         var note = {

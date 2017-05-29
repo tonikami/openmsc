@@ -45,28 +45,33 @@
             <h5>Tempo</h5>
         </md-slider-container>
         <!-- Block Layers -->
-        <md-content style="background:darkred" ng-repeat="layer in layers track by $index" md-theme="docs-dark" layout="row" layout-align="center center" layout-padding>
+        <md-content ng-repeat="layer in layers track by $index" md-theme="docs-dark" layout="row" layout-align="center center" layout-padding>
             <div layout="column" layout-align="center center" flex="10" style="margin: 10px;">
                 <ng-md-icon icon="keyboard_arrow_up" ng-click="voteUp($index)" ng-style="layer.votedUp && {'fill': 'pink'}"></ng-md-icon>
                 <md-button class="md-icon-button md-primary" aria-label="Settings">{{layer.votes}}</md-button>
                 <ng-md-icon icon="keyboard_arrow_down" ng-click="voteDown($index)" ng-style="layer.votedUp != null && !layer.votedUp && {'fill': 'pink'}" style="margin-top: 4px;"></ng-md-icon>
             </div>
-            <div gridster="gridsterOptsLayer" style="background:darkred" flex="90">
+            <div gridster="gridsterOptsLayer" style="background:darkred" flex="90" style="">
                 <ul>
                     <li gridster-item="note" ng-repeat="note in layer.notes track by $index" ng-class="note.color">
                     </li>
                 </ul>
             </div>
         </md-content>
+        <br>
+        <md-content layout="row" layout-align="center center" layout-padding ng-if="justAdded==true">
+            <md-button class="md-raised md-primary" ng-click="addBlock($event)" flex="10" style="margin: 10px;">Add Sound </md-button>
+            <div gridster="gridsterOpts" style="background:darkred" ng-if="justAdded==true" flex="90">
+                <ul>
+                    <li gridster-item="note" ng-repeat="note in currentLayer.notes track by $index" ng-class="note.color" ng-click="showTabDialog($event, $index)">
+                        <ng-md-icon icon="drag_handle"> </ng-md-icon>
+                    </li>
+                </ul>
+            </div>
+        </md-content>
 
-        <md-button style="background: red" ng-if="justAdded==true" ng-click="addBlock($event)">Add Button</md-button>
-        <div gridster="gridsterOpts" style="background:darkred" ng-if="justAdded==true">
-            <ul>
-                <li gridster-item="note" ng-repeat="note in currentLayer.notes track by $index" ng-class="note.color" ng-click="showTabDialog($event, $index)">
-                    <ng-md-icon icon="drag_handle"> </ng-md-icon>
-                </li>
-            </ul>
-        </div>
+
+
 
         <!-- Add/Submit Button -->
         <ng-md-icon icon="add_circle_outline" style="fill: pink" size="100" layout="row" layout-align="center" ng-if="justAdded==false" ng-click="addLayer()"></ng-md-icon>
@@ -125,69 +130,6 @@
             $scope.currentLayer = null;
 
             $scope.init = function() {
-
-                var testNotes = [{
-                        x: 0,
-                        length: 4,
-                        path: "fs.wav"
-                    },
-                    {
-                        x: 0,
-                        length: 4,
-                        path: "a.wav"
-                    },
-                    {
-                        x: 0,
-                        length: 4,
-                        path: "cs.wav"
-                    },
-                    {
-                        x: 4,
-                        length: 4,
-                        path: "d.wav"
-                    },
-                    {
-                        x: 4,
-                        length: 4,
-                        path: "fs.wav"
-                    },
-                    {
-                        x: 4,
-                        length: 4,
-                        path: "a.wav"
-                    },
-                    {
-                        x: 8,
-                        length: 4,
-                        path: "a.wav"
-                    },
-                    {
-                        x: 8,
-                        length: 4,
-                        path: "cs.wav"
-                    },
-                    {
-                        x: 8,
-                        length: 4,
-                        path: "e.wav"
-                    },
-                    {
-                        x: 12,
-                        length: 4,
-                        path: "e.wav"
-                    },
-                    {
-                        x: 12,
-                        length: 4,
-                        path: "gs.wav"
-                    },
-                    {
-                        x: 12,
-                        length: 4,
-                        path: "b.wav"
-                    },
-                ];
-
                 Layers.query(function(response) {
                     for (var i = 0; i < response.length; i++) {
                         for (var j = 0; j < response[i].notes.length; j++) {
@@ -231,7 +173,7 @@
                 defaultSizeY: 1, // the default height of a gridster item, if not specified
                 mobileBreakPoint: 1, // if the screen is not wider that this, remove the grid layout and stack the items
                 pushing: false,
-                swapping: true,
+                swapping: false,
                 resizable: {
                     enabled: true,
                     start: function(event, uiWidget, $element) {}, // optional callback fired when resize is started,
