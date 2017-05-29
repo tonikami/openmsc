@@ -45,21 +45,24 @@
             <h5>Tempo</h5>
         </md-slider-container>
         <!-- Block Layers -->
-        <md-content ng-repeat="layer in layers track by $index" md-theme="docs-dark" layout="row" layout-align="center center" layout-padding>
+        <md-content style="background:darkred" ng-repeat="layer in layers track by $index" md-theme="docs-dark" layout="row" layout-align="center center" layout-padding>
             <div layout="column" layout-align="center center" flex="10" style="margin: 10px;">
                 <ng-md-icon icon="keyboard_arrow_up" ng-click="voteUp($index)" ng-style="layer.votedUp && {'fill': 'pink'}"></ng-md-icon>
                 <md-button class="md-icon-button md-primary" aria-label="Settings">{{layer.votes}}</md-button>
                 <ng-md-icon icon="keyboard_arrow_down" ng-click="voteDown($index)" ng-style="layer.votedUp != null && !layer.votedUp && {'fill': 'pink'}" style="margin-top: 4px;"></ng-md-icon>
             </div>
-            <md-grid-list flex="90" md-cols-xs="{{noBlocksInLayer}}" md-cols-sm="{{noBlocksInLayer}}" md-cols-md="{{noBlocksInLayer}}" md-cols-gt-md="{{noBlocksInLayer}}" md-row-height-gt-md="1.5:1" md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="1px">
-                <md-grid-tile ng-repeat="block in layer.blocks track by $index" ng-class="block">
-                </md-grid-tile>
-            </md-grid-list>
+            <div gridster="gridsterOptsLayer" style="background:darkred" flex="90">
+                <ul>
+                    <li gridster-item="note" ng-repeat="note in layer.notes track by $index" ng-class="note.color">
+                    </li>
+                </ul>
+            </div>
         </md-content>
 
+        <md-button style="background: red" ng-if="justAdded==true" ng-click="addBlock($event)">Add Button</md-button>
         <div gridster="gridsterOpts" style="background:darkred" ng-if="justAdded==true">
             <ul>
-                <li gridster-item="item" ng-repeat="block in currentLayer.blocks track by $index" ng-class="block" ng-click="showTabDialog($event, $index)">
+                <li gridster-item="note" ng-repeat="note in currentLayer.notes track by $index" ng-class="note.color" ng-click="showTabDialog($event, $index)">
                     <ng-md-icon icon="drag_handle"> </ng-md-icon>
                 </li>
             </ul>
@@ -112,9 +115,8 @@
         });
         musicCollab.controller('AppCtrl', function($scope, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer) {
             $scope.editable = true;
-            $scope.splitFactor = 5;
+            $scope.splitFactor = 50;
             $scope.vol = 1;
-            $scope.noBlocksInLayer = 9;
             $scope.justAdded = false;
             $scope.layers = [];
             $scope.currentLayer = null;
@@ -122,53 +124,17 @@
             $scope.init = function() {
                 Layers.query(function(response) {
                     for (var i = 0; i < response.length; i++) {
-                        var sound;
                         for (var j = 0; j < response[i].notes.length; j++) {
-                            var note = response[i].notes[j];
-                            if (note == "silent") {
-                                sound = new Audio('audio/silent.wav');
-                            };
-                            if (note == 'c') {
-                                sound = new Audio('audio/c.wav');
-                            };
-                            if (note == 'c#') {
-                                sound = new Audio('audio/csharp.wav');
-                            };
-                            if (note == 'd') {
-                                sound = new Audio('audio/d.wav');
-                            };
-                            if (note == 'd#') {
-                                sound = new Audio('audio/dsharp.wav');
-                            };
-                            if (note == 'e') {
-                                sound = new Audio('audio/e.wav');
-                            };
-                            if (note == 'f') {
-                                sound = new Audio('audio/f.wav');
-                            };
-                            if (note == 'f#') {
-                                sound = new Audio('audio/fsharp.wav');
-                            }
-                            if (note == 'g') {
-                                sound = new Audio('audio/g.wav');
-                            }
-                            if (note == 'g#') {
-                                sound = new Audio('audio/gsharp.wav');
-                            }
-                            if (note == 'a') {
-                                sound = new Audio('audio/a.wav');
-                            }
-                            if (note == 'a#') {
-                                sound = new Audio('audio/asharp.wav');
-                            }
-                            if (note == 'b') {
-                                sound = new Audio('audio/b.wav');
-                            }
-                            response[i].notes[j] = sound;
+                            response[i].notes[j].sizeX = response[i].notes[j].duration;
+                            response[i].notes[j].col = response[i].notes[j].start;
+                            response[i].notes[j].row = 1;
+                            response[i].notes[j].sizeY = 1;
                         }
+
                     }
                     $scope.layers = response;
                 });
+
             }
             $scope.init();
 
@@ -176,11 +142,11 @@
             $scope.gridsterOpts = {
                 minRows: 1, // the minimum height of the grid, in rows
                 maxRows: 1,
-                columns: $scope.noBlocksInLayer * $scope.splitFactor, // the width of the grid, in columns
+                columns: $scope.splitFactor, // the width of the grid, in columns
                 colWidth: 'auto', // can be an integer or 'auto'.  'auto' uses the pixel width of the element divided by 'columns'
                 rowHeight: '100', // can be an integer or 'match'.  Match uses the colWidth, giving you square widgets.
                 margins: [10, 1], // the pixel distance between each widget
-                defaultSizeX: $scope.splitFactor, // the default width of a gridster item, if not specifed
+                defaultSizeX: 1, // the default width of a gridster item, if not specifed
                 defaultSizeY: 1, // the default height of a gridster item, if not specified
                 mobileBreakPoint: 1, // if the screen is not wider that this, remove the grid layout and stack the items
                 pushing: false,
@@ -204,6 +170,35 @@
                 }
             };
 
+            $scope.gridsterOptsLayer = {
+                minRows: 1, // the minimum height of the grid, in rows
+                maxRows: 1,
+                columns: $scope.splitFactor, // the width of the grid, in columns
+                colWidth: 'auto', // can be an integer or 'auto'.  'auto' uses the pixel width of the element divided by 'columns'
+                rowHeight: '100', // can be an integer or 'match'.  Match uses the colWidth, giving you square widgets.
+                margins: [10, 1], // the pixel distance between each widget
+                defaultSizeX: 1, // the default width of a gridster item, if not specifed
+                defaultSizeY: 1, // the default height of a gridster item, if not specified
+                mobileBreakPoint: 1, // if the screen is not wider that this, remove the grid layout and stack the items
+                resizable: {
+                    enabled: false,
+                    start: function(event, uiWidget, $element) {}, // optional callback fired when resize is started,
+                    resize: function(event, uiWidget, $element) {}, // optional callback fired when item is resized,
+                    stop: function(event, uiWidget, $element) {
+                        $scope.editable = false;
+                    } // optional callback fired when item is finished resizing
+                },
+                draggable: {
+                    enabled: false, // whether dragging items is supported
+                    handle: '.ddd', // optional selector for resize handle
+                    start: function(event, uiWidget, $element) {}, // optional callback fired when drag is started,
+                    drag: function(event, uiWidget, $element) {}, // optional callback fired when item is moved,
+                    stop: function(event, uiWidget, $element) {
+                        $scope.editable = false;
+                    } // optional callback fired when item is finished dragging
+                }
+            };
+
             $scope.increaseSplitFactor = function() {
                 if ($scope.splitFactor != 5) {
                     $scope.splitFactor++;
@@ -217,37 +212,20 @@
                 }
             }
 
-            $scope.updateColumns = function() {
-                $scope.gridsterOpts.columns = $scope.noBlocksInLayer * $scope.splitFactor;
-            }
-
-            <!-- Submits a layer of blocks(changes can no longer be made) -->
             $scope.addLayer = function() {
-                var blocks = new Array($scope.noBlocksInLayer);
-                var notes = new Array($scope.noBlocksInLayer);
-                var notesNames = new Array($scope.noBlocksInLayer);
-                for (var i = 0; i < blocks.length; i++) {
-                    blocks[i] = "red";
-                    notes[i] = new Audio('audio/silent.wav');
-                    notesNames[i] = "silent";
-                }
                 $scope.currentLayer = {
-                    blocks: blocks,
-                    notes: notes,
-                    notesNames: notesNames,
+                    notes: [],
                     votedUp: null,
-                    votes: 0
                 };
 
                 $scope.justAdded = true;
             };
 
             $scope.submitLayer = function() {
-                $scope.layers.push($scope.currentLayer);
+                //$scope.layers.push($scope.currentLayer);
                 $scope.justAdded = false;
                 Upload_Layer.save({}, {
-                    blocks: $scope.currentLayer.blocks,
-                    notes: $scope.currentLayer.notesNames,
+                    notes: $scope.currentLayer.notes,
                 }).$promise.then(function() {
                     $mdToast.show(
                         $mdToast.simple()
@@ -313,60 +291,26 @@
                 }
             }
 
-            $scope.playAudio = function() {
-                if ($scope.layers) {
-                    for (var i = 0; i < $scope.layers.length; i++) {
-                        for (var j = 0; j < $scope.layers[i].notes.length; j++) {
-                            $scope.layers[i].notes[j].playbackRate = $scope.vol;
-                        }
-                    }
-                }
-
-                if ($scope.currentLayer) {
-                    for (var i = 0; i < $scope.currentLayer.notes.length; i++) {
-                        $scope.currentLayer.notes[i].playbackRate = $scope.vol;
-                    }
-                }
-
-                var queries = [];
-                var currentBlock = 0;
-                queries = $scope.addToQueries(queries, currentBlock);
-                $scope.runQueries(queries, currentBlock);
-            };
-
-
-            $scope.runQueries = function(queries, currentBlock) {
-                $q.all(queries).then(function() {
-                    currentBlock++;
-                    if (currentBlock < $scope.noBlocksInLayer) {
-                        queries = [];
-                        queries = $scope.addToQueries(queries, currentBlock);
-                        $scope.runQueries(queries, currentBlock);
-                    }
-                });
+            $scope.addBlock = function(ev) {
+                $scope.showTabDialog(ev, -1);
             }
 
-            $scope.addToQueries = function(queries, index) {
-                if ($scope.layers) {
-                    for (var i = 0; i < $scope.layers.length; i++) {
-                        queries.push(runSound($scope.layers[i].notes[index]));
+            $scope.endPositionCurrLayer = function() {
+                if ($scope.currentLayer.notes.length == 0) {
+                    return 0;
+                }
+                var furthestStart = -1;
+                var furthestStartIndex = -1;
+                for (var i = 0; i < $scope.currentLayer.notes.length; i++) {
+                    var currStart = $scope.currentLayer.notes[i].start;
+                    if (currStart > furthestStart) {
+                        furthestStart = currStart;
+                        furthestStartIndex = i;
                     }
                 }
-                if ($scope.currentLayer) {
-                    queries.push(runSound($scope.currentLayer.notes[index]));
-                }
-                return queries;
+                var start = $scope.currentLayer.notes[furthestStartIndex].start + $scope.currentLayer.notes[furthestStartIndex].duration;
+                return start;
             }
-
-            function runSound(sound) {
-                var d = $q.defer();
-                sound.play();
-                sound.addEventListener('ended', function() {
-                    d.resolve();
-                });
-                return d.promise;
-            }
-
 
             $scope.showTabDialog = function(ev, index) {
                 if ($scope.editable) {
@@ -382,9 +326,17 @@
                             clickOutsideToClose: false
                         })
                         .then(function(response) {
-                            $scope.currentLayer.blocks[index] = response.color;
-                            $scope.currentLayer.notes[index] = response.sound;
-                            $scope.currentLayer.notesNames[index] = response.notesName;
+                            if (index != -1) {
+                                $scope.currentLayer.notes[index].color = response.color;
+                                $scope.currentLayer.notes[index].path = response.notesName;
+                            } else {
+                                notes = {
+                                    sizeX: 1,
+                                    path: response.notesName,
+                                    color: response.color
+                                };
+                                $scope.currentLayer.notes.push(notes);
+                            }
                         });
                 } else {
                     $scope.editable = true;
@@ -399,25 +351,22 @@
         function editBlockController($scope, $mdDialog, currentLayer, index) {
             $scope.currentLayer = currentLayer;
             $scope.index = index;
-            $scope.color = "red";
-            $scope.notesName = "silent";
+            $scope.color;
+            $scope.notesName;
 
             $scope.init = function() {
-                if ($scope.currentLayer.blocks[$scope.index] != 'red') {
-                    $scope.color = $scope.currentLayer.blocks[$scope.index];
-                    $scope.notesName = $scope.currentLayer.notes[$scope.index];
+                if ($scope.index != -1) {
+                    $scope.color = $scope.currentLayer.notes[$scope.index].color;
+                    $scope.notesName = $scope.currentLayer.notes[$scope.index].path;
                 }
             }
             $scope.init();
 
             $scope.select = function(color, notesName) {
-                if ($scope.color != color && color != 'brown') {
+                if (color != 'brown') {
                     $scope.color = color;
                     $scope.notesName = notesName;
                     $scope.getAudio(notesName).play();
-                } else if (color != 'brown') {
-                    $scope.color = "red";
-                    $scope.notesName = "silent";
                 } else {
                     var customSound = document.getElementById('soundFile');
                     temp.addEventListener('change', function() {;
@@ -431,11 +380,12 @@
 
             $scope.save = function() {
                 var audio = $scope.getAudio($scope.notesName);
-                $mdDialog.hide({
-                    color: $scope.color,
-                    sound: $scope.getAudio($scope.notesName),
-                    notesName: $scope.notesName
-                });
+                if ($scope.color) {
+                    $mdDialog.hide({
+                        color: $scope.color,
+                        notesName: $scope.notesName
+                    });
+                }
             };
 
             $scope.getAudio = function(notesName) {

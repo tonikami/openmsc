@@ -1,8 +1,12 @@
 var mongoose = require('mongoose');
 
 var layerSchema = mongoose.Schema({
-    blocks: [String],
-    notes: [String],
+    notes: [{
+        start: Number,
+        duration: Number,
+        path: String,
+        color: String
+    }],
     votes: Number
 });
 

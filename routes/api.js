@@ -60,9 +60,19 @@ router.get('/layers', function (req, res, next) {
 });
 
 router.post('/upload/layer', function (req, res, next) {
+    var notes = [];
+    for (var i = 0; i < req.body.notes.length; i++) {
+        var note = {
+            start: req.body.notes[i].col,
+            duration: req.body.notes[i].sizeX,
+            path: req.body.notes[i].path,
+            color: req.body.notes[i].color
+        }
+        notes.push(note);
+    }
+
     var layer = new Layer({
-        blocks: req.body.blocks,
-        notes: req.body.notes,
+        notes: notes,
         votes: 0
     });
     layer.save(function (err, new_layer) {
