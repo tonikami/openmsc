@@ -59,7 +59,7 @@
 
         <div gridster="gridsterOpts" style="background:darkred" ng-if="justAdded==true">
             <ul>
-                <li gridster-item="item" ng-repeat="block in currentLayer.blocks track by $index" ng-class="block" ng-click="showTabDialog($event, $index)">
+                <li gridster-item="item" ng-repeat="block in currentLayer.blocks track by $index" ng-class="block">
                     <div class="ddd" style="width:70%; background:black; padding: 10px 0px"></div>
                 </li>
             </ul>
@@ -183,6 +183,7 @@
                 defaultSizeX: $scope.splitFactor, // the default width of a gridster item, if not specifed
                 defaultSizeY: 1, // the default height of a gridster item, if not specified
                 mobileBreakPoint: 1, // if the screen is not wider that this, remove the grid layout and stack the items
+                pushing: false,
                 swapping: true,
                 resizable: {
                     enabled: true,
