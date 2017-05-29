@@ -7,10 +7,15 @@
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
     <link rel="stylesheet" href="/stylesheets/style.css">
 
+    <link rel="stylesheet" href="https://slimseun.com/js/vendor/angular-gridster/angular-gridster.min.css">
+
 </head>
 
 <body ng-app="musicCollab" ng-cloak>
     <div ng-controller="AppCtrl" ng-cloak>
+
+
+
 
         <!-- Play Forward Rewind -->
         <md-grid-list md-cols-xs="3" md-cols-sm="3" md-cols-md="3" md-cols-gt-md="3" md-row-height-gt-md="2:1" md-row-height="1:1" md-gutter="12px" md-gutter-gt-sm="1px">
@@ -52,10 +57,13 @@
             </md-grid-list>
         </md-content>
 
-        <md-grid-list ng-if="justAdded==true" md-cols-xs="{{noBlocksInLayer}}" md-cols-sm="{{noBlocksInLayer}}" md-cols-md="{{noBlocksInLayer}}" md-cols-gt-md="{{noBlocksInLayer}}" md-row-height-gt-md="1.5:1" md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="1px">
-            <md-grid-tile ng-repeat="block in currentLayer.blocks track by $index" ng-class="block" ng-click="showTabDialog($event, $index)">
-            </md-grid-tile>
-        </md-grid-list>
+        <div gridster="gridsterOpts" style="background:darkred" ng-if="justAdded==true">
+            <ul>
+                <li gridster-item="item" ng-repeat="block in currentLayer.blocks track by $index" ng-class="block" ng-click="showTabDialog($event, $index)">
+                    <ng-md-icon icon="drag_handle"> </ng-md-icon>
+                </li>
+            </ul>
+        </div>
 
         <!-- Add/Submit Button -->
         <ng-md-icon icon="add_circle_outline" style="fill: pink" size="100" layout="row" layout-align="center" ng-if="justAdded==false" ng-click="addLayer()"></ng-md-icon>
@@ -79,9 +87,12 @@
     <script src="/shared/SoundPlayer.js"></script>
 
 
+    <!-- Grid Stuff -->
+    <script src="https://slimseun.com/js/vendor/angular-gridster/angular-gridster.min.js"></script>
+
     <!-- Your application bootstrap  -->
     <script type="text/javascript">
-        var musicCollab = angular.module('musicCollab', ['ngMaterial', 'ngMdIcons', 'ngResource', 'sound.player']);
+        var musicCollab = angular.module('musicCollab', ['ngMaterial', 'ngMdIcons', 'ngResource', 'gridster', 'sound.player']);
 
         musicCollab.factory("Increment_Vote", function ($resource) {
             return $resource('/api/:layerid/vote/increment', {
@@ -102,7 +113,9 @@
         musicCollab.factory("Upload_Layer", function ($resource) {
             return $resource('/api/upload/layer')
         });
-        musicCollab.controller('AppCtrl', function ($scope, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer, SoundPlayerService) {
+        musicCollab.controller('AppCtrl', function($scope, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer, SoundPlayerService) {
+            $scope.editable = true;
+            $scope.splitFactor = 5;
             $scope.vol = 1;
             $scope.noBlocksInLayer = 9;
             $scope.justAdded = false;
@@ -227,6 +240,56 @@
                 });
             }
             $scope.init();
+
+
+            $scope.gridsterOpts = {
+                minRows: 1, // the minimum height of the grid, in rows
+                maxRows: 1,
+                columns: $scope.noBlocksInLayer * $scope.splitFactor, // the width of the grid, in columns
+                colWidth: 'auto', // can be an integer or 'auto'.  'auto' uses the pixel width of the element divided by 'columns'
+                rowHeight: '100', // can be an integer or 'match'.  Match uses the colWidth, giving you square widgets.
+                margins: [10, 1], // the pixel distance between each widget
+                defaultSizeX: $scope.splitFactor, // the default width of a gridster item, if not specifed
+                defaultSizeY: 1, // the default height of a gridster item, if not specified
+                mobileBreakPoint: 1, // if the screen is not wider that this, remove the grid layout and stack the items
+                pushing: false,
+                swapping: true,
+                resizable: {
+                    enabled: true,
+                    start: function(event, uiWidget, $element) {}, // optional callback fired when resize is started,
+                    resize: function(event, uiWidget, $element) {}, // optional callback fired when item is resized,
+                    stop: function(event, uiWidget, $element) {
+                        $scope.editable = false;
+                    } // optional callback fired when item is finished resizing
+                },
+                draggable: {
+                    enabled: true, // whether dragging items is supported
+                    handle: '.ddd', // optional selector for resize handle
+                    start: function(event, uiWidget, $element) {}, // optional callback fired when drag is started,
+                    drag: function(event, uiWidget, $element) {}, // optional callback fired when item is moved,
+                    stop: function(event, uiWidget, $element) {
+                        $scope.editable = false;
+                    } // optional callback fired when item is finished dragging
+                }
+            };
+
+            $scope.increaseSplitFactor = function() {
+                if ($scope.splitFactor != 5) {
+                    $scope.splitFactor++;
+                    $scope.updateGrid();
+                }
+            }
+            $scope.decreaseSplitFactor = function() {
+                if ($scope.splitFactor != 1) {
+                    $scope.splitFactor--;
+                    $scope.updateGrid();
+                }
+            }
+
+            $scope.updateColumns = function() {
+                $scope.gridsterOpts.columns = $scope.noBlocksInLayer * $scope.splitFactor;
+            }
+
             <!-- Submits a layer of blocks(changes can no longer be made) -->
             $scope.addLayer = function () {
                 var blocks = new Array($scope.noBlocksInLayer);
@@ -374,24 +437,28 @@
             }
 
 
-            $scope.showTabDialog = function (ev, index) {
-                $mdDialog.show({
-                        controller: editBlockController,
-                        locals: {
-                            currentLayer: $scope.currentLayer,
-                            index: index
-                        },
-                        templateUrl: '/html/editBlock.html',
-                        parent: angular.element(document.body),
-                        targetEvent: ev,
-                        clickOutsideToClose: false
-                    })
-                    .then(function (response) {
-                        $scope.currentLayer.blocks[index] = response.color;
-                        $scope.currentLayer.notes[index] = response.sound;
-                        $scope.currentLayer.notesNames[index] = response.notesName;
-                    });
-            };
+            $scope.showTabDialog = function(ev, index) {
+                if ($scope.editable) {
+                    $mdDialog.show({
+                            controller: editBlockController,
+                            locals: {
+                                currentLayer: $scope.currentLayer,
+                                index: index
+                            },
+                            templateUrl: '/html/editBlock.html',
+                            parent: angular.element(document.body),
+                            targetEvent: ev,
+                            clickOutsideToClose: false
+                        })
+                        .then(function(response) {
+                            $scope.currentLayer.blocks[index] = response.color;
+                            $scope.currentLayer.notes[index] = response.sound;
+                            $scope.currentLayer.notesNames[index] = response.notesName;
+                        });
+                } else {
+                    $scope.editable = true;
+                }
+            }
         });
 
 
@@ -412,18 +479,24 @@
             }
             $scope.init();
 
-            $scope.select = function (color, notesName) {
-                if ($scope.color != color && $scope.color != 'brown') {
+
+            $scope.select = function(color, notesName) {
+                if ($scope.color != color && color != 'brown') {
                     $scope.color = color;
                     $scope.notesName = notesName;
                     $scope.getAudio(notesName).play();
-                } else {
+                } else if (color != 'brown') {
                     $scope.color = "red";
                     $scope.notesName = "silent";
+                } else {
+                    var customSound = document.getElementById('soundFile');
+                    temp.addEventListener('change', function() {;
+                        console.log('done');
+                    });
                 }
             };
 
-            $scope.cancel = function () {
+            $scope.cancel = function() {
                 $mdDialog.cancel();
             };
 
@@ -440,42 +513,32 @@
                 var sound;
                 if ($scope.notesName == 'silent') {
                     sound = new Audio('audio/silent.wav');
-                };
-                if ($scope.notesName == 'c') {
+                } else if ($scope.notesName == 'c') {
                     sound = new Audio('audio/c.wav');
-                };
-                if ($scope.notesName == 'c#') {
+                } else if ($scope.notesName == 'c#') {
                     sound = new Audio('audio/csharp.wav');
-                };
-                if ($scope.notesName == 'd') {
+                } else if ($scope.notesName == 'd') {
                     sound = new Audio('audio/d.wav');
-                };
-                if ($scope.notesName == 'd#') {
+                } else if ($scope.notesName == 'd#') {
                     sound = new Audio('audio/dsharp.wav');
-                };
-                if ($scope.notesName == 'e') {
+                } else if ($scope.notesName == 'e') {
                     sound = new Audio('audio/e.wav');
-                };
-                if ($scope.notesName == 'f') {
+                } else if ($scope.notesName == 'f') {
                     sound = new Audio('audio/f.wav');
-                };
-                if ($scope.notesName == 'f#') {
+                } else if ($scope.notesName == 'f#') {
                     sound = new Audio('audio/fsharp.wav');
-                }
-                if ($scope.notesName == 'g') {
+                } else if ($scope.notesName == 'g') {
                     sound = new Audio('audio/g.wav');
-                }
-                if ($scope.notesName == 'g#') {
+                } else if ($scope.notesName == 'g#') {
                     sound = new Audio('audio/gsharp.wav');
-                }
-                if ($scope.notesName == 'a') {
+                } else if ($scope.notesName == 'a') {
                     sound = new Audio('audio/a.wav');
-                }
-                if ($scope.notesName == 'a#') {
+                } else if ($scope.notesName == 'a#') {
                     sound = new Audio('audio/asharp.wav');
-                }
-                if ($scope.notesName == 'b') {
+                } else if ($scope.notesName == 'b') {
                     sound = new Audio('audio/b.wav');
+                } else {
+
                 }
                 return sound;
             }

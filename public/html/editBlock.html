@@ -60,8 +60,11 @@
                             <md-grid-tile></md-grid-tile>
                             <md-grid-tile></md-grid-tile>
                             <md-grid-tile></md-grid-tile>
-                            <md-grid-tile class="brown" ng-style="color=='brown' && { 'border-style': 'solid'} " ng-click="select( 'brown', 'custom') ">
-                                <h2 style="color:white; ">Custom</h2>
+                            <md-grid-tile class="brown" ng-style="color=='brown' && { 'border-style': 'solid'}" ng-click="select('brown', 'custom')">
+                                <label>
+                                    <input type="file" id="soundFile" style="display: none; " />
+                                        <span style="color: white ">Select file</span>
+                                </label>
                             </md-grid-tile>
                             <md-grid-tile></md-grid-tile>
                             <md-grid-tile></md-grid-tile>
