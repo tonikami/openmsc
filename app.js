@@ -32,7 +32,7 @@ app.use('/api', api);
 
 var port = process.env.PORT || 8000;
 
-var serve = app.listen(port, function () {
+var serve = http.createServer(app).listen(port, function () {
     console.log("server started at port" + port);
 });
 
