@@ -34,53 +34,58 @@
 
 
         <!-- Block Layers -->
-
-        <md-content layout="row" layout-align="center center" style="margin-left: 16px; margin-right: 16px">
-            <div layout="column" layout-align="center center" flex="10">
-            </div>
-            <div gridster="gridsterOptsCurrentBlocks" style="background:darkred; padding: 0px;" flex="90">
-                <ul>
-                    <li gridster-item="item" ng-repeat="item in topBlocks track by $index" ng-class="item.color">
-                    </li>
-                </ul>
-            </div>
-        </md-content>
-        <md-content>
-            <md-list flex>
-                <md-list-item ng-repeat="layer in layers track by $index" layout="row" layout-align="center center" ng-click="null">
-                    <div layout="column" layout-align="center center" flex="10">
-                        <md-button ng-click="voteUp($index)" class="md-icon-button">
-                            <ng-md-icon icon="keyboard_arrow_up" ng-style="layer.votedUp && {'fill': 'pink'}"></ng-md-icon>
-                        </md-button>
-                        <md-button class="md-icon-button md-primary" aria-label="Settings">{{layer.votes}}</md-button>
-                        <md-button ng-click="voteDown($index)" class="md-icon-button">
-                            <ng-md-icon icon="keyboard_arrow_down" ng-style="layer.votedUp != null && !layer.votedUp && {'fill': 'pink'}" style="margin-top: 4px;"></ng-md-icon>
-                        </md-button>
+        <div style="overflow-x:scroll; overflow-y: hidden">
+            <div style="width: 1000%">
+                <md-content layout="row" layout-align="center center" style="margin-left: 16px; margin-right: 16px">
+                    <div layout="column" layout-align="center center" style="width: 100px;">
                     </div>
-                    <div gridster="gridsterOptsLayer" style="background:darkred" flex="90" style="">
+                    <div gridster="gridsterOptsCurrentBlocks" style="background:darkred; padding: 0px;" class="md-block" flex="100" >
                         <ul>
-                            <li gridster-item="note" ng-repeat="note in layer.notes track by $index" class="yellow">
+                            <li gridster-item="item" ng-repeat="item in topBlocks track by $index" ng-class="item.color">
                             </li>
                         </ul>
                     </div>
-                </md-list-item>
-            </md-list>
-        </md-content>
+                </md-content>
+                <md-content>
+                    <md-list flex>
+                        <md-list-item ng-repeat="layer in layers track by $index" layout="row" layout-align="center center" ng-click="null">
+                            <div layout="column" layout-align="center center" style="width: 100px;">
+                                <md-button ng-click="voteUp($index)" class="md-icon-button">
+                                    <ng-md-icon icon="keyboard_arrow_up" ng-style="layer.votedUp && {'fill': 'pink'}"></ng-md-icon>
+                                </md-button>
+                                <md-button class="md-icon-button md-primary" aria-label="Settings">{{layer.votes}}</md-button>
+                                <md-button ng-click="voteDown($index)" class="md-icon-button">
+                                    <ng-md-icon icon="keyboard_arrow_down" ng-style="layer.votedUp != null && !layer.votedUp && {'fill': 'pink'}" style="margin-top: 4px;"></ng-md-icon>
+                                </md-button>
+                            </div>
+                            <div gridster="gridsterOptsLayer" style="background:darkred" class="md-block" flex="100" style="">
+                                <ul>
+                                    <li gridster-item="note" ng-repeat="note in layer.notes track by $index" class="yellow">
+                                    </li>
+                                </ul>
+                            </div>
+                        </md-list-item>
+                    </md-list>
+                </md-content>
 
-        <br>
-        <md-content layout="row" layout-align="center center" layout-padding ng-if="justAdded==true" style="margin-left: 16px; margin-right: 16px">
-            <div layout="column" layout-align="center center" flex="10">
-                <md-button class="md-raised md-primary" ng-click="addBlock($event)">Add Sound </md-button>
-            </div>
-            <div gridster="gridsterOpts" style="background:darkred" ng-if="justAdded==true" flex="90">
-                <ul>
-                    <li gridster-item="note" ng-repeat="note in currentLayer.notes track by $index" ng-class="note.color" ng-click="showTabDialog($event, $index)">
-                        <ng-md-icon icon="drag_handle"> </ng-md-icon>
-                    </li>
-                </ul>
-            </div>
-        </md-content>
 
+                <br>
+                <md-content layout="row" layout-align="center center" ng-if="justAdded==true" style="margin-left: 16px; margin-right: 16px">
+                    <div layout="column" layout-align="center center" style="width: 100px;">
+                        <md-button ng-click="addBlock($event)" class="md-icon-button">
+                            <ng-md-icon icon="add_circle_outline"></ng-md-icon>
+                        </md-button>
+                    </div>
+                    <div gridster="gridsterOpts" style="background:darkred; padding: 0px" ng-if="justAdded==true" class="md-block" flex="100">
+                        <ul>
+                            <li gridster-item="note" ng-repeat="note in currentLayer.notes track by $index" ng-class="note.color" ng-click="showTabDialog($event, $index)">
+                                <ng-md-icon icon="drag_handle"> </ng-md-icon>
+                            </li>
+                        </ul>
+                    </div>
+                </md-content>
+            </div>
+        </div>
 
         <!-- Add/Submit Button -->
         <ng-md-icon icon="add_circle_outline" style="fill: pink" size="100" layout="row" layout-align="center" ng-if="justAdded==false" ng-click="addLayer()"></ng-md-icon>
@@ -132,7 +137,7 @@
         });
         musicCollab.controller('AppCtrl', function ($scope, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer, SoundPlayerService, WebAudio) {
             $scope.editable = true;
-            $scope.splitFactor = 50;
+            $scope.splitFactor = 700;
             $scope.vol = 1;
             $scope.justAdded = false;
             $scope.layers = [];
@@ -203,7 +208,7 @@
                 maxRows: 1,
                 columns: $scope.splitFactor, // the width of the grid, in columns
                 colWidth: 'auto', // can be an integer or 'auto'.  'auto' uses the pixel width of the element divided by 'columns'
-                rowHeight: '100', // can be an integer or 'match'.  Match uses the colWidth, giving you square widgets.
+                rowHeight: '50', // can be an integer or 'match'.  Match uses the colWidth, giving you square widgets.
                 margins: [1, 1], // the pixel distance between each widget
                 defaultSizeX: 1, // the default width of a gridster item, if not specifed
                 defaultSizeY: 1, // the default height of a gridster item, if not specified
