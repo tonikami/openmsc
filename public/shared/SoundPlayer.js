@@ -129,4 +129,8 @@ soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
     this.onStop = function (callback) {
         soundStoppedCallback = callback;
     }
+
+    this.setBPM = function (bpm) {
+        beatsPerMinute = bpm;
+    }
 });
