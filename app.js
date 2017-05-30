@@ -30,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'bower_components')));
 app.use('/', music);
 app.use('/api', api);
 
-var port = 8000;
+var port = process.env.PORT || 8000;
 
 var serve = app.listen(port, function () {
     console.log("server started at port" + port);

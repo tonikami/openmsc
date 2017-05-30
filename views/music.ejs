@@ -11,15 +11,12 @@
 
 </head>
 
-<body ng-app="musicCollab" ng-cloak>
-    <div ng-controller="AppCtrl" ng-cloak>
-
-
-
+<body ng-app="musicCollab"   ng-cloak>
+    <div ng-controller="AppCtrl" ng-cloak layout-padding>
 
         <!-- Play Forward Rewind -->
-        <md-grid-list md-cols-xs="3" md-cols-sm="3" md-cols-md="3" md-cols-gt-md="3" md-row-height-gt-md="2:1" md-row-height="1:1" md-gutter="12px" md-gutter-gt-sm="1px">
 
+        <md-grid-list md-cols-xs="3" md-cols-sm="3" md-cols-md="3" md-cols-gt-md="3" md-row-height-gt-md="50px" md-row-height="50px" md-gutter="12px" md-gutter-gt-sm="1px" style="margin: 50px;">
             <md-grid-tile class="white">
                 <ng-md-icon icon="fast_rewind" style="fill: pink" size="100"></ng-md-icon>
             </md-grid-tile>
@@ -32,35 +29,49 @@
                 <ng-md-icon icon="fast_forward" style="fill: pink" size="100"></ng-md-icon>
             </md-grid-tile>
 
-
-
         </md-grid-list>
 
 
-        <md-slider-container style="margin: 30px;" flex>
-            <md-input-container>
-                <input flex type="number" ng-model="vol" aria-label="tempo" aria-controls="volume-slider">
-            </md-input-container>
-            <md-slider ng-model="vol" min="0.5" max="4" aria-label="tempo" id="volume-slider" class="md-accent" md-horizontol md-range></md-slider>
-            <h5>Tempo</h5>
-        </md-slider-container>
+
         <!-- Block Layers -->
-        <md-content ng-repeat="layer in layers track by $index" md-theme="docs-dark" layout="row" layout-align="center center" layout-padding>
-            <div layout="column" layout-align="center center" flex="10" style="margin: 10px;">
-                <ng-md-icon icon="keyboard_arrow_up" ng-click="voteUp($index)" ng-style="layer.votedUp && {'fill': 'pink'}"></ng-md-icon>
-                <md-button class="md-icon-button md-primary" aria-label="Settings">{{layer.votes}}</md-button>
-                <ng-md-icon icon="keyboard_arrow_down" ng-click="voteDown($index)" ng-style="layer.votedUp != null && !layer.votedUp && {'fill': 'pink'}" style="margin-top: 4px;"></ng-md-icon>
+
+        <md-content layout="row" layout-align="center center" style="margin-left: 16px; margin-right: 16px">
+            <div layout="column" layout-align="center center" flex="10">
             </div>
-            <div gridster="gridsterOptsLayer" style="background:darkred" flex="90" style="">
+            <div gridster="gridsterOptsCurrentBlocks" style="background:darkred; padding: 0px;" flex="90">
                 <ul>
-                    <li gridster-item="note" ng-repeat="note in layer.notes track by $index" ng-class="note.color">
+                    <li gridster-item="item" ng-repeat="item in topBlocks track by $index" ng-class="item.color">
                     </li>
                 </ul>
             </div>
         </md-content>
+        <md-content>
+            <md-list flex>
+                <md-list-item ng-repeat="layer in layers track by $index" layout="row" layout-align="center center" ng-click="null">
+                    <div layout="column" layout-align="center center" flex="10">
+                        <md-button ng-click="voteUp($index)" class="md-icon-button">
+                            <ng-md-icon icon="keyboard_arrow_up" ng-style="layer.votedUp && {'fill': 'pink'}"></ng-md-icon>
+                        </md-button>
+                        <md-button class="md-icon-button md-primary" aria-label="Settings">{{layer.votes}}</md-button>
+                        <md-button ng-click="voteDown($index)" class="md-icon-button">
+                            <ng-md-icon icon="keyboard_arrow_down" ng-style="layer.votedUp != null && !layer.votedUp && {'fill': 'pink'}" style="margin-top: 4px;"></ng-md-icon>
+                        </md-button>
+                    </div>
+                    <div gridster="gridsterOptsLayer" style="background:darkred" flex="90" style="">
+                        <ul>
+                            <li gridster-item="note" ng-repeat="note in layer.notes track by $index" class="yellow">
+                            </li>
+                        </ul>
+                    </div>
+                </md-list-item>
+            </md-list>
+        </md-content>
+
         <br>
-        <md-content layout="row" layout-align="center center" layout-padding ng-if="justAdded==true">
-            <md-button class="md-raised md-primary" ng-click="addBlock($event)" flex="10" style="margin: 10px;">Add Sound </md-button>
+        <md-content layout="row" layout-align="center center" layout-padding ng-if="justAdded==true" style="margin-left: 16px; margin-right: 16px">
+            <div layout="column" layout-align="center center" flex="10">
+                <md-button class="md-raised md-primary" ng-click="addBlock($event)">Add Sound </md-button>
+            </div>
             <div gridster="gridsterOpts" style="background:darkred" ng-if="justAdded==true" flex="90">
                 <ul>
                     <li gridster-item="note" ng-repeat="note in currentLayer.notes track by $index" ng-class="note.color" ng-click="showTabDialog($event, $index)">
@@ -69,8 +80,6 @@
                 </ul>
             </div>
         </md-content>
-
-
 
 
         <!-- Add/Submit Button -->
@@ -102,35 +111,36 @@
     <script type="text/javascript">
         var musicCollab = angular.module('musicCollab', ['ngMaterial', 'ngMdIcons', 'ngResource', 'gridster', 'sound.player', 'ngWebAudio']);
 
-        musicCollab.factory("Increment_Vote", function($resource) {
+        musicCollab.factory("Increment_Vote", function ($resource) {
             return $resource('/api/:layerid/vote/increment', {
                 layerid: '@layerid'
             });
         });
 
-        musicCollab.factory("Decrement_Vote", function($resource) {
+        musicCollab.factory("Decrement_Vote", function ($resource) {
             return $resource('/api/:layerid/vote/decrement', {
                 layerid: '@layerid'
             });
         });
 
-        musicCollab.factory("Layers", function($resource) {
+        musicCollab.factory("Layers", function ($resource) {
             return $resource('/api/layers')
         });
 
-        musicCollab.factory("Upload_Layer", function($resource) {
+        musicCollab.factory("Upload_Layer", function ($resource) {
             return $resource('/api/upload/layer')
         });
-        musicCollab.controller('AppCtrl', function($scope, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer, SoundPlayerService, WebAudio) {
+        musicCollab.controller('AppCtrl', function ($scope, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer, SoundPlayerService, WebAudio) {
             $scope.editable = true;
             $scope.splitFactor = 50;
             $scope.vol = 1;
             $scope.justAdded = false;
             $scope.layers = [];
             $scope.currentLayer = null;
+            $scope.topBlocks = [];
 
-            $scope.init = function() {
-                Layers.query(function(response) {
+            $scope.init = function () {
+                Layers.query(function (response) {
                     for (var i = 0; i < response.length; i++) {
                         for (var j = 0; j < response[i].notes.length; j++) {
                             response[i].notes[j].sizeX = response[i].notes[j].duration;
@@ -143,10 +153,15 @@
                     $scope.layers = response;
                 });
 
+                for (var i = 0; i < $scope.splitFactor; i++) {
+                    $scope.topBlocks.push({
+                        color: "red"
+                    });
+                }
             }
             $scope.init();
 
-            $scope.playAudio = function() {
+            $scope.playAudio = function () {
                 var totalNotes = [];
                 for (var i = 0; i < $scope.layers.length; i++) {
                     totalNotes = totalNotes.concat($scope.layers[i].notes);
@@ -160,6 +175,27 @@
                     totalNotes[i].length = totalNotes[i].sizeX;
                 }
                 SoundPlayerService.play(totalNotes, $scope.splitFactor, 150);
+                SoundPlayerService.onCurrentBeatChanged(function (beatIndex) {
+                    for (var i = 0; i < $scope.topBlocks.length; i++) {
+                        if (i == beatIndex) {
+                            $scope.topBlocks[i].color = "blue"
+                        }
+                    }
+
+                    $scope.currentBeatIndex = beatIndex;
+                    $scope.$apply();
+                });
+
+
+                SoundPlayerService.onStop(function () {
+                    $scope.topBlocks = [];
+                    for (var i = 0; i < $scope.splitFactor; i++) {
+                        $scope.topBlocks.push({
+                            color: "red"
+                        });
+                    }
+                    $scope.$apply();
+                });
             }
 
             $scope.gridsterOpts = {
@@ -168,7 +204,7 @@
                 columns: $scope.splitFactor, // the width of the grid, in columns
                 colWidth: 'auto', // can be an integer or 'auto'.  'auto' uses the pixel width of the element divided by 'columns'
                 rowHeight: '100', // can be an integer or 'match'.  Match uses the colWidth, giving you square widgets.
-                margins: [10, 1], // the pixel distance between each widget
+                margins: [1, 1], // the pixel distance between each widget
                 defaultSizeX: 1, // the default width of a gridster item, if not specifed
                 defaultSizeY: 1, // the default height of a gridster item, if not specified
                 mobileBreakPoint: 1, // if the screen is not wider that this, remove the grid layout and stack the items
@@ -176,20 +212,20 @@
                 swapping: false,
                 resizable: {
                     enabled: true,
-                    start: function(event, uiWidget, $element) {}, // optional callback fired when resize is started,
-                    resize: function(event, uiWidget, $element) {}, // optional callback fired when item is resized,
-                    stop: function(event, uiWidget, $element) {
-                        $scope.editable = false;
-                    } // optional callback fired when item is finished resizing
+                    start: function (event, uiWidget, $element) {}, // optional callback fired when resize is started,
+                    resize: function (event, uiWidget, $element) {}, // optional callback fired when item is resized,
+                    stop: function (event, uiWidget, $element) {
+                            $scope.editable = false;
+                        } // optional callback fired when item is finished resizing
                 },
                 draggable: {
                     enabled: true, // whether dragging items is supported
                     handle: '.ddd', // optional selector for resize handle
-                    start: function(event, uiWidget, $element) {}, // optional callback fired when drag is started,
-                    drag: function(event, uiWidget, $element) {}, // optional callback fired when item is moved,
-                    stop: function(event, uiWidget, $element) {
-                        $scope.editable = false;
-                    } // optional callback fired when item is finished dragging
+                    start: function (event, uiWidget, $element) {}, // optional callback fired when drag is started,
+                    drag: function (event, uiWidget, $element) {}, // optional callback fired when item is moved,
+                    stop: function (event, uiWidget, $element) {
+                            $scope.editable = false;
+                        } // optional callback fired when item is finished dragging
                 }
             };
 
@@ -198,44 +234,73 @@
                 maxRows: 1,
                 columns: $scope.splitFactor, // the width of the grid, in columns
                 colWidth: 'auto', // can be an integer or 'auto'.  'auto' uses the pixel width of the element divided by 'columns'
-                rowHeight: '100', // can be an integer or 'match'.  Match uses the colWidth, giving you square widgets.
-                margins: [10, 1], // the pixel distance between each widget
+                rowHeight: '50', // can be an integer or 'match'.  Match uses the colWidth, giving you square widgets.
+                margins: [1, 1], // the pixel distance between each widget
                 defaultSizeX: 1, // the default width of a gridster item, if not specifed
                 defaultSizeY: 1, // the default height of a gridster item, if not specified
                 mobileBreakPoint: 1, // if the screen is not wider that this, remove the grid layout and stack the items
                 resizable: {
                     enabled: false,
-                    start: function(event, uiWidget, $element) {}, // optional callback fired when resize is started,
-                    resize: function(event, uiWidget, $element) {}, // optional callback fired when item is resized,
-                    stop: function(event, uiWidget, $element) {
-                        $scope.editable = false;
-                    } // optional callback fired when item is finished resizing
+                    start: function (event, uiWidget, $element) {}, // optional callback fired when resize is started,
+                    resize: function (event, uiWidget, $element) {}, // optional callback fired when item is resized,
+                    stop: function (event, uiWidget, $element) {
+                            $scope.editable = false;
+                        } // optional callback fired when item is finished resizing
                 },
                 draggable: {
                     enabled: false, // whether dragging items is supported
                     handle: '.ddd', // optional selector for resize handle
-                    start: function(event, uiWidget, $element) {}, // optional callback fired when drag is started,
-                    drag: function(event, uiWidget, $element) {}, // optional callback fired when item is moved,
-                    stop: function(event, uiWidget, $element) {
-                        $scope.editable = false;
-                    } // optional callback fired when item is finished dragging
+                    start: function (event, uiWidget, $element) {}, // optional callback fired when drag is started,
+                    drag: function (event, uiWidget, $element) {}, // optional callback fired when item is moved,
+                    stop: function (event, uiWidget, $element) {
+                            $scope.editable = false;
+                        } // optional callback fired when item is finished dragging
                 }
             };
 
-            $scope.increaseSplitFactor = function() {
+            $scope.gridsterOptsCurrentBlocks = {
+                minRows: 1, // the minimum height of the grid, in rows
+                maxRows: 1,
+                columns: $scope.splitFactor, // the width of the grid, in columns
+                colWidth: 'auto', // can be an integer or 'auto'.  'auto' uses the pixel width of the element divided by 'columns'
+                rowHeight: '25', // can be an integer or 'match'.  Match uses the colWidth, giving you square widgets.
+                margins: [1, 1], // the pixel distance between each widget
+                defaultSizeX: 1, // the default width of a gridster item, if not specifed
+                defaultSizeY: 1, // the default height of a gridster item, if not specified
+                mobileBreakPoint: 1, // if the screen is not wider that this, remove the grid layout and stack the items
+                resizable: {
+                    enabled: false,
+                    start: function (event, uiWidget, $element) {}, // optional callback fired when resize is started,
+                    resize: function (event, uiWidget, $element) {}, // optional callback fired when item is resized,
+                    stop: function (event, uiWidget, $element) {
+                            $scope.editable = false;
+                        } // optional callback fired when item is finished resizing
+                },
+                draggable: {
+                    enabled: false, // whether dragging items is supported
+                    handle: '.ddd', // optional selector for resize handle
+                    start: function (event, uiWidget, $element) {}, // optional callback fired when drag is started,
+                    drag: function (event, uiWidget, $element) {}, // optional callback fired when item is moved,
+                    stop: function (event, uiWidget, $element) {
+                            $scope.editable = false;
+                        } // optional callback fired when item is finished dragging
+                }
+            };
+
+            $scope.increaseSplitFactor = function () {
                 if ($scope.splitFactor != 5) {
                     $scope.splitFactor++;
                     $scope.updateGrid();
                 }
             }
-            $scope.decreaseSplitFactor = function() {
+            $scope.decreaseSplitFactor = function () {
                 if ($scope.splitFactor != 1) {
                     $scope.splitFactor--;
                     $scope.updateGrid();
                 }
             }
 
-            $scope.addLayer = function() {
+            $scope.addLayer = function () {
                 $scope.currentLayer = {
                     notes: [],
                     votedUp: null,
@@ -244,12 +309,12 @@
                 $scope.justAdded = true;
             };
 
-            $scope.submitLayer = function() {
+            $scope.submitLayer = function () {
                 //$scope.layers.push($scope.currentLayer);
                 $scope.justAdded = false;
                 Upload_Layer.save({}, {
                     notes: $scope.currentLayer.notes,
-                }).$promise.then(function() {
+                }).$promise.then(function () {
                     $mdToast.show(
                         $mdToast.simple()
                         .textContent("Succesfully Added")
@@ -262,7 +327,7 @@
             }
 
 
-            $scope.voteUp = function(index) {
+            $scope.voteUp = function (index) {
                 if ($scope.layers[index].votedUp == null) {
                     $scope.layers[index].votes++;
                     Increment_Vote.get({
@@ -288,7 +353,7 @@
                 }
             }
 
-            $scope.voteDown = function(index) {
+            $scope.voteDown = function (index) {
                 if ($scope.layers[index].votedUp == null) {
                     $scope.layers[index].votes--;
                     Decrement_Vote.get({
@@ -314,11 +379,11 @@
                 }
             }
 
-            $scope.addBlock = function(ev) {
+            $scope.addBlock = function (ev) {
                 $scope.showTabDialog(ev, -1);
             }
 
-            $scope.endPositionCurrLayer = function() {
+            $scope.endPositionCurrLayer = function () {
                 if ($scope.currentLayer.notes.length == 0) {
                     return 0;
                 }
@@ -335,7 +400,7 @@
                 return start;
             }
 
-            $scope.showTabDialog = function(ev, index) {
+            $scope.showTabDialog = function (ev, index) {
                 if ($scope.editable) {
                     $mdDialog.show({
                             controller: editBlockController,
@@ -348,7 +413,7 @@
                             targetEvent: ev,
                             clickOutsideToClose: false
                         })
-                        .then(function(response) {
+                        .then(function (response) {
                             if (index != -1) {
                                 $scope.currentLayer.notes[index].color = response.color;
                                 $scope.currentLayer.notes[index].path = response.notesName;
@@ -377,7 +442,7 @@
             $scope.color;
             $scope.notesName;
 
-            $scope.init = function() {
+            $scope.init = function () {
                 if ($scope.index != -1) {
                     $scope.color = $scope.currentLayer.notes[$scope.index].color;
                     $scope.notesName = $scope.currentLayer.notes[$scope.index].path;
@@ -386,24 +451,24 @@
             $scope.init();
 
 
-            $scope.select = function(color, notesName) {
+            $scope.select = function (color, notesName) {
                 if (color != 'brown') {
                     $scope.color = color;
                     $scope.notesName = notesName;
                     $scope.getAudio(notesName).play();
                 } else {
                     var customSound = document.getElementById('soundFile');
-                    temp.addEventListener('change', function() {
+                    temp.addEventListener('change', function () {
                         console.log('done');
                     });
                 }
             };
 
-            $scope.cancel = function() {
+            $scope.cancel = function () {
                 $mdDialog.cancel();
             };
 
-            $scope.save = function() {
+            $scope.save = function () {
                 var audio = $scope.getAudio($scope.notesName);
                 if ($scope.color) {
                     $mdDialog.hide({
@@ -413,7 +478,7 @@
                 }
             };
 
-            $scope.getAudio = function(notesName) {
+            $scope.getAudio = function (notesName) {
                 var sound;
                 if ($scope.notesName == 'c.wav') {
                     sound = WebAudio('sound/c.wav');
@@ -443,7 +508,6 @@
                 return sound;
             }
         };
-
     </script>
 
 </body>
