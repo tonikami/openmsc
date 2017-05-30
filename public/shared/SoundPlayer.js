@@ -1,6 +1,6 @@
 var soundPlayer = angular.module("sound.player", ['ngResource', 'ngWebAudio']);
 
-soundPlayer.service("SoundPlayerService", function (WebAudio) {
+soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
     var notes;
     var totalBeats;
     var beatsPerMinute;
@@ -24,7 +24,6 @@ soundPlayer.service("SoundPlayerService", function (WebAudio) {
 
         calculateDuration();
         bufferSounds();
-        startPlaying();
     }
 
     function calculateDuration() {
@@ -44,18 +43,34 @@ soundPlayer.service("SoundPlayerService", function (WebAudio) {
 
 
     function bufferSounds() {
+        var soundsBuffering = [];
+
         for (var i = 0; i < notes.length; i++) {
-            var noteDuration = 60 / beatsPerMinute * notes[i].length;
-            var options = {
-                buffer: true,
-                loop: false,
-                duration: noteDuration,
-                gain: 1,
-                fallback: false, // Use HTML5 audio fallback
-                retryInterval: 1000 // Retry interval if buffering fails
-            }
-            notes[i].audio = WebAudio('/sound/' + notes[i].path, options);
+            soundsBuffering.push(bufferSound(i));
         }
+
+        $q.all(soundsBuffering).then(function () {
+            startPlaying();
+        });
+    }
+
+
+    function bufferSound(i) {
+        var d = $q.defer();
+        var noteDuration = 60 / beatsPerMinute * notes[i].length;
+        var options = {
+            buffer: true,
+            loop: false,
+            duration: noteDuration,
+            gain: 1,
+            fallback: false, // Use HTML5 audio fallback
+            retryInterval: 1000 // Retry interval if buffering fails
+        }
+        notes[i].audio = WebAudio('/sound/' + notes[i].path, options);
+        notes[i].audio.onBuffered = function () {
+            d.resolve();
+        }
+        return d.promise;
     }
 
     function startPlaying() {
