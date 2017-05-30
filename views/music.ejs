@@ -16,17 +16,14 @@
 
         <!-- Play Forward Rewind -->
 
-        <md-grid-list md-cols-xs="3" md-cols-sm="3" md-cols-md="3" md-cols-gt-md="3" md-row-height-gt-md="50px" md-row-height="50px" md-gutter="12px" md-gutter-gt-sm="1px" style="margin: 50px;">
+        <md-grid-list md-cols-xs="2" md-cols-sm="2" md-cols-md="2" md-cols-gt-md="2" md-row-height-gt-md="50px" md-row-height="50px" md-gutter="12px" md-gutter-gt-sm="1px" style="margin-top: 50px; margin-bottom: 50px; margin-right: 30%; margin-left: 30%">
             <md-grid-tile class="white">
-                <ng-md-icon icon="fast_rewind" style="fill: pink" size="100"></ng-md-icon>
+                <ng-md-icon icon="stop" style="fill: pink" ng-click="stopAudio()" size="100"></ng-md-icon>
             </md-grid-tile>
 
             <md-grid-tile class="white">
-                <ng-md-icon icon="play_circle_outline" style="fill: pink" size="100" ng-click="playAudio()"></ng-md-icon>
-            </md-grid-tile>
-
-            <md-grid-tile class="white">
-                <ng-md-icon icon="fast_forward" style="fill: pink" size="100"></ng-md-icon>
+                <ng-md-icon icon="play_circle_outline" style="fill: pink" size="100" ng-if="paused || !isPlaying" ng-click="playFunction()"></ng-md-icon>
+                <ng-md-icon icon="pause_circle_outline" style="fill: pink" size="100" ng-if="!paused && isPlaying" ng-click="pauseAudio()"></ng-md-icon>
             </md-grid-tile>
 
         </md-grid-list>
@@ -35,11 +32,15 @@
 
         <!-- Block Layers -->
         <div style="overflow-x:scroll; overflow-y: hidden">
-            <div style="width: 1000%">
-                <md-content layout="row" layout-align="center center" style="margin-left: 16px; margin-right: 16px">
-                    <div layout="column" layout-align="center center" style="width: 100px;">
+            <div style="width: 10000px">
+                <md-content layout="row" layout-align="center end" style="margin-left: 16px; margin-right: 16px">
+                    <div layout="row" layout-align="center center" style="width: 100px; padding-top: 20px;  padding-right: 20px;">
+                        <md-input-container >
+                            <label>BPM</label>
+                            <input ng-model="beatsPerMin.val" ng-change="updateBPM()">
+                        </md-input-container>
                     </div>
-                    <div gridster="gridsterOptsCurrentBlocks" style="background:darkred; padding: 0px;" class="md-block" flex="100" >
+                    <div gridster="gridsterOptsCurrentBlocks" style="background:darkred; padding: 0px;" class="md-block" flex="100">
                         <ul>
                             <li gridster-item="item" ng-repeat="item in topBlocks track by $index" ng-class="item.color">
                             </li>
@@ -136,13 +137,20 @@
             return $resource('/api/upload/layer')
         });
         musicCollab.controller('AppCtrl', function ($scope, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer, SoundPlayerService, WebAudio) {
+            $scope.isPlaying = false;
+            $scope.paused = false;
             $scope.editable = true;
             $scope.splitFactor = 700;
+            $scope.bpm = 150;
             $scope.vol = 1;
             $scope.justAdded = false;
             $scope.layers = [];
             $scope.currentLayer = null;
             $scope.topBlocks = [];
+
+            $scope.beatsPerMin = {
+                val: $scope.bpm,
+            }
 
             $scope.init = function () {
                 Layers.query(function (response) {
@@ -166,6 +174,22 @@
             }
             $scope.init();
 
+            $scope.updateBPM = function () {
+                $scope.bpm = $scope.beatsPerMin.val;
+                SoundPlayerService.setBPM($scope.bpm);
+            }
+
+            $scope.playFunction = function () {
+                console.log($scope.isPlaying);
+                console.log($scope.paused);
+                if (!$scope.isPlaying) {
+                    $scope.playAudio();
+                    $scope.isPlaying = true;
+                } else {
+                    $scope.resumeAudio();
+                }
+            }
+
             $scope.playAudio = function () {
                 var totalNotes = [];
                 for (var i = 0; i < $scope.layers.length; i++) {
@@ -179,7 +203,7 @@
                     totalNotes[i].x = totalNotes[i].col;
                     totalNotes[i].length = totalNotes[i].sizeX;
                 }
-                SoundPlayerService.play(totalNotes, $scope.splitFactor, 150);
+                SoundPlayerService.play(totalNotes, $scope.splitFactor, $scope.bpm);
                 SoundPlayerService.onCurrentBeatChanged(function (beatIndex) {
                     for (var i = 0; i < $scope.topBlocks.length; i++) {
                         if (i == beatIndex) {
@@ -201,6 +225,22 @@
                     }
                     $scope.$apply();
                 });
+            }
+
+            $scope.pauseAudio = function () {
+                $scope.paused = true;
+                SoundPlayerService.pause();
+            }
+
+            $scope.resumeAudio = function () {
+                $scope.paused = false;
+                SoundPlayerService.resume();
+            }
+
+            $scope.stopAudio = function () {
+                $scope.isPlaying = false;
+                $scope.paused = false;
+                SoundPlayerService.stop();
             }
 
             $scope.gridsterOpts = {
