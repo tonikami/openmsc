@@ -23,6 +23,7 @@ soundPlayer.service("SoundPlayerService", function (WebAudio) {
         beatsPerMinute = b;
 
         calculateDuration();
+        bufferSounds();
         startPlaying();
     }
 
@@ -39,6 +40,22 @@ soundPlayer.service("SoundPlayerService", function (WebAudio) {
 
         stop = max_x + notes[max_index].length;
         console.log(stop);
+    }
+
+
+    function bufferSounds() {
+        for (var i = 0; i < notes.length; i++) {
+            var noteDuration = 60 / beatsPerMinute * notes[i].length;
+            var options = {
+                buffer: true,
+                loop: false,
+                duration: noteDuration,
+                gain: 1,
+                fallback: false, // Use HTML5 audio fallback
+                retryInterval: 1000 // Retry interval if buffering fails
+            }
+            notes[i].audio = WebAudio('/sound/' + notes[i].path, options);
+        }
     }
 
     function startPlaying() {
@@ -67,20 +84,7 @@ soundPlayer.service("SoundPlayerService", function (WebAudio) {
 
     function playSound(noteIndex) {
         var note = notes[noteIndex];
-        var noteDuration = 60 / beatsPerMinute * note.length;
-
-        var options = {
-            buffer: true,
-            loop: false,
-            duration: noteDuration,
-            gain: 1,
-            fallback: false, // Use HTML5 audio fallback
-            retryInterval: 1000 // Retry interval if buffering fails
-        }
-
-        var sound = WebAudio('/sound/' + note.path, options);
-
-        sound.play();
+        note.audio.play();
     }
 
     this.pause = function () {
