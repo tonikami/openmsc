@@ -1,4 +1,4 @@
-<md-dialog aria-label="editBlock" style="width:50%">
+<md-dialog aria-label="editBlock" style="width:40%">
     <form>
         <md-toolbar>
             <div class="md-toolbar-tools">
@@ -8,8 +8,8 @@
         </md-toolbar>
         <md-dialog-content style="max-width:800px;max-height:810px; ">
             <md-tabs md-dynamic-height md-border-bottom>
-                <!-- First Tab -->
-                <md-tab label="Basic">
+                <!-- Piano Sounds -->
+                <md-tab label="Piano Sounds">
                     <md-content class=" md-padding ">
                         <!-- Black Keys -->
                         <md-grid-list md-cols-xs="7 " md-cols-sm="7 " md-cols-md="7 " md-cols-gt-md="7 " md-row-height-gt-md="1.5:1 " md-row-height="2:2 " md-gutter="12px " md-gutter-gt-sm="1px ">
@@ -54,16 +54,39 @@
                                 <h2 style="color:white; ">B</h2>
                             </md-grid-tile>
                         </md-grid-list>
-
-                        <!-- Custom Key -->
+                    </md-content>
+                </md-tab>
+                <!-- Drum Sounds -->
+                <md-tab label="Drum Sounds">
+                    <md-content class="md-padding ">
+                        <!-- Drum Sounds -->
+                        <md-grid-list md-cols-xs="4 " md-cols-sm="4 " md-cols-md="4 " md-cols-gt-md="4 " md-row-height-gt-md="1.5:1 " md-row-height="2:2 " md-gutter="12px " md-gutter-gt-sm="1px ">
+                            <md-grid-tile style="margin: 7%; " class="red" ng-style="color=='red' && { 'border-style': 'solid'} " ng-click="select( 'red', 'bell.wav') ">
+                                <h2 style="color:white; ">Bell</h2>
+                            </md-grid-tile>
+                            <md-grid-tile style="margin: 7%; " class="orange" ng-style="color=='orange' && { 'border-style': 'solid'} " ng-click="select( 'orange', 'hightom.wav') ">
+                                <h2 style="color:white; ">High Tom</h2>
+                            </md-grid-tile>
+                            <md-grid-tile style="margin: 7%; " class="blue" ng-style="color=='blue' && { 'border-style': 'solid'} " ng-click="select( 'blue', 'middlecrash.wav') ">
+                                <h2 style="color:white; ">Middle Crashl</h2>
+                            </md-grid-tile>
+                            <md-grid-tile style="margin: 7%; " class="black" ng-style="color=='black' && { 'border-style': 'solid'} " ng-click="select( 'black', 'snaredrum.wav') ">
+                                <h2 style="color:white; ">Snare Drum</h2>
+                            </md-grid-tile>
+                        </md-grid-list>
+                    </md-content>
+                </md-tab>
+                <!-- Custom Sounds -->
+                <md-tab label="Upload Sound">
+                    <md-content class="md-padding ">
                         <md-grid-list md-cols-xs="7 " md-cols-sm="7" md-cols-md="7" md-cols-gt-md="7" md-row-height-gt-md="1.5:1 " md-row-height="2:2 " md-gutter="12px " md-gutter-gt-sm="1px ">
                             <md-grid-tile></md-grid-tile>
                             <md-grid-tile></md-grid-tile>
                             <md-grid-tile></md-grid-tile>
-                            <md-grid-tile class="brown" ng-style="color=='brown' && { 'border-style': 'solid'} " ng-click="select('brown', 'custom')">
+                            <md-grid-tile class="brown" ng-style="color=='brown' && { 'border-style': 'solid'};" ng-click="select('brown', 'custom')">
                                 <label>
                                     <input type="file" nv-file-select="" uploader="soundUploader" id="soundFile" style="display: none; " />
-                                    <ng-md-icon icon="file_upload" size = "100%" style="fill:white;  padding-right: 500%"> </ng-md-icon>
+                                    <ng-md-icon icon="file_upload" size = "80%" style="fill:white; margin-left: 9%"> </ng-md-icon>
                                 </label>
                             </md-grid-tile>
                             <md-grid-tile></md-grid-tile>
@@ -72,13 +95,12 @@
                         </md-grid-list>
                     </md-content>
                 </md-tab>
-                <md-tab label="Advanced ">
-                    <md-content class="md-padding ">
-                    </md-content>
-                </md-tab>
             </md-tabs>
         </md-dialog-content>
         <md-dialog-actions layout="row ">
+            <md-button ng-click="delete()">
+                Delete
+            </md-button>
             <md-button ng-click="save() ">
                 Save
             </md-button>
