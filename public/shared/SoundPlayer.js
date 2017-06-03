@@ -36,7 +36,6 @@ soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
         }
     }
 
-
     function bufferSounds() {
         var soundsBuffering = [];
 
