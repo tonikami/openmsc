@@ -1,10 +1,26 @@
 var express = require('express');
+var multer = require('multer');
 var router = express.Router();
 var Layer = require('./../models/layer');
 var LayerVotes = require('./../models/LayerVotes');
 var passportService = require('../config/passport');
 var passport = require('passport');
 var merge = require('merge');
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/sound');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+})
+
+var upload = multer({
+    storage: storage,
+
+});
+
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://adib:Tundib95@ds153501.mlab.com:53501/openmsc');
 
@@ -17,6 +33,7 @@ db.once('open', function () {
 router.get('/user', function (req, res, next) {
     res.json(req.user);
 });
+
 
 router.get('/:layerid/vote/increment', function (req, res, next) {
     if (!req.isAuthenticated()) {
@@ -82,8 +99,8 @@ router.get('/:layerid/vote/decrement', function (req, res, next) {
             }
 
             console.log(totalVotes);
-        
-        
+
+
             if (totalVotes < -2) {
                 Layer.findOneAndRemove({
                     _id: req.params.layerid
@@ -179,7 +196,6 @@ router.get('/layers', function (req, res, next) {
 });
 
 router.post('/upload/layer', function (req, res, next) {
-    console.log(req.body);
     var notes = [];
     for (var i = 0; i < req.body.notes.length; i++) {
         var note = {
@@ -203,6 +219,10 @@ router.post('/upload/layer', function (req, res, next) {
         }
         res.json(new_layer);
     });
+});
+
+router.post('/upload/customSound', upload.single('file'), function (req, res, next) {
+    res.json(req.file.filename);
 });
 
 module.exports = router;

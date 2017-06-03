@@ -27,18 +27,13 @@ soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
     }
 
     function calculateDuration() {
-        var max_x = 0;
-        var max_index = -1;
-        console.log(notes);
+        stop = -1;
         for (var i = 0; i < notes.length; i++) {
-            if (notes[i].x > max_x) {
-                max_x = notes[i].x;
-                max_index = i;
+            var period = notes[i].x + notes[i].length;
+            if (period > stop) {
+                stop = period;
             }
         }
-
-        stop = max_x + notes[max_index].length;
-        console.log(stop);
     }
 
 
@@ -77,12 +72,13 @@ soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
         currentBeat = 0;
         interval = setInterval(function () {
             if (paused) {
+                pauseBeat(currentBeat);
                 return;
             }
 
             playBeat(currentBeat);
             currentBeat++;
-            if (currentBeat >= totalBeats || currentBeat >= stop) {
+            if (currentBeat > totalBeats || currentBeat > stop) {
                 reset();
             }
         }, 60 / beatsPerMinute * 1000);
@@ -91,8 +87,16 @@ soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
     function playBeat(beatIndex) {
         currentBeatChangedCallback(beatIndex);
         for (var i = 0; i < notes.length; i++) {
-            if (notes[i].x == beatIndex) {
+            if (beatIndex >= notes[i].x && beatIndex <= notes[i].x + notes[i].length) {
                 playSound(i);
+            }
+        }
+    }
+
+    function pauseBeat(beatIndex) {
+        for (var i = 0; i < notes.length; i++) {
+            if (beatIndex >= notes[i].x && beatIndex <= notes[i].x + notes[i].length) {
+                pauseSound(i);
             }
         }
     }
@@ -100,6 +104,11 @@ soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
     function playSound(noteIndex) {
         var note = notes[noteIndex];
         note.audio.play();
+    }
+
+    function pauseSound(noteIndex) {
+        var note = notes[noteIndex];
+        note.audio.pause();
     }
 
     this.pause = function () {
@@ -111,13 +120,15 @@ soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
     }
 
     this.stop = function () {
+        console.log('stopped');
         reset();
     }
 
     function reset() {
-        currentBeat = 0;
-        paused = false;
         clearInterval(interval);
+        pauseBeat(currentBeat);
+        paused = false;
+        currentBeat = 0;
         soundStoppedCallback();
 
     }
