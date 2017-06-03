@@ -13,19 +13,19 @@
                     <md-content class=" md-padding ">
                         <!-- Black Keys -->
                         <md-grid-list md-cols-xs="7 " md-cols-sm="7 " md-cols-md="7 " md-cols-gt-md="7 " md-row-height-gt-md="1.5:1 " md-row-height="2:2 " md-gutter="12px " md-gutter-gt-sm="1px ">
-                            <md-grid-tile style="margin: 50px; " class="redOrange " ng-style="color=='redOrange' && { 'border-style': 'solid'} " ng-click="select( 'redOrange', 'cs.wav') ">
+                            <md-grid-tile style="margin: 7%; " class="redOrange " ng-style="color=='redOrange' && { 'border-style': 'solid'} " ng-click="select( 'redOrange', 'cs.wav') ">
                                 <h2 style="color:white; ">C#</h2>
                             </md-grid-tile>
-                            <md-grid-tile style="margin: 50px; " class="orangeYellow " ng-style="color=='orangeYellow' && { 'border-style': 'solid'} " ng-click="select( 'orangeYellow', 'eb.wav') ">
+                            <md-grid-tile style="margin: 7%; " class="orangeYellow " ng-style="color=='orangeYellow' && { 'border-style': 'solid'} " ng-click="select( 'orangeYellow', 'eb.wav') ">
                                 <h2 style="color:white; ">D#</h2>
                             </md-grid-tile>
-                            <md-grid-tile style="margin: 120px; " class="blueGreen " ng-style="color=='blueGreen' && { 'border-style': 'solid'} " ng-click="select( 'blueGreen', 'fs.wav') ">
+                            <md-grid-tile style="margin: 21%; " class="blueGreen " ng-style="color=='blueGreen' && { 'border-style': 'solid'} " ng-click="select( 'blueGreen', 'fs.wav') ">
                                 <h2 style="color:white; ">F#</h2>
                             </md-grid-tile>
-                            <md-grid-tile style="margin: 120px; " class="bluePurple " ng-style="color=='bluePurple' && { 'border-style': 'solid'} " ng-click="select( 'bluePurple', 'gs.wav') ">
+                            <md-grid-tile style="margin: 21%; " class="bluePurple " ng-style="color=='bluePurple' && { 'border-style': 'solid'} " ng-click="select( 'bluePurple', 'gs.wav') ">
                                 <h2 style="color:white; ">G#</h2>
                             </md-grid-tile>
-                            <md-grid-tile style="margin: 120px; " class="lightPurple " ng-style="color=='lightPurple' && { 'border-style': 'solid'} " ng-click="select( 'lightPurple', 'bb.wav') ">
+                            <md-grid-tile style="margin: 21%; " class="lightPurple " ng-style="color=='lightPurple' && { 'border-style': 'solid'} " ng-click="select( 'lightPurple', 'bb.wav') ">
                                 <h2 style="color:white; ">A#</h2>
                             </md-grid-tile>
                         </md-grid-list>
@@ -60,10 +60,10 @@
                             <md-grid-tile></md-grid-tile>
                             <md-grid-tile></md-grid-tile>
                             <md-grid-tile></md-grid-tile>
-                            <md-grid-tile class="brown" ng-style="color=='brown' && { 'border-style': 'solid'}" ng-click="select('brown', 'custom')">
+                            <md-grid-tile class="brown" ng-style="color=='brown' && { 'border-style': 'solid'} " ng-click="select('brown', 'custom')">
                                 <label>
-                                    <input type="file" id="soundFile" style="display: none; " />
-                                        <span style="color: white ">Select file</span>
+                                    <input type="file" nv-file-select="" uploader="soundUploader" id="soundFile" style="display: none; " />
+                                    <ng-md-icon icon="file_upload" size = "100%" style="fill:white;  padding-right: 500%"> </ng-md-icon>
                                 </label>
                             </md-grid-tile>
                             <md-grid-tile></md-grid-tile>

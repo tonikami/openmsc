@@ -80,17 +80,28 @@
             </div>
             <div gridster="gridsterOpts" style="background:darkred" ng-if="justAdded==true" flex="90">
                 <ul>
-                    <li gridster-item="note" ng-repeat="note in currentLayer.notes track by $index" ng-class="note.color" ng-click="showTabDialog($event, $index)">
-                        <ng-md-icon icon="drag_handle"> </ng-md-icon>
+                    <li gridster-item="note" ng-repeat="note in currentLayer.notes track by $index" ng-class="note.color">
+                        <div style="background:white" ng-click="showTabDialog($event, $index)">
+                            <ng-md-icon icon="mode_edit"> </ng-md-icon>
+                        </div>
+
                     </li>
                 </ul>
             </div>
         </md-content>
 
-
         <!-- Add/Submit Button -->
-        <ng-md-icon icon="add_circle_outline" style="fill: pink" size="100" layout="row" layout-align="center" ng-if="justAdded==false" ng-click="addLayer()"></ng-md-icon>
-        <ng-md-icon icon="file_upload" style="fill: pink" size="100" layout="row" layout-align="center" ng-if="justAdded==true" ng-click="submitLayer()"></ng-md-icon>
+        <md-grid-list md-cols-xs="3" md-cols-sm="3" md-cols-md="3" md-cols-gt-md="3" md-row-height-gt-md="50px" md-row-height="50px" md-gutter="12px" md-gutter-gt-sm="1px" style="margin: 50px;">
+            <md-grid-tile class="white"></md-grid-tile>
+
+            <md-grid-tile class="white" layout="row" layout-align="center">
+                <ng-md-icon icon="add_circle_outline" style="fill: pink" size="100" layout="row" layout-align="center" ng-if="justAdded==false" ng-click="addLayer()"></ng-md-icon>
+                <ng-md-icon icon="file_upload" style="fill: pink" size="100" layout="row" layout-align="center" ng-if="justAdded==true" ng-click="submitLayer()"></ng-md-icon>
+            </md-grid-tile>
+
+            <md-grid-tile class="white"></md-grid-tile>
+
+        </md-grid-list>
 
     </div>
 
@@ -109,13 +120,15 @@
     <script src="/ngWebAudio/src/ngWebAudio.js"></script>
     <script src="/shared/SoundPlayer.js"></script>
 
+    <!-- File Upload Stuff -->
+    <script src="/angular-file-upload/dist/angular-file-upload.min.js"></script>
 
     <!-- Grid Stuff -->
     <script src="https://slimseun.com/js/vendor/angular-gridster/angular-gridster.min.js"></script>
 
     <!-- Your application bootstrap  -->
     <script type="text/javascript">
-        var musicCollab = angular.module('musicCollab', ['ngMaterial', 'ngMdIcons', 'ngResource', 'gridster', 'sound.player', 'ngWebAudio']);
+        var musicCollab = angular.module('musicCollab', ['ngMaterial', 'ngMdIcons', 'ngResource', 'gridster', 'sound.player', 'ngWebAudio', 'angularFileUpload']);
 
         musicCollab.factory("Increment_Vote", function($resource) {
             return $resource('/api/:layerid/vote/increment', {
@@ -139,7 +152,6 @@
         musicCollab.controller('AppCtrl', function($scope, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer, SoundPlayerService, WebAudio) {
             $scope.isPlaying = false;
             $scope.paused = false;
-            $scope.editable = true;
             $scope.splitFactor = 50;
             $scope.bpm = 150;
             $scope.vol = 1;
@@ -180,8 +192,6 @@
             }
 
             $scope.playFunction = function() {
-                console.log($scope.isPlaying);
-                console.log($scope.paused);
                 if (!$scope.isPlaying) {
                     $scope.playAudio();
                     $scope.isPlaying = true;
@@ -259,18 +269,14 @@
                     enabled: true,
                     start: function(event, uiWidget, $element) {}, // optional callback fired when resize is started,
                     resize: function(event, uiWidget, $element) {}, // optional callback fired when item is resized,
-                    stop: function(event, uiWidget, $element) {
-                        $scope.editable = false;
-                    } // optional callback fired when item is finished resizing
+                    stop: function(event, uiWidget, $element) {} // optional callback fired when item is finished resizing
                 },
                 draggable: {
                     enabled: true, // whether dragging items is supported
                     handle: '.ddd', // optional selector for resize handle
                     start: function(event, uiWidget, $element) {}, // optional callback fired when drag is started,
                     drag: function(event, uiWidget, $element) {}, // optional callback fired when item is moved,
-                    stop: function(event, uiWidget, $element) {
-                        $scope.editable = false;
-                    } // optional callback fired when item is finished dragging
+                    stop: function(event, uiWidget, $element) {} // optional callback fired when item is finished dragging
                 }
             };
 
@@ -288,18 +294,14 @@
                     enabled: false,
                     start: function(event, uiWidget, $element) {}, // optional callback fired when resize is started,
                     resize: function(event, uiWidget, $element) {}, // optional callback fired when item is resized,
-                    stop: function(event, uiWidget, $element) {
-                        $scope.editable = false;
-                    } // optional callback fired when item is finished resizing
+                    stop: function(event, uiWidget, $element) {} // optional callback fired when item is finished resizing
                 },
                 draggable: {
                     enabled: false, // whether dragging items is supported
                     handle: '.ddd', // optional selector for resize handle
                     start: function(event, uiWidget, $element) {}, // optional callback fired when drag is started,
                     drag: function(event, uiWidget, $element) {}, // optional callback fired when item is moved,
-                    stop: function(event, uiWidget, $element) {
-                        $scope.editable = false;
-                    } // optional callback fired when item is finished dragging
+                    stop: function(event, uiWidget, $element) {} // optional callback fired when item is finished dragging
                 }
             };
 
@@ -317,18 +319,14 @@
                     enabled: false,
                     start: function(event, uiWidget, $element) {}, // optional callback fired when resize is started,
                     resize: function(event, uiWidget, $element) {}, // optional callback fired when item is resized,
-                    stop: function(event, uiWidget, $element) {
-                        $scope.editable = false;
-                    } // optional callback fired when item is finished resizing
+                    stop: function(event, uiWidget, $element) {} // optional callback fired when item is finished resizing
                 },
                 draggable: {
                     enabled: false, // whether dragging items is supported
                     handle: '.ddd', // optional selector for resize handle
                     start: function(event, uiWidget, $element) {}, // optional callback fired when drag is started,
                     drag: function(event, uiWidget, $element) {}, // optional callback fired when item is moved,
-                    stop: function(event, uiWidget, $element) {
-                        $scope.editable = false;
-                    } // optional callback fired when item is finished dragging
+                    stop: function(event, uiWidget, $element) {} // optional callback fired when item is finished dragging
                 }
             };
 
@@ -355,9 +353,10 @@
             };
 
             $scope.submitLayer = function() {
-                //$scope.layers.push($scope.currentLayer);
                 $scope.justAdded = false;
-                Upload_Layer.save({}, {
+                Upload_Layer.save({
+                    soundFiles: $scope.soundFiles
+                }, {
                     notes: $scope.currentLayer.notes,
                 }).$promise.then(function() {
                     $mdToast.show(
@@ -446,34 +445,32 @@
             }
 
             $scope.showTabDialog = function(ev, index) {
-                if ($scope.editable) {
-                    $mdDialog.show({
-                            controller: editBlockController,
-                            locals: {
-                                currentLayer: $scope.currentLayer,
-                                index: index
-                            },
-                            templateUrl: '/html/editBlock.html',
-                            parent: angular.element(document.body),
-                            targetEvent: ev,
-                            clickOutsideToClose: false
-                        })
-                        .then(function(response) {
-                            if (index != -1) {
-                                $scope.currentLayer.notes[index].color = response.color;
-                                $scope.currentLayer.notes[index].path = response.notesName;
-                            } else {
-                                notes = {
-                                    sizeX: 1,
-                                    path: response.notesName,
-                                    color: response.color
-                                };
-                                $scope.currentLayer.notes.push(notes);
-                            }
-                        });
-                } else {
-                    $scope.editable = true;
-                }
+                $mdDialog.show({
+                        controller: editBlockController,
+                        locals: {
+                            currentLayer: $scope.currentLayer,
+                            index: index
+                        },
+                        templateUrl: '/html/editBlock.html',
+                        parent: angular.element(document.body),
+                        targetEvent: ev,
+                        clickOutsideToClose: false
+                    })
+                    .then(function(response) {
+                        console.log(response.notesName);
+                        if (index != -1) {
+                            $scope.currentLayer.notes[index].color = response.color;
+                            $scope.currentLayer.notes[index].path = response.notesName;
+                        } else {
+                            notes = {
+                                sizeX: 1,
+                                path: response.notesName,
+                                color: response.color,
+                            };
+                            $scope.currentLayer.notes.push(notes);
+                        }
+                    });
+
             }
         });
 
@@ -481,11 +478,12 @@
 
 
         <!-- Controller for edit block popup -->
-        function editBlockController($scope, $mdDialog, currentLayer, index, WebAudio) {
+        function editBlockController($scope, $mdDialog, currentLayer, index, WebAudio, FileUploader) {
             $scope.currentLayer = currentLayer;
             $scope.index = index;
             $scope.color;
             $scope.notesName;
+            $scope.customSound = new Audio();
 
             $scope.init = function() {
                 if ($scope.index != -1) {
@@ -495,17 +493,55 @@
             }
             $scope.init();
 
+            $scope.soundUploader = new FileUploader({
+                url: 'api/upload/customSound',
+                autoUpload: true,
+            });
+
+            $scope.soundUploader.filters.push({
+                name: 'soundFilter',
+                fn: function(item, options) {
+                    var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
+                    return '|wav|mp3|'.indexOf(type) !== -1;
+                }
+            });
+
+            $scope.soundUploader.onSuccessItem = function(item, response, status, headers) {
+                $scope.notesName = response;
+            }
 
             $scope.select = function(color, notesName) {
                 if (color != 'brown') {
                     $scope.color = color;
                     $scope.notesName = notesName;
                     $scope.getAudio(notesName).play();
+                    $scope.customSound = new Audio();
                 } else {
-                    var customSound = document.getElementById('soundFile');
-                    temp.addEventListener('change', function() {
-                        console.log('done');
-                    });
+                    var file = document.getElementById('soundFile');
+                    file.onchange = function(e) {
+                        if (file.files[0]) {
+                            var ext = this.value.match(/\.([^\.]+)$/)[1];
+                            switch (ext) {
+                                case 'wav':
+                                case 'mp3':
+                                    var reader = new FileReader();
+                                    reader.onload = function() {
+                                        $scope.customSound.src = reader.result;
+                                        $scope.notesName = file.files[0].name;
+                                        $scope.color = color;
+                                        $scope.customSound.play();
+                                    }
+                                    reader.readAsDataURL(file.files[0]);
+                                    break;
+                                default:
+                                    alert('Not Valid File Type');
+                                    $scope.customSound.src = new Audio();
+                            }
+                        }
+                    };
+                    if ($scope.customSound.src != '') {
+                        $scope.customSound.play();
+                    }
                 }
             };
 
@@ -514,11 +550,11 @@
             };
 
             $scope.save = function() {
-                var audio = $scope.getAudio($scope.notesName);
+                $scope.customSound.pause();
                 if ($scope.color) {
                     $mdDialog.hide({
                         color: $scope.color,
-                        notesName: $scope.notesName
+                        notesName: $scope.notesName,
                     });
                 }
             };
