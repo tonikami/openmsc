@@ -1,0 +1,70 @@
+<md-dialog style="width:50%">
+    <md-dialog-content>
+
+        <div ng-cloak>
+            <md-content>
+                <md-tabs md-dynamic-height md-border-bottom>
+                    <!-- First Tab -->
+                    <md-tab label="Login">
+                        <md-content class=" md-padding ">
+                            <h2 ng-show="loginFailure">Login Failed</h2>
+                            
+                            <form name="Form">
+                                <md-input-container class="md-block">
+                                    <label>Username</label>
+                                    <input type="text" name="email" ng-model="form.login.username" placeholder="email" required="" />
+                                    <div ng-messages="Form.email.$error" role="alert" multiple="">
+                                        <div ng-message="required" class="my-message">Please enter your email.</div>
+                                    </div>
+                                </md-input-container>
+
+                                <md-input-container class="md-block">
+                                    <label>Password</label>
+                                    <input type="password" name="password" ng-model="form.login.password" placeholder="password" required="" md-maxlength="16" />
+                                    <div ng-messages="Form.password.$error" role="alert" multiple="">
+                                        <div ng-message="required" class="my-message">Please enter your password.</div>
+                                        <div ng-message="md-maxlength" class="my-message">Too long.</div>
+                                    </div>
+                                </md-input-container>
+
+                                <md-button ng-click="login();" class="md-raised md-primary">&nbsp Login &nbsp</md-button>
+                            </form>
+                        </md-content>
+                    </md-tab>
+                    <md-tab label="Create Account">
+                        <md-content class="md-padding ">
+                            <form name="Form">
+                                <md-input-container class="md-block">
+                                    <label>Username</label>
+                                    <input type="text" name="username" ng-model="form.register.username" placeholder="username" required="" />
+                              
+                                </md-input-container>
+
+                                <md-input-container class="md-block">
+                                    <label>Password</label>
+                                    <input type="password" name="password" ng-model="form.register.password" placeholder="password" required="" md-maxlength="16" />
+                                    <div ng-messages="Form.password.$error" role="alert" multiple="">
+                                        <div ng-message="required" class="my-message">Please enter your password.</div>
+                                        <div ng-message="md-maxlength" class="my-message">Too long.</div>
+                                    </div>
+                                </md-input-container>
+
+                                <md-input-container class="md-block">
+                                    <label>Email</label>
+                                    <input type="text" name="email" ng-model="form.register.email" placeholder="email" required="" />
+                                    <div ng-messages="Form.email.$error" role="alert" multiple="">
+                                        <div ng-message="required" class="my-message">Please enter your email.</div>
+                                    </div>
+                                </md-input-container>
+
+                                <md-button ng-disabled="!Form.$valid" ng-click="register()" class="md-raised md-primary">&nbsp Register &nbsp</md-button>
+                            </form>
+                        </md-content>
+                    </md-tab>
+                </md-tabs>
+
+
+            </md-content>
+        </div>
+    </md-dialog-content>
+</md-dialog>
