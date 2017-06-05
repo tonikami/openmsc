@@ -9,7 +9,6 @@ var passport = require('passport');
 var flash = require('connect-flash');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
-var index = require('./routes/index');
 var music = require('./routes/music');
 var api = require('./routes/api');
 var mongoose = require('mongoose');
