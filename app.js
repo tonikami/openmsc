@@ -9,7 +9,7 @@ var passport = require('passport');
 var flash = require('connect-flash');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
-var music = require('./routes/music');
+var index = require('./routes/index');
 var api = require('./routes/api');
 var mongoose = require('mongoose');
 
@@ -46,7 +46,7 @@ app.use(passport.session());
 require('./config/passport.js')(app, passport);
 require('./routes/auth')(app, passport);
 
-app.use('/', music);
+app.use('/', index);
 app.use('/api', api);
 
 var port = process.env.PORT || 8000;
