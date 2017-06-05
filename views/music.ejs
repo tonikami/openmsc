@@ -24,8 +24,8 @@
             </md-grid-tile>
 
             <md-grid-tile class="white">
-                <ng-md-icon icon="play_circle_outline" style="fill: pink" size="100" ng-if="paused || !isPlaying" ng-click="playFunction()"></ng-md-icon>
-                <ng-md-icon icon="pause_circle_outline" style="fill: pink" size="100" ng-if="!paused && isPlaying" ng-click="pauseAudio()"></ng-md-icon>
+                <ng-md-icon icon="play_circle_outline" style="fill: pink" size="100" ng-disabled="isPlaying" ng-click="playFunction()"></ng-md-icon>
+<!--                <ng-md-icon icon="pause_circle_outline" style="fill: pink" size="100" ng-if="!paused && isPlaying" ng-click="pauseAudio()"></ng-md-icon>-->
             </md-grid-tile>
 
         </md-grid-list>
@@ -51,7 +51,7 @@
                 </md-content>
                 <md-content>
                     <md-list flex>
-                        <md-list-item ng-repeat="layer in layers | orderBy:'-votes' track by $index" layout="row" layout-align="center center" ng-click="null">
+                        <md-list-item ng-repeat="layer in layers track by $index" layout="row" layout-align="center center" ng-click="null" elem-ready="uiReady()">
                             <div layout="column" layout-align="center center" style="width: 100px;">
                                 <div requires-login success="voteUp($index)">
                                     <md-button class="md-icon-button">
@@ -69,8 +69,10 @@
                                 <h6 style="margin: 0px">Submitted by <a href="/">{{layer.creator.username}}</a> </h6>
                                 <div gridster="gridsterOptsLayer" style="background:darkred" style="margin: 0px; padding: 0px;">
 
+
                                     <ul>
                                         <li gridster-item="note" ng-repeat="note in layer.notes track by $index" class="yellow">
+                                            <div class="{{'waveform-' + note._id}}" id="{{'waveform-' + note._id}}"></div>
                                         </li>
                                     </ul>
                                 </div>
@@ -94,10 +96,12 @@
                     </div>
                     <div gridster="gridsterOpts" style="background:darkred; padding: 0px" ng-if="justAdded==true" class="md-block" flex="100">
                         <ul>
-                            <li gridster-item="note" ng-repeat="note in currentLayer.notes track by $index" ng-class="note.color">
+                            <li gridster-item="note" ng-repeat="note in currentLayer.notes track by $index" ng-class="note.color" elem-ready="uiReady()">
                                 <div style="background:white" ng-click="showTabDialog($event, $index)">
                                     <ng-md-icon icon="mode_edit" ng-click="showTabDialog($event, $index)"> </ng-md-icon>
                                 </div>
+
+                                <div class="{{note.ui}}" id="{{note.ui}}" ng-hide="true"></div>                      
                             </li>
                         </ul>
                     </div>
@@ -128,6 +132,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-resource.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.3.7/wavesurfer.min.js"></script>
 
         <!-- Angular Material Library -->
         <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>

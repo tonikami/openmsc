@@ -39,6 +39,20 @@ musicCollab.factory("Total_Votes", function ($resource) {
     });
 });
 
+musicCollab.directive('elemReady', function ($parse) {
+    return {
+        restrict: 'A',
+        link: function ($scope, elem, attrs) {
+            elem.ready(function () {
+                $scope.$apply(function () {
+                    var func = $parse(attrs.elemReady);
+                    func($scope);
+                })
+            })
+        }
+    }
+})
+
 musicCollab.controller('AppCtrl', function ($scope, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer, SoundPlayerService, WebAudio, Login, Signup, User, My_Vote, Total_Votes, Remove_Vote, $window) {
     $scope.isPlaying = false;
     $scope.paused = false;
@@ -63,6 +77,7 @@ musicCollab.controller('AppCtrl', function ($scope, $mdDialog, $q, $mdToast, Inc
                     response[i].notes[j].col = response[i].notes[j].start;
                     response[i].notes[j].row = 1;
                     response[i].notes[j].sizeY = 1;
+                    response[i].notes[j].ui = 'waveform-' + response[i].notes[j]._id;
                 }
             }
 
@@ -74,12 +89,31 @@ musicCollab.controller('AppCtrl', function ($scope, $mdDialog, $q, $mdToast, Inc
             }
         });
 
-
         for (var i = 0; i < $scope.splitFactor; i++) {
             $scope.topBlocks.push({
                 color: "red"
             });
         }
+    }
+
+    $scope.uiReady = function (note) {
+        initSoundPlayerService();
+    }
+
+    function initSoundPlayerService() {
+        var totalNotes = [];
+        for (var i = 0; i < $scope.layers.length; i++) {
+            totalNotes = totalNotes.concat($scope.layers[i].notes);
+        }
+
+        if ($scope.currentLayer) {
+            totalNotes = totalNotes.concat($scope.currentLayer.notes);
+        }
+        for (var i = 0; i < totalNotes.length; i++) {
+            totalNotes[i].x = totalNotes[i].col;
+            totalNotes[i].length = totalNotes[i].sizeX;
+        }
+        SoundPlayerService.init(totalNotes, $scope.splitFactor, $scope.bpm);
     }
 
     function initVotedUp(i) {
@@ -105,10 +139,6 @@ musicCollab.controller('AppCtrl', function ($scope, $mdDialog, $q, $mdToast, Inc
         SoundPlayerService.setBPM($scope.bpm);
     }
 
-
-
-
-
     $scope.playFunction = function () {
         if (!$scope.isPlaying) {
             $scope.playAudio();
@@ -131,7 +161,7 @@ musicCollab.controller('AppCtrl', function ($scope, $mdDialog, $q, $mdToast, Inc
             totalNotes[i].x = totalNotes[i].col;
             totalNotes[i].length = totalNotes[i].sizeX;
         }
-        SoundPlayerService.play(totalNotes, $scope.splitFactor, $scope.bpm);
+        SoundPlayerService.play();
         SoundPlayerService.onCurrentBeatChanged(function (beatIndex) {
             for (var i = 0; i < $scope.topBlocks.length; i++) {
                 if (i == beatIndex) {
@@ -389,7 +419,8 @@ musicCollab.controller('AppCtrl', function ($scope, $mdDialog, $q, $mdToast, Inc
                         notes = {
                             sizeX: 1,
                             path: response.notesName,
-                            color: response.color
+                            color: response.color,
+                            ui: 'waveform-' + guid()
                         };
                         $scope.currentLayer.notes.push(notes);
                     }
@@ -398,10 +429,17 @@ musicCollab.controller('AppCtrl', function ($scope, $mdDialog, $q, $mdToast, Inc
             $scope.editable = true;
         }
     }
+
+    function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    }
 });
-
-
-
 
 <!-- Controller for edit block popup -->
 function editBlockController($scope, $mdDialog, currentLayer, index, WebAudio, FileUploader) {

@@ -10,6 +10,7 @@ soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
     var stop;
     var paused = false;
     var interval;
+    var readyToPlay = false;
 
     /*
        n = [{x, length, path}] where x is the starting position of a sound, length is the block size and path is the path to sound in the public/sound folder 
@@ -17,13 +18,26 @@ soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
        b = beatsPerMinute
     */
 
-    this.play = function (n, t, b) {
+    this.init = function (n, t, b) {
+        readyToPlay = false;
         notes = n;
         totalBeats = t;
         beatsPerMinute = b;
 
         calculateDuration();
         bufferSounds();
+    }
+
+    this.play = function () {
+        if (readyToPlay) {
+            startPlaying();
+        }
+    }
+
+    this.addNote = function (n) {
+        notes.push(n);
+        bufferSound(notes.length - 1);
+        calculateDuration();
     }
 
     function calculateDuration() {
@@ -44,26 +58,35 @@ soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
         }
 
         $q.all(soundsBuffering).then(function () {
-            startPlaying();
+            readyToPlay = true;
         });
     }
 
 
     function bufferSound(i) {
         var d = $q.defer();
-        var noteDuration = 60 / beatsPerMinute * notes[i].length;
-        var options = {
-            buffer: true,
-            loop: false,
-            duration: noteDuration,
-            gain: 1,
-            fallback: false, // Use HTML5 audio fallback
-            retryInterval: 1000 // Retry interval if buffering fails
-        }
-        notes[i].audio = WebAudio('/sound/' + notes[i].path, options);
-        notes[i].audio.onBuffered = function () {
+
+        // Remove previous wave from ui
+        var myEl = angular.element(document.querySelector('#' + notes[i].ui));
+        myEl.empty();
+
+        console.log(notes[i].ui);
+
+        var wavesurfer = WaveSurfer.create({
+            container: document.getElementById(notes[i].ui),
+            waveColor: 'violet',
+            height: 60,
+            progressColor: 'violet',
+            cursorWidth: 0
+        });
+
+        wavesurfer.load('/sound/' + notes[i].path);
+
+        wavesurfer.on('ready', function () {
             d.resolve();
-        }
+        });
+
+        notes[i].audio = wavesurfer;
         return d.promise;
     }
 
@@ -86,7 +109,7 @@ soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
     function playBeat(beatIndex) {
         currentBeatChangedCallback(beatIndex);
         for (var i = 0; i < notes.length; i++) {
-            if (beatIndex >= notes[i].x && beatIndex <= notes[i].x + notes[i].length) {
+            if (beatIndex == notes[i].x) {
                 playSound(i);
             }
         }
@@ -102,7 +125,8 @@ soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
 
     function playSound(noteIndex) {
         var note = notes[noteIndex];
-        note.audio.play();
+        var noteDuration = 60 / beatsPerMinute * note.length;
+        note.audio.play(0, noteDuration);
     }
 
     function pauseSound(noteIndex) {
@@ -129,7 +153,6 @@ soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
         paused = false;
         currentBeat = 0;
         soundStoppedCallback();
-
     }
 
     this.onCurrentBeatChanged = function (callback) {
