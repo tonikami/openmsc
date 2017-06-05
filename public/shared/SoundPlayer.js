@@ -7,10 +7,12 @@ soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
     var currentBeat = 0;
     var currentBeatChangedCallback;
     var soundStoppedCallback;
+    var soundReplayCallback;
     var stop;
     var paused = false;
     var interval;
     var readyToPlay = false;
+    var loop = false;
 
     /*
        n = [{x, length, path}] where x is the starting position of a sound, length is the block size and path is the path to sound in the public/sound folder 
@@ -18,11 +20,12 @@ soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
        b = beatsPerMinute
     */
 
-    this.init = function (n, t, b) {
+    this.init = function (n, t, b, l) {
         readyToPlay = false;
         notes = n;
         totalBeats = t;
         beatsPerMinute = b;
+        loop = l;
 
         calculateDuration();
         bufferSounds();
@@ -100,6 +103,14 @@ soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
 
             playBeat(currentBeat);
             currentBeat++;
+
+            if (currentBeat == totalBeats || currentBeat == stop) {
+                if (loop) {
+                    currentBeat = 0;
+                    soundReplayCallback();
+                }
+            }
+
             if (currentBeat > totalBeats || currentBeat > stop) {
                 reset();
             }
@@ -161,6 +172,10 @@ soundPlayer.service("SoundPlayerService", function (WebAudio, $q) {
 
     this.onStop = function (callback) {
         soundStoppedCallback = callback;
+    }
+
+    this.onReplay = function (callback) {
+        soundReplayCallback = callback;
     }
 
     this.setBPM = function (bpm) {

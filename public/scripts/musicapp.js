@@ -64,6 +64,9 @@ musicCollab.controller('AppCtrl', function ($scope, $mdDialog, $q, $mdToast, Inc
     $scope.layers = [];
     $scope.currentLayer = null;
     $scope.topBlocks = [];
+    $scope.loop = {
+        val: true
+    };
 
     $scope.beatsPerMin = {
         val: $scope.bpm,
@@ -113,7 +116,7 @@ musicCollab.controller('AppCtrl', function ($scope, $mdDialog, $q, $mdToast, Inc
             totalNotes[i].x = totalNotes[i].col;
             totalNotes[i].length = totalNotes[i].sizeX;
         }
-        SoundPlayerService.init(totalNotes, $scope.splitFactor, $scope.bpm);
+        SoundPlayerService.init(totalNotes, $scope.splitFactor, $scope.bpm, $scope.loop.val);
     }
 
     function initVotedUp(i) {
@@ -173,6 +176,15 @@ musicCollab.controller('AppCtrl', function ($scope, $mdDialog, $q, $mdToast, Inc
             $scope.$apply();
         });
 
+        SoundPlayerService.onReplay(function () {
+            $scope.topBlocks = [];
+            for (var i = 0; i < $scope.splitFactor; i++) {
+                $scope.topBlocks.push({
+                    color: "red"
+                });
+            }
+            $scope.$apply();
+        });
 
         SoundPlayerService.onStop(function () {
             $scope.topBlocks = [];

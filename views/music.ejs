@@ -18,14 +18,20 @@
 
         <login-nav></login-nav>
 
-        <md-grid-list md-cols-xs="2" md-cols-sm="2" md-cols-md="2" md-cols-gt-md="2" md-row-height-gt-md="50px" md-row-height="50px" md-gutter="12px" md-gutter-gt-sm="1px" style="margin-top: 50px; margin-bottom: 50px; margin-right: 30%; margin-left: 30%">
+        <md-grid-list md-cols-xs="3" md-cols-sm="3" md-cols-md="3" md-cols-gt-md="3" md-row-height-gt-md="50px" md-row-height="50px" md-gutter="12px" md-gutter-gt-sm="1px" style="margin-top: 50px; margin-bottom: 50px;">
             <md-grid-tile class="white">
                 <ng-md-icon icon="stop" style="fill: pink" ng-click="stopAudio()" size="100"></ng-md-icon>
             </md-grid-tile>
 
             <md-grid-tile class="white">
                 <ng-md-icon icon="play_circle_outline" style="fill: pink" size="100" ng-disabled="isPlaying" ng-click="playFunction()"></ng-md-icon>
-<!--                <ng-md-icon icon="pause_circle_outline" style="fill: pink" size="100" ng-if="!paused && isPlaying" ng-click="pauseAudio()"></ng-md-icon>-->
+                <!--                <ng-md-icon icon="pause_circle_outline" style="fill: pink" size="100" ng-if="!paused && isPlaying" ng-click="pauseAudio()"></ng-md-icon>-->
+            </md-grid-tile>
+
+            <md-grid-tile class="white">
+                <md-switch ng-model="loop.val" aria-label="Loop Option" ng-change="uiReady()">
+                    Loop: {{ loop.val }}
+                </md-switch>
             </md-grid-tile>
 
         </md-grid-list>
@@ -101,7 +107,7 @@
                                     <ng-md-icon icon="mode_edit" ng-click="showTabDialog($event, $index)"> </ng-md-icon>
                                 </div>
 
-                                <div class="{{note.ui}}" id="{{note.ui}}" ng-hide="true"></div>                      
+                                <div class="{{note.ui}}" id="{{note.ui}}" ng-hide="true"></div>
                             </li>
                         </ul>
                     </div>
