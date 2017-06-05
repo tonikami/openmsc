@@ -51,7 +51,7 @@
                 </md-content>
                 <md-content>
                     <md-list flex>
-                        <md-list-item ng-repeat="layer in layers track by $index" layout="row" layout-align="center center" ng-click="null">
+                        <md-list-item ng-repeat="layer in layers | orderBy:'-votes' track by $index" layout="row" layout-align="center center" ng-click="null">
                             <div layout="column" layout-align="center center" style="width: 100px;">
                                 <div requires-login success="voteUp($index)">
                                     <md-button class="md-icon-button">
