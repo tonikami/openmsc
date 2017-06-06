@@ -12,12 +12,12 @@ var storage = multer.diskStorage({
         cb(null, 'public/sound');
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname);
+        console.log(file.originalname);
+        cb(null, file.originalname);
     }
 })
-
 var upload = multer({
-    storage: storage,
+    storage: storage
 
 });
 
@@ -221,8 +221,16 @@ router.post('/upload/layer', function (req, res, next) {
     });
 });
 
+
 router.post('/upload/customSound', upload.single('file'), function (req, res, next) {
-    res.json(req.file.filename);
+    res.send("File Successfully added");
+});
+
+router.get('/customSounds', function (req, res, next) {
+    filesList = [];
+    var fs = require('fs');
+    var files = fs.readdirSync('public/sound');
+    res.send(JSON.stringify(files));
 });
 
 module.exports = router;

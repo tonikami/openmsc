@@ -6,6 +6,15 @@ function gsuiOscilloscope(t) {
     }), this.drawEnd()
 }
 
+function saveSoundFileToDatabase(file) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/upload/customSound", true);
+    var formData = new FormData();
+    formData.append("file", file, file.name);
+    xhr.send(formData);
+}
+
+
 function gsuiPopup(t) {
     this.elRoot = t, this.elWindow = t.querySelector(".gsuiPopup-window"), this.elHeader = t.querySelector(".gsuiPopup-window header"), this.elMsg = t.querySelector(".gsui-msg"), this.elText = t.querySelector(".gsui-text"), this.elCancel = t.querySelector(".gsui-cancel"), this.elOk = t.querySelector(".gsui-ok"), this.elForm = t.querySelector("form");
     var e = this;
@@ -55,7 +64,43 @@ function gswaFilters(t) {
 }
 
 function gswaComposition(t) {
-    this.wCtx = t, this.samples = [], this.isPlaying = this.isPaused = !1, this.oldDuration = this.duration = this._startedTime = this._currentTime = 0, this._bpm = 60, this.fnOnended = this.fnOnpaused = function () {}, this.onended = this.onended.bind(this), this._add = this._add.bind(this), this._remove = this._remove.bind(this)
+    this.wCtx = t, this.samples = [], this.isPlaying = this.isPaused = !1, this.oldDuration = this.duration = this._startedTime = this._currentTime = 0, this._bpm = 60, this.fnOnended = this.fnOnpaused = function () {}, this.onended = this.onended.bind(this), this._add = this._add.bind(this), this._remove = this._remove.bind(this);
+    var audioArray = [];
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+            var resp = JSON.parse(xhr.response);
+            for (var fileIndex in resp) {
+                getBlob(resp[fileIndex]);
+            }
+        }
+    }
+    xhr.open("GET", "/api/customSounds", true);
+    xhr.send(null)
+
+}
+
+function getBlob(fileName) {
+    var oReq = new XMLHttpRequest();
+    oReq.open("GET", '/sound/' + fileName, true);
+    oReq.responseType = "blob";
+
+    oReq.onload = function (oEvent) {
+        var blob = oReq.response;
+        if (blob) {
+            var file = blobToFile(blob, fileName);
+            gs.file.create(file);
+        }
+    };
+
+    oReq.send();
+}
+
+function blobToFile(theBlob, fileName) {
+    //A Blob() is almost a File() - it's just missing the two properties below which we will add
+    theBlob.lastModifiedDate = new Date();
+    theBlob.name = fileName;
+    return theBlob;
 }
 
 function gswaFramework() {
@@ -1212,7 +1257,7 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
         })
     }, gswaFramework.do = {}, gswaFramework.do.addSource = function (t) {
         var e = new gswaBufferSample;
-        t.bufferSample = e, e.setContext(this.audiocontext), e.setMetadata(t.metadata), this.sources.push(t), t.userData = this.on.addSource(t)
+        t.bufferSample = e, e.setContext(this.audiocontext), e.setMetadata(t.metadata), this.sources.push(t), t.userData = this.on.addSource(t);
     }, gswaFramework.do.addSources = function (t) {
         t.forEach(this.do.addSource), this.on.addSources(t)
     }, gswaFramework.do.loadSource = function (t) {
@@ -2017,6 +2062,7 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
                     bufferDuration: e.data ? null : n[3],
                     fullname: n.name || n[1]
                 };
+            saveSoundFileToDatabase(s.file);
             return i.that = s, i.setName(s.fullname.replace(/\.[^.]+$/, "")), ui.dom.filesList.appendChild(i.elRoot), s.wbuff.sample.onended(gs.file.stop), gs.files.push(s), e.data ? i.unloaded() : (s.size = n[2], i.withoutData()), i
         };
         var e, i;
@@ -2458,18 +2504,18 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
 
         function n(t) {
             switch (/[^.]*.?([^.]*)$/.exec(t.name)[1].toLowerCase()) {
-            case "gs":
-            case "txt":
-            case "json":
-                s = t, gs.reset();
-                break;
-            case "mp3":
-            case "mpg":
-            case "mpeg":
-            case "wav":
-            case "wave":
-            case "ogg":
-                o.push(t)
+                case "gs":
+                case "txt":
+                case "json":
+                    s = t, gs.reset();
+                    break;
+                case "mp3":
+                case "mpg":
+                case "mpeg":
+                case "wav":
+                case "wave":
+                case "ogg":
+                    o.push(t)
             }
         }
         var s, o;
