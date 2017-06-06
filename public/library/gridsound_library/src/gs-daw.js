@@ -6,6 +6,15 @@ function gsuiOscilloscope(t) {
     }), this.drawEnd()
 }
 
+function saveSoundFileToDatabase(file) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/upload/customSound", true);
+    var formData = new FormData();
+    formData.append("file", file, file.name);
+    xhr.send(formData);
+}
+
+
 function gsuiPopup(t) {
     this.elRoot = t, this.elWindow = t.querySelector(".gsuiPopup-window"), this.elHeader = t.querySelector(".gsuiPopup-window header"), this.elMsg = t.querySelector(".gsui-msg"), this.elText = t.querySelector(".gsui-text"), this.elCancel = t.querySelector(".gsui-cancel"), this.elOk = t.querySelector(".gsui-ok"), this.elForm = t.querySelector("form");
     var e = this;
@@ -56,21 +65,68 @@ function gswaFilters(t) {
 
 function gswaComposition(t) {
     this.wCtx = t, this.samples = [], this.newSamples = [], this.isPlaying = this.isPaused = !1, this.oldDuration = this.duration = this._startedTime = this._currentTime = 0, this._bpm = 60, this.fnOnended = this.fnOnpaused = function () {}, this.onended = this.onended.bind(this), this._add = this._add.bind(this), this._addNew = this._addNew.bind(this), this._remove = this._remove.bind(this);
+    var audioArray = [];
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+            var resp = JSON.parse(xhr.response);
+            var promises = [];
+            for (var fileIndex in resp) {
+                promises.push(getBlob(resp[fileIndex]));
+            }
+            Promise.all(promises).then(function () {
+                loadBlocks();
+            });
+        }
+    }
+    xhr.open("GET", "/api/customSounds", true);
+    xhr.send(null)
 
-    //    var xmlhttp = new XMLHttpRequest();
-    //    var url = "myTutorials.txt";
-    //
-    //    xmlhttp.onreadystatechange = function () {
-    //        if (this.readyState == 4 && this.status == 200) {
-    //            var response = JSON.parse(this.responseText);
-    //            response.forEach(function (t) {
-    //                var e = gs.sample.create(gs.files[t[1]]);
-    //                e.data.gsfile.samplesToSet.push(e), gs.sample.inTrack(e, t[0]), gs.sample.when(e, t[2] / ui.BPMem), gs.sample.slip(e, t[3] / ui.BPMem), gs.sample.duration(e, t[4] / ui.BPMem), gs.composition.add(e)
-    //            });
-    //        }
-    //    };
-    //    xmlhttp.open("GET", '/api/blocks', true);
-    //    xmlhttp.send();
+}
+
+function getBlob(fileName) {
+    return new Promise(function (resolve, reject) {
+        var oReq = new XMLHttpRequest();
+        oReq.open("GET", '/sound/' + fileName, true);
+        oReq.responseType = "blob";
+
+        oReq.onload = function (oEvent) {
+            var blob = oReq.response;
+            if (blob) {
+                var file = blobToFile(blob, fileName);
+                
+                gs.file.create(file);
+            }
+            resolve(true)
+        };
+
+        oReq.send();
+    });
+}
+
+function blobToFile(theBlob, fileName) {
+    //A Blob() is almost a File() - it's just missing the two properties below which we will add
+    theBlob.lastModifiedDate = new Date();
+    theBlob.name = fileName;
+    return theBlob;
+}
+
+function loadBlocks() {
+    console.log('Loading Blocks');
+    var xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var response = JSON.parse(this.responseText);
+            response.forEach(function (t) {
+                var e = gs.sample.create(gs.files[t.file]);
+                e.data.gsfile.samplesToSet.push(e), gs.sample.inTrack(e, t.track), gs.sample.when(e, t.when / ui.BPMem), gs.sample.slip(e, t.slip / ui.BPMem), gs.sample.duration(e, t.duration / ui.BPMem), gs.composition.add(e)
+                console.log(e);
+            });
+        }
+    };
+    xmlhttp.open("GET", '/api/blocks', true);
+    xmlhttp.send();
 }
 
 function gswaFramework() {
@@ -1233,7 +1289,7 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
         })
     }, gswaFramework.do = {}, gswaFramework.do.addSource = function (t) {
         var e = new gswaBufferSample;
-        t.bufferSample = e, e.setContext(this.audiocontext), e.setMetadata(t.metadata), this.sources.push(t), t.userData = this.on.addSource(t)
+        t.bufferSample = e, e.setContext(this.audiocontext), e.setMetadata(t.metadata), this.sources.push(t), t.userData = this.on.addSource(t);
     }, gswaFramework.do.addSources = function (t) {
         t.forEach(this.do.addSource), this.on.addSources(t)
     }, gswaFramework.do.loadSource = function (t) {
@@ -2038,12 +2094,13 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
                     bufferDuration: e.data ? null : n[3],
                     fullname: n.name || n[1]
                 };
+            saveSoundFileToDatabase(s.file);
             return i.that = s, i.setName(s.fullname.replace(/\.[^.]+$/, "")), ui.dom.filesList.appendChild(i.elRoot), s.wbuff.sample.onended(gs.file.stop), gs.files.push(s), e.data ? i.unloaded() : (s.size = n[2], i.withoutData()), i
         };
         var e, i;
         t.prototype = {
             setName: function (t) {
-                this.elName.textContent = this.name = t, this.that.name = t
+                this.elName.textContent = this.name = t, this.that.name = t, gs.file.load(this.that, function(z){});
             },
             unloaded: function () {
                 this.elIcon.classList.add("ramload"), this.elIcon.classList.remove("question"), this.elRoot.classList.add("unloaded")
@@ -2293,50 +2350,33 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
             } else e()
         })
     }, gs.compositions.saveNewBlocks = function () {
-        //        var reqParam = gs.composition.newSamples.map(function (t) {
-        //            return {
-        //                track: t.data.track.id,
-        //                file: t.data.gsfile.id,
-        //                when: ui.BPMem * t.when,
-        //                slip: ui.BPMem * t.offset,
-        //                duration: ui.BPMem * t.duration
-        //            }
-        //        });
-        //
-        //        var xmlHttp = new XMLHttpRequest();
-        //
-        //        xmlHttp.onreadystatechange = function () {
-        //            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-        //                var response = xmlHttp.responseText;
-        //            }
-        //        }
-        //
-        //        xmlHttp.open("POST", '/api/upload/layer', true); // true for asynchronous 
-        //
-        //        xmlHttp.setRequestHeader("Content-type", "application/json");
-        //
-        //        xmlHttp.send(JSON.stringify(reqParam));
-        //
-        //        console.log(JSON.stringify(reqParam));
-
-        var xmlhttp = new XMLHttpRequest();
-        var url = "myTutorials.txt";
-
-        xmlhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                var response = JSON.parse(this.responseText);
-                response.forEach(function (t) {
-                    var e = gs.sample.create(gs.files[t.file]);
-                    e.data.gsfile.samplesToSet.push(e), gs.sample.inTrack(e, t.track), gs.sample.when(e, t.when / ui.BPMem), gs.sample.slip(e, t.slip / ui.BPMem), gs.sample.duration(e, t.duration / ui.BPMem), gs.composition.add(e)
-                });
+        var reqParam = gs.composition.newSamples.map(function (t) {
+            return {
+                track: t.data.track.id,
+                file: t.data.gsfile.id,
+                when: ui.BPMem * t.when,
+                slip: ui.BPMem * t.offset,
+                duration: ui.BPMem * t.duration
             }
-        };
-        xmlhttp.open("GET", '/api/blocks', true);
-        xmlhttp.send();
+        });
+
+        var xmlHttp = new XMLHttpRequest();
+
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                var response = xmlHttp.responseText;
+            }
+        }
+
+        xmlHttp.open("POST", '/api/upload/layer', true); // true for asynchronous 
+
+        xmlHttp.setRequestHeader("Content-type", "application/json");
+
+        xmlHttp.send(JSON.stringify(reqParam));
+
+        console.log(JSON.stringify(reqParam));
     },
     gs.compositions.saveCurrent = function () {
-        console.log(gs.compositions.current);
-
         gs.compositions.save(gs.compositions.current)
     },
     gs.compositions.save = function (t) {
@@ -2520,7 +2560,7 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
 
         function e(e) {
             for (var o, a = 0, r = []; o = e[a++];) o.webkitGetAsEntry && (o = o.webkitGetAsEntry()) ? r.push(i(o)) : (o = o.getAsFile()) && (lg("item.getAsFile()", o), n(o));
-            
+
             Promise.all(r).then(function () {
                 gs.compositions.readFile(s).then(function () {
                     t()
@@ -2546,7 +2586,6 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
         }
 
         function n(t) {
-            console.log(t);
             switch (/[^.]*.?([^.]*)$/.exec(t.name)[1].toLowerCase()) {
             case "gs":
             case "txt":
@@ -2566,10 +2605,9 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
         document.body.ondragover = function () {
             return !1
         }, document.body.ondrop = function (i) {
-            console.log(i)
             var a, r = 0,
                 l = i && i.dataTransfer;
-           
+
             if (o = [], s = !1, l.items && l.items.length) e(l.items);
             else {
                 for (; a = l.files[r++];) n(a);
