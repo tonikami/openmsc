@@ -1,7 +1,7 @@
 var express = require('express');
 var multer = require('multer');
 var router = express.Router();
-var Layer = require('./../models/layer');
+var Block = require('./../models/Block');
 var LayerVotes = require('./../models/LayerVotes');
 var passportService = require('../config/passport');
 var passport = require('passport');
@@ -180,44 +180,38 @@ router.get('/:layerid/totalVotes', function (req, res, next) {
         })
 });
 
-router.get('/layers', function (req, res, next) {
-    Layer.find({})
-        .populate([{
-            path: 'creator',
-            select: "username"
-            }])
-        .exec(function (err, layers) {
+router.get('/blocks', function (req, res, next) {
+    Block.find({})
+        .exec(function (err, blocks) {
             if (err) {
                 return console.error(err);
             }
 
-            res.json(layers);
+            res.json(blocks);
         })
 });
 
 router.post('/upload/layer', function (req, res, next) {
-    var notes = [];
-    for (var i = 0; i < req.body.notes.length; i++) {
-        var note = {
-            start: req.body.notes[i].col,
-            duration: req.body.notes[i].sizeX,
-            path: req.body.notes[i].path,
-            color: req.body.notes[i].color,
-        }
-        notes.push(note);
+    console.log(req.body);
+    for (var i = 0; i < req.body.length; i++) {
+        var block = new Block({
+            track: req.body[i].track,
+            file: req.body[i].file,
+            duration: req.body[i].duration,
+            when: req.body[i].when,
+            offset: req.body[i].offset,
+            slip: req.body[i].slip,
+        });
+
+        block.save(function (err, doc) {
+            if (err) {
+                return console.error(err);
+            }
+        });
     }
 
-    var layer = new Layer({
-        notes: notes,
-        votes: 0,
-        creator: req.user._id
-    });
-
-    layer.save(function (err, new_layer) {
-        if (err) {
-            return console.error(err);
-        }
-        res.json(new_layer);
+    res.json({
+        success: true
     });
 });
 
