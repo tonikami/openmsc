@@ -6,6 +6,15 @@ function gsuiOscilloscope(t) {
     }), this.drawEnd()
 }
 
+function saveSoundFileToDatabase(file) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/upload/customSound", true);
+    var formData = new FormData();
+    formData.append("file", file, file.name);
+    xhr.send(formData);
+}
+
+
 function gsuiPopup(t) {
     this.elRoot = t, this.elWindow = t.querySelector(".gsuiPopup-window"), this.elHeader = t.querySelector(".gsuiPopup-window header"), this.elMsg = t.querySelector(".gsui-msg"), this.elText = t.querySelector(".gsui-text"), this.elCancel = t.querySelector(".gsui-cancel"), this.elOk = t.querySelector(".gsui-ok"), this.elForm = t.querySelector("form");
     var e = this;
@@ -55,7 +64,69 @@ function gswaFilters(t) {
 }
 
 function gswaComposition(t) {
-    this.wCtx = t, this.samples = [], this.isPlaying = this.isPaused = !1, this.oldDuration = this.duration = this._startedTime = this._currentTime = 0, this._bpm = 60, this.fnOnended = this.fnOnpaused = function () {}, this.onended = this.onended.bind(this), this._add = this._add.bind(this), this._remove = this._remove.bind(this)
+    this.wCtx = t, this.samples = [], this.newSamples = [], this.isPlaying = this.isPaused = !1, this.oldDuration = this.duration = this._startedTime = this._currentTime = 0, this._bpm = 60, this.fnOnended = this.fnOnpaused = function () {}, this.onended = this.onended.bind(this), this._add = this._add.bind(this), this._addNew = this._addNew.bind(this), this._remove = this._remove.bind(this);
+    var audioArray = [];
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+            var resp = JSON.parse(xhr.response);
+            var promises = [];
+            for (var fileIndex in resp) {
+                promises.push(getBlob(resp[fileIndex]));
+            }
+            Promise.all(promises).then(function () {
+                loadBlocks();
+            });
+        }
+    }
+    xhr.open("GET", "/api/customSounds", true);
+    xhr.send(null)
+
+}
+
+function getBlob(fileName) {
+    return new Promise(function (resolve, reject) {
+        var oReq = new XMLHttpRequest();
+        oReq.open("GET", '/sound/' + fileName, true);
+        oReq.responseType = "blob";
+
+        oReq.onload = function (oEvent) {
+            var blob = oReq.response;
+            if (blob) {
+                var file = blobToFile(blob, fileName);
+                
+                gs.file.create(file);
+            }
+            resolve(true)
+        };
+
+        oReq.send();
+    });
+}
+
+function blobToFile(theBlob, fileName) {
+    //A Blob() is almost a File() - it's just missing the two properties below which we will add
+    theBlob.lastModifiedDate = new Date();
+    theBlob.name = fileName;
+    return theBlob;
+}
+
+function loadBlocks() {
+    console.log('Loading Blocks');
+    var xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var response = JSON.parse(this.responseText);
+            response.forEach(function (t) {
+                var e = gs.sample.create(gs.files[t.file]);
+                e.data.gsfile.samplesToSet.push(e), gs.sample.inTrack(e, t.track), gs.sample.when(e, t.when / ui.BPMem), gs.sample.slip(e, t.slip / ui.BPMem), gs.sample.duration(e, t.duration / ui.BPMem), gs.composition.add(e)
+                console.log(e);
+            });
+        }
+    };
+    xmlhttp.open("GET", '/api/blocks', true);
+    xmlhttp.send();
 }
 
 function gswaFramework() {
@@ -1097,6 +1168,9 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
         add: function (t) {
             return t.forEach ? t.forEach(this._add) : this._add(t), this
         },
+        addNew: function (t) {
+            return t.forEach ? t.forEach(this._addNew) : this._addNew(t), this
+        },
         remove: function (t) {
             return t.forEach ? t.forEach(this._remove) : this._remove(t), this
         },
@@ -1131,6 +1205,9 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
         },
         _add: function (t) {
             this.samples.indexOf(t) < 0 && (this.samples.push(t), t.composition = this, this.update(t, "ad"))
+        },
+        _addNew: function (t) {
+            this.newSamples.indexOf(t) < 0 && this.newSamples.push(t)
         },
         _remove: function (t) {
             var e = this.samples.indexOf(t);
@@ -1212,7 +1289,7 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
         })
     }, gswaFramework.do = {}, gswaFramework.do.addSource = function (t) {
         var e = new gswaBufferSample;
-        t.bufferSample = e, e.setContext(this.audiocontext), e.setMetadata(t.metadata), this.sources.push(t), t.userData = this.on.addSource(t)
+        t.bufferSample = e, e.setContext(this.audiocontext), e.setMetadata(t.metadata), this.sources.push(t), t.userData = this.on.addSource(t);
     }, gswaFramework.do.addSources = function (t) {
         t.forEach(this.do.addSource), this.on.addSources(t)
     }, gswaFramework.do.loadSource = function (t) {
@@ -1366,7 +1443,7 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
                     helpers: i,
                     partials: n,
                     decorators: t.decorators
-                })) ? o : "") + '\t<a data-option="magnet" id="btnMagnet" class="btn small icon fw magnet" title="Toggle magnetism (press G)"></a>\r\n\t<div class="sep"></div>\r\n\t<a data-tool="select" class="btn small icon fw tool-select" title="Select (hold Shift or press V)"></a>\r\n\t<a data-tool="paint"  class="btn small icon fw tool-paint" title="Paint (press B)"></a>\r\n\t<a data-tool="delete" class="btn small icon fw tool-delete" title="Delete (press D)"></a>\r\n\t<a data-tool="mute"   class="btn small icon fw tool-mute" title="Mute (press M)" style="display: none;"></a>\r\n\t<a data-tool="slip"   class="btn small icon fw tool-slip" title="Slip (press S)"></a>\r\n\t<a data-tool="cut"    class="btn small icon fw tool-cut" title="Cut (press C)"></a>\r\n\t<a data-tool="hand"   class="btn small icon fw tool-hand" title="Hand (hold Alt or press H)"></a>\r\n\t<a data-tool="zoom"   class="btn small icon fw tool-zoom" title="Zoom (hold Ctrl or press Z)"></a>\r\n\t<div class="flex1"></div>\r\n\t<a href=".." target="_blank" class="btn small icon fw question" title="About"></a>\r\n</div>\r\n'
+                })) ? o : "") + '\t<a data-option="magnet" id="btnMagnet" class="btn small icon fw magnet" title="Toggle magnetism (press G)"></a>\r\n\t<div class="sep"></div>\r\n\t<a data-tool="select" class="btn small icon fw tool-select" title="Select (hold Shift or press V)"></a>\r\n\t<a data-tool="paint"  class="btn small icon fw tool-paint" title="Paint (press B)"></a>\r\n\t<a data-tool="delete" class="btn small icon fw tool-delete" title="Delete (press D)"></a>\r\n\t<a data-tool="mute"   class="btn small icon fw tool-mute" title="Mute (press M)" style="display: none;"></a>\r\n\t<a data-tool="slip"   class="btn small icon fw tool-slip" title="Slip (press S)"></a>\r\n\t<a data-tool="cut"    class="btn small icon fw tool-cut" title="Cut (press C)"></a>\r\n\t<a data-tool="hand"   class="btn small icon fw tool-hand" title="Hand (hold Alt or press H)"></a>\r\n\t<a data-tool="zoom"   class="btn small icon fw tool-zoom" title="Zoom (hold Ctrl or press Z)"></a>\r\n\t<div class="flex1"></div>\r\n\t<a style="margin-right: 10px; color: white" href=".." target="_blank" class="btn small icon fw" title="Save Changes (press ctrl S)">Save</a>\r\n</div>\r\n'
             },
             usePartial: !0,
             useData: !0
@@ -1684,7 +1761,7 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
 
         function n(t, e) {
             var i = t.sample;
-            e > 0 ? (gs.sample.inTrack(i, t.track.id), gs.sample.when(i, t.when), gs.composition.add(i)) : gs.sample.delete(i)
+            e > 0 ? (gs.sample.inTrack(i, t.track.id), gs.sample.when(i, t.when), gs.composition.add(i), gs.composition.addNew(i)) : gs.sample.delete(i)
         }
 
         function s(t, e) {
@@ -2017,12 +2094,13 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
                     bufferDuration: e.data ? null : n[3],
                     fullname: n.name || n[1]
                 };
+            saveSoundFileToDatabase(s.file);
             return i.that = s, i.setName(s.fullname.replace(/\.[^.]+$/, "")), ui.dom.filesList.appendChild(i.elRoot), s.wbuff.sample.onended(gs.file.stop), gs.files.push(s), e.data ? i.unloaded() : (s.size = n[2], i.withoutData()), i
         };
         var e, i;
         t.prototype = {
             setName: function (t) {
-                this.elName.textContent = this.name = t, this.that.name = t
+                this.elName.textContent = this.name = t, this.that.name = t, gs.file.load(this.that, function(z){});
             },
             unloaded: function () {
                 this.elIcon.classList.add("ramload"), this.elIcon.classList.remove("question"), this.elRoot.classList.add("unloaded")
@@ -2271,9 +2349,37 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
                 }, n.readAsText(t)
             } else e()
         })
-    }, gs.compositions.saveCurrent = function () {
+    }, gs.compositions.saveNewBlocks = function () {
+        var reqParam = gs.composition.newSamples.map(function (t) {
+            return {
+                track: t.data.track.id,
+                file: t.data.gsfile.id,
+                when: ui.BPMem * t.when,
+                slip: ui.BPMem * t.offset,
+                duration: ui.BPMem * t.duration
+            }
+        });
+
+        var xmlHttp = new XMLHttpRequest();
+
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                var response = xmlHttp.responseText;
+            }
+        }
+
+        xmlHttp.open("POST", '/api/upload/layer', true); // true for asynchronous 
+
+        xmlHttp.setRequestHeader("Content-type", "application/json");
+
+        xmlHttp.send(JSON.stringify(reqParam));
+
+        console.log(JSON.stringify(reqParam));
+    },
+    gs.compositions.saveCurrent = function () {
         gs.compositions.save(gs.compositions.current)
-    }, gs.compositions.save = function (t) {
+    },
+    gs.compositions.save = function (t) {
         function e(t) {
             gs.compositions.current = t, gs.compositions.serialize(t), gs.compositions.store(t), ui.save.selectComposition(t)
         }
@@ -2282,7 +2388,8 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
                 name: t.trim()
             })
         })
-    }, gs.compositions.serialize = function (t) {
+    },
+    gs.compositions.serialize = function (t) {
         t.bpm = waFwk.bpm, t.duration = gs.composition.duration, t.files = gs.files.map(function (t) {
             return [t.id, t.fullname, t.file ? t.file.size : t.size, t.wbuff.buffer ? t.wbuff.buffer.duration : t.bufferDuration]
         }), t.samples = gs.composition.samples.map(function (t) {
@@ -2291,44 +2398,57 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
             var i = e.userData;
             return (!i.isOn || i.samples.length || i.name || i.wfilters && i.wfilters.length) && t.push([i.id, i.isOn, i.name]), t
         }, [])
-    }, gs.compositions.store = function (t) {
+    },
+    gs.compositions.store = function (t) {
         var e = gs.compositions.list,
             i = e.findIndex(function (e) {
                 return t.id === e.id
             });
+
         t.id = t.id || common.uuid(), t.name = t.name || "Untitled", i > -1 ? (e[i] = t, ui.save.updateComposition(t)) : (e.push(t), ui.save.addComposition(t)), localStorage.compositions = JSON.stringify(e)
-    }, gs.sample.create = function (t) {
+    },
+    gs.sample.create = function (t) {
         var e = gs.wctx.createSample(t.wbuff);
         return t.wbuff.buffer || t.wbuff._setDuration(t.bufferDuration), e.data = {
             selected: !1,
             gsfile: t
         }, ++t.nbSamples, t.source.used(), ui.sample.create(e), ui.sample.duration(e), e
-    }, gs.sample.delete = function (t) {
+    },
+    gs.sample.delete = function (t) {
         if (t) {
             var e = t.data;
             e.oldSelected = !!e.selected, gs.sample.select(t, !1), --e.gsfile.nbSamples || e.gsfile.source.unused(), t.stop(), e.track.removeSample(t), gs.composition.remove(t), ui.sample.delete(t)
         }
-    }, gs.sample.duration = function (t, e) {
+    },
+    gs.sample.duration = function (t, e) {
         t.duration = Math.max(0, Math.min(e, t.bufferDuration)), ui.sample.duration(t)
-    }, gs.sample.inTrack = function (t, e) {
+    },
+    gs.sample.inTrack = function (t, e) {
         var i = t.data,
             n = waFwk.tracks[e].userData;
         t.disconnect(), t.connect(n.wfilters), i.track && i.track.removeSample(t), i.track = n, n.samples.push(t), ui.sample.inTrack(t)
-    }, gs.sample.mute = function (t) {
+    },
+    gs.sample.mute = function (t) {
         lg("sample muted (in development)")
-    }, gs.sample.select = function (t, e) {
+    },
+    gs.sample.select = function (t, e) {
         t && t.data.selected !== e && ("boolean" != typeof e && (e = !t.data.selected), e ? gs.selectedSamples.push(t) : gs.selectedSamples.splice(gs.selectedSamples.indexOf(t), 1), t.data.selected = e, ui.sample.select(t))
-    }, gs.sample.slip = function (t, e) {
+    },
+    gs.sample.slip = function (t, e) {
         t.offset = Math.min(t.bufferDuration, Math.max(e, 0)), ui.sample.waveform(t)
-    }, gs.sample.when = function (t, e) {
+    },
+    gs.sample.when = function (t, e) {
         t.when = e, ui.sample.when(t)
-    }, gs.samples.selected.do = function (t, e) {
+    },
+    gs.samples.selected.do = function (t, e) {
         t && (t.data.selected ? gs.selectedSamples.forEach(e) : e(t))
-    }, gs.samples.selected.min = function (t, e) {
+    },
+    gs.samples.selected.min = function (t, e) {
         return t.data.selected ? gs.selectedSamples.reduce(function (t, i) {
             return Math.min(t, e(i))
         }, 1 / 0) : e(t)
-    }, gs.samples.selected.max = function (t, e) {
+    },
+    gs.samples.selected.max = function (t, e) {
         return t.data.selected ? gs.selectedSamples.reduce(function (t, i) {
             return Math.max(t, e(i))
         }, -(1 / 0)) : e(t)
@@ -2360,11 +2480,13 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
                 return gs.sample.create(t.data.gsfile)
             })
         })
-    }, gs.samples.selected.delete = function () {
+    },
+    gs.samples.selected.delete = function () {
         gs.selectedSamples.length && (gs.history.pushExec("delete", {
             samples: gs.selectedSamples.slice()
         }), gs.selectedSamples.length = 0)
-    }, gs.samples.selected.duration = function (t, e) {
+    },
+    gs.samples.selected.duration = function (t, e) {
         return e = e < 0 ? -Math.min(-e, gs.samples.selected.min(t, function (t) {
             return t.duration
         })) : Math.min(e, gs.samples.selected.min(t, function (t) {
@@ -2372,13 +2494,15 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
         })), gs.samples.selected.do(t, function (t) {
             gs.sample.duration(t, t.duration + e)
         }), e
-    }, gs.samples.selected.when = function (t, e) {
+    },
+    gs.samples.selected.when = function (t, e) {
         return e < 0 && (e = -Math.min(-e, gs.samples.selected.min(t, function (t) {
             return t.when
         }))), gs.samples.selected.do(t, function (t) {
             gs.sample.when(t, Math.max(0, t.when + e))
         }), e
-    }, gs.samples.selected.slip = function (t, e) {
+    },
+    gs.samples.selected.slip = function (t, e) {
         return e = e < 0 ? -Math.min(-e, gs.samples.selected.min(t, function (t) {
             return t.bufferDuration - t.offset
         })) : Math.min(e, gs.samples.selected.min(t, function (t) {
@@ -2386,13 +2510,17 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
         })), gs.samples.selected.do(t, function (t) {
             gs.sample.slip(t, t.offset - e)
         }), e
-    }, gs.samples.selected.cropEnd = gs.samples.selected.duration, gs.samples.selected.cropStart = function (t, e) {
+    },
+    gs.samples.selected.cropEnd = gs.samples.selected.duration,
+    gs.samples.selected.cropStart = function (t, e) {
         return e = -gs.samples.selected.duration(t, -e), e && (gs.samples.selected.when(t, e), gs.samples.selected.slip(t, -e)), e
-    }, gs.samples.selected.unselect = function () {
+    },
+    gs.samples.selected.unselect = function () {
         gs.selectedSamples.forEach(function (t) {
             t.data.selected = !1, ui.sample.select(t)
         }), gs.selectedSamples.length = 0
-    }, document.body.addEventListener("click", function () {
+    },
+    document.body.addEventListener("click", function () {
         ui.save.hideList()
     }), ui.dom.clockUnits.onclick = function (t) {
         var e = t.target.className;
@@ -2432,6 +2560,7 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
 
         function e(e) {
             for (var o, a = 0, r = []; o = e[a++];) o.webkitGetAsEntry && (o = o.webkitGetAsEntry()) ? r.push(i(o)) : (o = o.getAsFile()) && (lg("item.getAsFile()", o), n(o));
+
             Promise.all(r).then(function () {
                 gs.compositions.readFile(s).then(function () {
                     t()
@@ -2478,6 +2607,7 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
         }, document.body.ondrop = function (i) {
             var a, r = 0,
                 l = i && i.dataTransfer;
+
             if (o = [], s = !1, l.items && l.items.length) e(l.items);
             else {
                 for (; a = l.files[r++];) n(a);
@@ -2616,11 +2746,15 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
             fn: gs.history.redo,
             keys: ["ctrl", "shift", "z"]
         }, {
-            fn: gs.compositions.saveCurrent,
+            fn: gs.compositions.saveNewBlocks,
             keys: ["ctrl", "s"]
         });
         var i
-    }(), ui.dom.btnFiles.onclick = ui.panelSection.bind(null, "files"), ui.dom.btnHistory.onclick = ui.panelSection.bind(null, "history"), window.onresize = ui.resize(), ui.dom.toolBtns.tool = {}, ui.dom.toolBtns.forEach(function (t) {
+    }(), ui.dom.btnFiles.onclick = ui.panelSection.bind(null, "files"),
+    ui.dom.btnHistory.onclick = ui.panelSection.bind(null, "history"),
+    window.onresize = ui.resize(),
+    ui.dom.toolBtns.tool = {},
+    ui.dom.toolBtns.forEach(function (t) {
         ui.dom.toolBtns.tool[t.dataset.tool] = t, t.onclick = ui.selectTool.bind(null, t.dataset.tool)
     }),
     function () {
@@ -2665,7 +2799,8 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
         mousemove: function (t) {
             ui.setTrackLinesLeft(ui.trackLinesLeft + ui.px_xRel), ui.setGridScrollTop(ui.gridScrollTop - ui.px_yRel), ui.timeline.update(), ui.tracksBg.update()
         }
-    }, ui.tool.mute = {},
+    },
+    ui.tool.mute = {},
     function () {
         ui.tool.paint = {
             mousedown: function (l) {
