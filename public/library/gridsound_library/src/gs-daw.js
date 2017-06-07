@@ -2710,6 +2710,9 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
                 a = [], i.shiftKey ? n && (a.push(n), gs.sample.select(n)) : (gs.selectedSamples.forEach(function (t) {
                     t !== n && a.push(t)
                 }), gs.samples.selected.unselect(), gs.sample.select(n, !0)), t = i.pageX, e = i.pageY, s = !0
+                if (n != null) {
+                    ui.gsuiPopup.open("info", "Composition's name", '<div style="text-align: center">Number of Votes: 0</br>Sample Author</div><div style="text-align: center"><button type="button" onclick="")">Downvote</button><button type="button" onclick="")">Upvote</button></div>')
+                } 
             },
             mouseup: function (t) {
                 a && a.length && (gs.history.push("select", {
