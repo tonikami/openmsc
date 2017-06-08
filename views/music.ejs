@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+
+    <link rel="stylesheet" href="https://slimseun.com/js/vendor/angular-gridster/angular-gridster.min.css">
+
+</head>
+
+<body ng-app="musicCollab"   ng-cloak>
+    <div ng-controller="AppCtrl" ng-cloak layout-padding>
+
+        <!-- Play Forward Rewind -->
+
+        <login-nav></login-nav>
+
+        <md-grid-list md-cols-xs="3" md-cols-sm="3" md-cols-md="3" md-cols-gt-md="3" md-row-height-gt-md="50px" md-row-height="50px" md-gutter="12px" md-gutter-gt-sm="1px" style="margin-top: 50px; margin-bottom: 50px;">
+            <md-grid-tile class="white">
+                <ng-md-icon icon="stop" style="fill: pink" ng-click="stopAudio()" size="100"></ng-md-icon>
+            </md-grid-tile>
+
+            <md-grid-tile class="white">
+                <ng-md-icon icon="play_circle_outline" style="fill: pink" size="100" ng-disabled="isPlaying" ng-click="playFunction()"></ng-md-icon>
+                <!--                <ng-md-icon icon="pause_circle_outline" style="fill: pink" size="100" ng-if="!paused && isPlaying" ng-click="pauseAudio()"></ng-md-icon>-->
+            </md-grid-tile>
+
+            <md-grid-tile class="white">
+                <md-switch ng-model="loop.val" aria-label="Loop Option" ng-change="uiReady()">
+                    Loop: {{ loop.val }}
+                </md-switch>
+            </md-grid-tile>
+
+        </md-grid-list>
+
+
+
+        <!-- Block Layers -->
+        <div style="overflow-x:scroll; overflow-y: hidden">
+            <div style="width: 15000px">
+                <md-content layout="row" layout-align="center end" style="margin-left: 16px; margin-right: 16px">
+                    <div layout="row" layout-align="center center" style="width: 100px; padding-top: 20px;  padding-right: 20px;">
+                        <md-input-container>
+                            <label>BPM</label>
+                            <input ng-model="beatsPerMin.val" ng-change="updateBPM()">
+                        </md-input-container>
+                    </div>
+                    <div gridster="gridsterOptsCurrentBlocks" style="background:darkred; padding: 0px;" class="md-block" flex="100">
+                        <ul>
+                            <li gridster-item="item" ng-repeat="item in topBlocks track by $index" ng-class="item.color">
+                            </li>
+                        </ul>
+                    </div>
+                </md-content>
+                <md-content>
+                    <md-list flex>
+                        <md-list-item ng-repeat="layer in layers track by $index" layout="row" layout-align="center center" ng-click="null" elem-ready="uiReady()">
+                            <div layout="column" layout-align="center center" style="width: 100px;">
+                                <div requires-login success="voteUp($index)">
+                                    <md-button class="md-icon-button">
+                                        <ng-md-icon icon="keyboard_arrow_up" ng-style="layer.votedUp && {'fill': 'pink'}"></ng-md-icon>
+                                    </md-button>
+                                </div>
+                                <md-button class="md-icon-button md-primary" aria-label="Settings">{{layer.votes}}</md-button>
+                                <div requires-login success="voteDown($index)">
+                                    <md-button class="md-icon-button">
+                                        <ng-md-icon icon="keyboard_arrow_down" ng-style="layer.votedUp != null && !layer.votedUp && {'fill': 'pink'}" style="margin-top: 4px;"></ng-md-icon>
+                                    </md-button>
+                                </div>
+                            </div>
+                            <div class="md-block" flex="100">
+                                <h6 style="margin: 0px">Submitted by <a href="/">{{layer.creator.username}}</a> </h6>
+                                <div gridster="gridsterOptsLayer" style="background:darkred" style="margin: 0px; padding: 0px;">
+
+
+                                    <ul>
+                                        <li gridster-item="note" ng-repeat="note in layer.notes track by $index" class="yellow">
+                                            <div class="{{'waveform-' + note._id}}" id="{{'waveform-' + note._id}}"></div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <br>
+
+                                <div style="margin-bottom: 0px;"></div>
+                            </div>
+
+
+                        </md-list-item>
+                    </md-list>
+                </md-content>
+
+
+                <br>
+                <md-content layout="row" layout-align="center center" ng-if="justAdded==true" style="margin-left: 16px; margin-right: 16px">
+                    <div layout="column" layout-align="center center" style="width: 100px;">
+                        <md-button ng-click="addBlock($event)" class="md-icon-button">
+                            <ng-md-icon icon="add_circle_outline"></ng-md-icon>
+                        </md-button>
+                    </div>
+                    <div gridster="gridsterOpts" style="background:darkred; padding: 0px" ng-if="justAdded==true" class="md-block" flex="100">
+                        <ul>
+                            <li gridster-item="note" ng-repeat="note in currentLayer.notes track by $index" ng-class="note.color" elem-ready="uiReady()">
+                                <div style="background:white" ng-click="showTabDialog($event, $index)">
+                                    <ng-md-icon icon="mode_edit" ng-click="showTabDialog($event, $index)"> </ng-md-icon>
+                                </div>
+
+                                <div class="{{note.ui}}" id="{{note.ui}}" ng-hide="true"></div>
+                            </li>
+                        </ul>
+                    </div>
+                </md-content>
+            </div>
+        </div>
+
+
+
+        <!-- Add/Submit Button -->
+        <md-grid-list md-cols-xs="3" md-cols-sm="3" md-cols-md="3" md-cols-gt-md="3" md-row-height-gt-md="50px" md-row-height="50px" md-gutter="12px" md-gutter-gt-sm="1px" style="margin: 50px;">
+            <md-grid-tile class="white"></md-grid-tile>
+
+            <md-grid-tile class="white" layout="row" layout-align="center">
+                <div requires-login success="addLayer()">
+                    <ng-md-icon icon="add_circle_outline" style="fill: pink" size="100" layout="row" layout-align="center" ng-if="justAdded==false"> </ng-md-icon>
+                </div>
+                <ng-md-icon icon="file_upload" style="fill: pink" size="100" layout="row" layout-align="center" ng-if="justAdded==true" ng-click="submitLayer()"></ng-md-icon>
+            </md-grid-tile>
+
+            <md-grid-tile class="white"></md-grid-tile>
+
+        </md-grid-list>
+
+        <!-- Angular Material requires Angular.js Libraries -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-resource.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.3.7/wavesurfer.min.js"></script>
+
+        <!-- Angular Material Library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular-material-icons/0.7.1/angular-material-icons.min.js"></script>
+        <script src="/ngWebAudio/src/ngWebAudio.js"></script>
+        <script src="/shared/SoundPlayer.js"></script>
+        <script src="/shared/Registration/LoginRegisterDirective.js"></script>
+        <script src="/scripts/musicapp.js"></script>
+
+
+        <!-- File Upload Stuff -->
+        <script src="/angular-file-upload/dist/angular-file-upload.min.js"></script>
+
+        <!-- Grid Stuff -->
+        <script src="https://slimseun.com/js/vendor/angular-gridster/angular-gridster.min.js"></script>
+</body>
+
+</html>
