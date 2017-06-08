@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+
+</head>
+
+<body ng-app="musicCollab" ng-cloak>
+    <div ng-controller="AppCtrl" ng-cloak>
+
+        <!-- Play Forward Rewind -->
+        <md-grid-list md-cols-xs="3" md-cols-sm="3" md-cols-md="3" md-cols-gt-md="3" md-row-height-gt-md="2:1" md-row-height="1:1" md-gutter="12px" md-gutter-gt-sm="1px">
+
+            <md-grid-tile class="white">
+                <ng-md-icon icon="fast_rewind" style="fill: pink" size="100"></ng-md-icon>
+            </md-grid-tile>
+
+            <md-grid-tile class="white">
+                <ng-md-icon icon="play_circle_outline" style="fill: pink" size="100" ng-click="playAudio()"></ng-md-icon>
+            </md-grid-tile>
+
+            <md-grid-tile class="white">
+                <ng-md-icon icon="fast_forward" style="fill: pink" size="100"></ng-md-icon>
+            </md-grid-tile>
+
+
+
+        </md-grid-list>
+
+
+        <md-slider-container style="margin: 30px;" flex>
+            <md-input-container>
+                <input flex type="number" ng-model="vol" aria-label="tempo" aria-controls="volume-slider">
+            </md-input-container>
+            <md-slider ng-model="vol" min="0.5" max="4" aria-label="tempo" id="volume-slider" class="md-accent" md-horizontol md-range></md-slider>
+            <h5>Tempo</h5>
+        </md-slider-container>
+        <!-- Block Layers -->
+<<<<<<< HEAD
+        <md-grid-list ng-repeat="layer in layers track by $index" md-cols-xs="{{noBlocksInLayer}}" md-cols-sm="{{noBlocksInLayer}}" md-cols-md="{{noBlocksInLayer}}" md-cols-gt-md="{{noBlocksInLayer}}" md-row-height-gt-md="1.5:1" md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="1px">
+            <md-grid-tile ng-repeat="block in layer.blocks track by $index" ng-class="block">
+            </md-grid-tile>
+        </md-grid-list>
+
+=======
+
+
+        <md-content ng-repeat="layer in layers track by $index" md-theme="docs-dark" layout="row" layout-align="center center" layout-padding>
+            <div layout="column" layout-align="center center" flex="10" style="margin: 10px;">
+                <ng-md-icon icon="keyboard_arrow_up" ng-click="voteUp($index)" ng-style="layer.votedUp && {'fill': 'pink'}"></ng-md-icon>
+                <md-button class="md-icon-button md-primary" aria-label="Settings">{{layer.votes}}</md-button>
+                <ng-md-icon icon="keyboard_arrow_down" ng-click="voteDown($index)" ng-style="layer.votedUp != null && !layer.votedUp && {'fill': 'pink'}" style="margin-top: 4px;"></ng-md-icon>
+            </div>
+            <md-grid-list flex="90" md-cols-xs="{{noBlocksInLayer}}" md-cols-sm="{{noBlocksInLayer}}" md-cols-md="{{noBlocksInLayer}}" md-cols-gt-md="{{noBlocksInLayer}}" md-row-height-gt-md="1.5:1" md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="1px">
+                <md-grid-tile ng-repeat="block in layer.blocks track by $index" ng-class="block">
+                </md-grid-tile>
+            </md-grid-list>
+        </md-content>
+
+        <md-grid-list ng-if="justAdded==true" md-cols-xs="{{noBlocksInLayer}}" md-cols-sm="{{noBlocksInLayer}}" md-cols-md="{{noBlocksInLayer}}" md-cols-gt-md="{{noBlocksInLayer}}" md-row-height-gt-md="1.5:1" md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="1px">
+            <md-grid-tile ng-repeat="block in currentLayer.blocks track by $index" ng-class="block" ng-click="showTabDialog($event, $index)">
+            </md-grid-tile>
+        </md-grid-list>
+
+        <!-- Add/Submit Button -->
+        <ng-md-icon icon="add_circle_outline" style="fill: pink" size="100" layout="row" layout-align="center" ng-if="justAdded==false" ng-click="addLayer()"></ng-md-icon>
+        <ng-md-icon icon="file_upload" style="fill: pink" size="100" layout="row" layout-align="center" ng-if="justAdded==true" ng-click="submitLayer()"></ng-md-icon>
+
+    </div>
+
+
+    <!-- Angular Material requires Angular.js Libraries -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+<<<<<<< HEAD
+=======
+    <script src="//cdnjs.cloudflare.com/ajax/libs/SVG-Morpheus/0.3.2/svg-morpheus.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-resource.js"></script>
+
+
+    <!-- Angular Material Library -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-material-icons/0.7.1/angular-material-icons.min.js"></script>
+
+    <!-- Your application bootstrap  -->
+    <script type="text/javascript">
+<<<<<<< HEAD
+        angular.module('musicCollab', ['ngMaterial', 'ngMdIcons'])
+            .controller('AppCtrl', function($scope, $mdDialog) {
+                $scope.vol = 1;
+                $scope.noBlocksInLayer = 5;
+                $scope.justAdded = false;
+                $scope.layers = [];
+                $scope.currentLayer = [];
+
+                <!-- Adds a layer of blocks -->
+                $scope.addLayer = function() {
+                    var blocks = new Array($scope.noBlocksInLayer);
+                    var notes = new Array($scope.noBlocksInLayer);
+                    for (var i = 0; i < blocks.length; i++) {
+                        blocks[i] = "red";
+                        notes[i] = new Audio('audio/silent.wav');
+=======
+        var musicCollab = angular.module('musicCollab', ['ngMaterial', 'ngMdIcons', 'ngResource']);
+
+        musicCollab.factory("Increment_Vote", function($resource) {
+            return $resource('/api/:layerid/vote/increment', {
+                layerid: '@layerid'
+            });
+        });
+
+        musicCollab.factory("Decrement_Vote", function($resource) {
+            return $resource('/api/:layerid/vote/decrement', {
+                layerid: '@layerid'
+            });
+        });
+
+        musicCollab.factory("Layers", function($resource) {
+            return $resource('/api/layers')
+        });
+
+        musicCollab.factory("Upload_Layer", function($resource) {
+            return $resource('/api/upload/layer')
+        });
+
+
+        musicCollab.controller('AppCtrl', function($scope, $mdDialog, $q, $mdToast, Increment_Vote, Decrement_Vote, Layers, Upload_Layer) {
+            $scope.vol = 1;
+            $scope.noBlocksInLayer = 9;
+            $scope.justAdded = false;
+            $scope.layers = [];
+            $scope.currentLayer = null;
+
+            $scope.init = function() {
+                Layers.query(function(response) {
+                    for (var i = 0; i < response.length; i++) {
+                        var sound;
+                        for (var j = 0; j < response[i].notes.length; j++) {
+                            var note = response[i].notes[j];
+                            if (note == "silent") {
+                                sound = new Audio('audio/silent.wav');
+                            };
+                            if (note == 'c') {
+                                sound = new Audio('audio/c.wav');
+                            };
+                            if (note == 'c#') {
+                                sound = new Audio('audio/csharp.wav');
+                            };
+                            if (note == 'd') {
+                                sound = new Audio('audio/d.wav');
+                            };
+                            if (note == 'd#') {
+                                sound = new Audio('audio/dsharp.wav');
+                            };
+                            if (note == 'e') {
+                                sound = new Audio('audio/e.wav');
+                            };
+                            if (note == 'f') {
+                                sound = new Audio('audio/f.wav');
+                            };
+                            if (note == 'f#') {
+                                sound = new Audio('audio/fsharp.wav');
+                            }
+                            if (note == 'g') {
+                                sound = new Audio('audio/g.wav');
+                            }
+                            if (note == 'g#') {
+                                sound = new Audio('audio/gsharp.wav');
+                            }
+                            if (note == 'a') {
+                                sound = new Audio('audio/a.wav');
+                            }
+                            if (note == 'a#') {
+                                sound = new Audio('audio/asharp.wav');
+                            }
+                            if (note == 'b') {
+                                sound = new Audio('audio/b.wav');
+                            }
+                            response[i].notes[j] = sound;
+                        }
+>>>>>>> AdibsBranch
+                    }
+                    $scope.layers = response;
+                    console.log($scope.layers);
+                })
+
+            }
+
+<<<<<<< HEAD
+                <!-- Submits a layer of blocks(changes can no longer be made) -->
+                $scope.submitLayer = function() {
+                    $scope.layers.push($scope.currentLayer);
+                    $scope.currentLayer = [];
+                    $scope.justAdded = false;
+=======
+            $scope.init();
+
+            $scope.addLayer = function() {
+                var blocks = new Array($scope.noBlocksInLayer);
+                var notes = new Array($scope.noBlocksInLayer);
+                var notesNames = new Array($scope.noBlocksInLayer);
+                for (var i = 0; i < blocks.length; i++) {
+                    blocks[i] = "red";
+                    notes[i] = new Audio('audio/silent.wav');
+                    notesNames[i] = "silent";
+                }
+                $scope.currentLayer = {
+                    blocks: blocks,
+                    notes: notes,
+                    notesNames: notesNames,
+                    votedUp: null,
+                    votes: 0
+>>>>>>> AdibsBranch
+                };
+                $scope.justAdded = true;
+            };
+
+            $scope.submitLayer = function() {
+                $scope.layers.push($scope.currentLayer);
+                $scope.justAdded = false;
+                Upload_Layer.save({}, {
+                    blocks: $scope.currentLayer.blocks,
+                    notes: $scope.currentLayer.notesNames,
+                }).$promise.then(function(saved_mates_list, putResponseHeaders) {
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent("Succesfully Added")
+                        .position("bottom")
+                        .hideDelay(3000)
+                    );
+                    $scope.currentLayer = null;
+                    $scope.init();
+                });
+
+
+
+            };
+
+            $scope.voteUp = function(index) {
+                if ($scope.layers[index].votedUp == null) {
+                    $scope.layers[index].votes++;
+                    Increment_Vote.get({
+                        layerid: $scope.layers[index]._id
+                    });
+                    $scope.layers[index].votedUp = true;
+                } else if (!$scope.layers[index].votedUp) {
+                    $scope.layers[index].votes++;
+                    $scope.layers[index].votes++;
+                    Increment_Vote.get({
+                        layerid: $scope.layers[index]._id
+                    });
+                    Increment_Vote.get({
+                        layerid: $scope.layers[index]._id
+                    });
+                    $scope.layers[index].votedUp = true;
+                } else if ($scope.layers[index].votedUp) {
+                    $scope.layers[index].votes--;
+                    $scope.layers[index].votedUp = null;
+                    Decrement_Vote.get({
+                        layerid: $scope.layers[index]._id
+                    });
+                }
+
+            }
+
+            $scope.voteDown = function(index) {
+                if ($scope.layers[index].votedUp == null) {
+                    $scope.layers[index].votes--;
+                    Decrement_Vote.get({
+                        layerid: $scope.layers[index]._id
+                    });
+                    $scope.layers[index].votedUp = false;
+                } else if ($scope.layers[index].votedUp) {
+                    $scope.layers[index].votes--;
+                    $scope.layers[index].votes--;
+                    Decrement_Vote.get({
+                        layerid: $scope.layers[index]._id
+                    });
+                    Decrement_Vote.get({
+                        layerid: $scope.layers[index]._id
+                    });
+                    $scope.layers[index].votedUp = false;
+                } else if (!$scope.layers[index].votedUp) {
+                    $scope.layers[index].votes++;
+                    $scope.layers[index].votedUp = null;
+                    Increment_Vote.get({
+                        layerid: $scope.layers[index]._id
+                    });
+                }
+            }
+
+            $scope.playAudio = function() {
+                if ($scope.layers) {
+                    for (var i = 0; i < $scope.layers.length; i++) {
+                        for (var j = 0; j < $scope.layers[i].notes.length; j++) {
+                            $scope.layers[i].notes[j].playbackRate = $scope.vol;
+                        }
+                    }
+                }
+
+                if ($scope.currentLayer) {
+                    for (var i = 0; i < $scope.currentLayer.notes.length; i++) {
+                        $scope.currentLayer.notes[i].playbackRate = $scope.vol;
+                    }
+                }
+
+                var queries = [];
+                var currentBlock = 0;
+                queries = $scope.addToQueries(queries, currentBlock);
+                $scope.runQueries(queries, currentBlock);
+            };
+
+
+            $scope.runQueries = function(queries, currentBlock) {
+                $q.all(queries).then(function() {
+                    currentBlock++;
+                    if (currentBlock < $scope.noBlocksInLayer) {
+                        queries = [];
+                        queries = $scope.addToQueries(queries, currentBlock);
+                        $scope.runQueries(queries, currentBlock);
+                    }
+                });
+            }
+
+            $scope.addToQueries = function(queries, index) {
+                if ($scope.layers) {
+                    for (var i = 0; i < $scope.layers.length; i++) {
+                        queries.push(runSound($scope.layers[i].notes[index]));
+                    }
+                }
+                if ($scope.currentLayer) {
+                    queries.push(runSound($scope.currentLayer.notes[index]));
+                }
+                return queries;
+            }
+
+            function runSound(sound) {
+                var d = $q.defer();
+                sound.play();
+                sound.addEventListener('ended', function() {
+                    d.resolve();
+                });
+                return d.promise;
+            }
+
+
+            $scope.showTabDialog = function(ev, index) {
+                $mdDialog.show({
+                        controller: DialogController,
+                        locals: {
+                            currentLayer: $scope.currentLayer,
+                            index: index
+                        },
+                        templateUrl: '/html/editBlock.html',
+                        parent: angular.element(document.body),
+                        targetEvent: ev,
+                        clickOutsideToClose: false
+                    })
+                    .then(function(response) {
+                        $scope.currentLayer.blocks[index] = response.color;
+                        $scope.currentLayer.notes[index] = response.sound;
+                        $scope.currentLayer.notesNames[index] = response.notesName;
+                    });
+            };
+
+            function DialogController($scope, $mdDialog, currentLayer, index) {
+                $scope.currentLayer = currentLayer;
+                $scope.index = index;
+                $scope.color = "red";
+                $scope.sound;
+                $scope.notesName = "silent";
+
+                $scope.init = function() {
+                    if ($scope.currentLayer.blocks[$scope.index] != 'red') {
+                        $scope.color = $scope.currentLayer.blocks[$scope.index];
+                        $scope.notesName = $scope.currentLayer.notes[$scope.index];
+                    }
+                }
+                $scope.init();
+
+<<<<<<< HEAD
+                <!-- Shows Popup to edit block -->
+                $scope.showTabDialog = function(ev, index) {
+                    $mdDialog.show({
+                            controller: editBlockController,
+                            templateUrl: '/html/editBlock.html',
+                            parent: angular.element(document.body),
+                            targetEvent: ev,
+                            clickOutsideToClose: false
+                        })
+                        .then(function(response) {
+                            if (response.color != "none") {
+                                $scope.currentLayer.blocks[index] = response.color;
+                            }
+                            $scope.currentLayer.notes[index] = response.sound;
+                        });
+                };
+
+                <!-- Controller for edit block popup -->
+                function editBlockController($scope, $mdDialog) {
+                    $scope.color = "none";
+                    $scope.sound = "none";
+=======
+                $scope.select = function(color, notesName) {
+                    if ($scope.color != color) {
+                        $scope.color = color;
+                        $scope.notesName = notesName;
+                        $scope.getAudio(notesName).play();
+                    } else {
+                        $scope.color = "red";
+                        $scope.notesName = "silent";
+                    }
+                };
+                $scope.hide = function() {
+                    $mdDialog.hide();
+                };
+
+                $scope.cancel = function() {
+                    $mdDialog.cancel();
+                };
+>>>>>>> AdibsBranch
+
+                $scope.save = function() {
+                    var audio = $scope.getAudio($scope.notesName);
+                    $mdDialog.hide({
+                        color: $scope.color,
+                        sound: $scope.getAudio($scope.notesName),
+                        notesName: $scope.notesName
+                    });
+                };
+
+                $scope.getAudio = function(notesName) {
+                    var sound;
+                    if ($scope.notesName == 'silent') {
+                        sound = new Audio('audio/silent.wav');
+                    };
+<<<<<<< HEAD
+
+                    $scope.cancel = function() {
+                        $mdDialog.cancel();
+                    };
+
+                    $scope.save = function() {
+                        if ($scope.sound == "none") {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/silent.wav')
+                            });
+                        };
+                        if ($scope.sound == 1) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound1.wav')
+                            });
+                        };
+                        if ($scope.sound == 2) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound2.wav')
+                            });
+                        };
+                        if ($scope.sound == 3) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound3.wav')
+                            });
+                        };
+                        if ($scope.sound == 4) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound4.wav')
+                            });
+                        };
+                        if ($scope.sound == 5) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound5.wav')
+                            });
+                        };
+                        if ($scope.sound == 6) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound6.wav')
+                            });
+                        };
+                        if ($scope.sound == 7) {
+                            $mdDialog.hide({
+                                color: $scope.color,
+                                sound: new Audio('audio/sound7.wav')
+                            });
+                        }
+=======
+                    if ($scope.notesName == 'c') {
+                        sound = new Audio('audio/c.wav');
+                    };
+                    if ($scope.notesName == 'c#') {
+                        sound = new Audio('audio/csharp.wav');
+                    };
+                    if ($scope.notesName == 'd') {
+                        sound = new Audio('audio/d.wav');
+>>>>>>> AdibsBranch
+                    };
+                    if ($scope.notesName == 'd#') {
+                        sound = new Audio('audio/dsharp.wav');
+                    };
+                    if ($scope.notesName == 'e') {
+                        sound = new Audio('audio/e.wav');
+                    };
+                    if ($scope.notesName == 'f') {
+                        sound = new Audio('audio/f.wav');
+                    };
+                    if ($scope.notesName == 'f#') {
+                        sound = new Audio('audio/fsharp.wav');
+                    }
+                    if ($scope.notesName == 'g') {
+                        sound = new Audio('audio/g.wav');
+                    }
+                    if ($scope.notesName == 'g#') {
+                        sound = new Audio('audio/gsharp.wav');
+                    }
+                    if ($scope.notesName == 'a') {
+                        sound = new Audio('audio/a.wav');
+                    }
+                    if ($scope.notesName == 'a#') {
+                        sound = new Audio('audio/asharp.wav');
+                    }
+                    if ($scope.notesName == 'b') {
+                        sound = new Audio('audio/b.wav');
+                    }
+                    return sound;
+                }
+            };
+        });
+
+    </script>
+
+</body>
+
+</html>
