@@ -1,5 +1,7 @@
 "use strict";
 
+var numberInput = []
+
 function gsuiOscilloscope(t) {
     this.canvas = t, this.ctx = t.getContext("2d"), this.maxValue = 0, this.setPinch(0), this.drawBegin(function (t, e, i, n) {
         t.fillRect(0, 0, i, n), t.lineWidth = 2, t.strokeStyle = "rgb(255,255,255)"
@@ -81,7 +83,7 @@ function gswaComposition(t) {
     }
     xhr.open("GET", "/api/customSounds", true);
     xhr.send(null)
-
+    
 }
 
 function getBlob(fileName) {
@@ -94,7 +96,6 @@ function getBlob(fileName) {
             var blob = oReq.response;
             if (blob) {
                 var file = blobToFile(blob, fileName);
-                
                 gs.file.create(file);
             }
             resolve(true)
@@ -128,6 +129,7 @@ function loadBlocks() {
     xmlhttp.open("GET", '/api/blocks', true);
     xmlhttp.send();
 }
+
 
 function gswaFramework() {
     this.audioContext = new AudioContext, this.sampleGroup = new gswaSampleGroup, this.compositions = [], this.sources = [], this.tracks = [], this.on = {}, this.do = {}, this.currentComposition = null, this.bpm = 60;
@@ -1421,7 +1423,7 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
                     name: "name",
                     hash: {},
                     data: s
-                }) : a)) + "</span>\r\n\t</div>\r\n</a>\r\n"
+                }) : a)) + '</span><button id="btnAssignKey">key</button><button id="btnAssignTrack">track</button>\r\n\t</div>\r\n</a>\r\n'
             },
             usePartial: !0,
             useData: !0
@@ -1670,6 +1672,30 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
                 duration: t.length ? t[3] : void 0
             }
         })
+        document.getElementById('btnAssignKey').id = 'btn' +  t.name + 'Key'
+        document.getElementById("btn" + t.name + 'Key').onclick = function() {
+            ui.gsuiPopup.open("prompt", t.name, "Enter a number key (0-9) to be used for " + t.name).then(function (i) {
+                if (i.length == 1 && /^\d+$/.test(i)) {
+                    document.getElementById("btn" + t.name + "Key").innerHTML = i
+                    for (var j = 0; j < gs.files.length; j++) {
+                        if (t.name == gs.files[j].fullname) {
+                            numberInput[i].file = j
+                            return
+                        }
+                    }
+                }
+            })
+        }
+        document.getElementById('btnAssignTrack').id = 'btn' +  t.name + 'Track'
+        document.getElementById("btn" + t.name + 'Track').onclick = function() {
+            ui.gsuiPopup.open("prompt", t.name, "Select a track number (1-42) to be used for " + t.name).then(function (i) {
+                if (i.length < 3 && /^\d+$/.test(i) && parseInt(i) < 43 && parseInt(i) > 0 && document.getElementById("btn" + t.name + 'Key').innerHTML != "key") {
+                    document.getElementById("btn" + t.name + 'Track').innerHTML = i
+                    var key = document.getElementById("btn" + t.name + 'Key').innerHTML
+                    numberInput[key].track = parseInt(i)-1
+                }
+            })
+        }
     }, gs.file.delete = function (t) {
         gs.composition.samples.filter(function (e) {
             return e.data.gsfile === t
@@ -1694,6 +1720,11 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
     }, gs.file.stop = function () {
         var t = gs.file.playingSmp;
         t && (t.stop(), ui.filesCursor.remove())
+    }, gs.numKey = function (i) {
+        if (numberInput[i.keys[0]].file != null && numberInput[i.keys[0]].track != null) {
+            var e = gs.sample.create(gs.files[numberInput[i.keys[0]].file])
+            e.data.gsfile.samplesToSet.push(e), gs.sample.inTrack(e, numberInput[i.keys[0]].track), gs.sample.when(e, gs.composition.currentTime()), gs.composition.add(e)
+        }
     },
     function () {
         gs.history = {
@@ -2674,7 +2705,6 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
         function t(t) {
             i = ui.currentTool, ui.selectTool(t.name)
         }
-
         function e(e, n) {
             "keydown" === n.type ? t(e) : i && (ui.selectTool(i), i = null)
         }
@@ -2748,6 +2778,36 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
         }, {
             fn: gs.compositions.saveNewBlocks,
             keys: ["ctrl", "s"]
+        }, {
+            fn: gs.numKey,
+            keys: ["0"]
+        }, {
+            fn: gs.numKey,
+            keys: ["1"]
+        }, {
+            fn: gs.numKey,
+            keys: ["2"]
+        }, {
+            fn: gs.numKey,
+            keys: ["3"]
+        }, {
+            fn: gs.numKey,
+            keys: ["4"]
+        }, {
+            fn: gs.numKey,
+            keys: ["5"]
+        }, {
+            fn: gs.numKey,
+            keys: ["6"]
+        }, {
+            fn: gs.numKey,
+            keys: ["7"]
+        }, {
+            fn: gs.numKey,
+            keys: ["8"]
+        }, {
+            fn: gs.numKey,
+            keys: ["9"]
         });
         var i
     }(), ui.dom.btnFiles.onclick = ui.panelSection.bind(null, "files"),
@@ -2923,6 +2983,11 @@ window.AudioContext || (document.body.innerHTML = "<div id='nowebaudio'>Sorry, <
             mousedown: function (e) {
                 0 === e.button && t(e, e.altKey ? .7 : 1.3)
             }
+        }
+    }(),
+    function() {
+        for (var i = 0; i < 10; i++) {
+            numberInput[i] = {file: null, track: null}
         }
     }(),
     function () {
