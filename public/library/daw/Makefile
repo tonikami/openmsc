@@ -78,7 +78,10 @@ JS = \
 	gs/history/actions.js             \
 	                                  \
 	ui/ui.js                          \
-	ui/bpm.js                         \
+    ui/btnLoginAccount.js             \
+    ui/btnCreateAccount.js            \
+    ui/btnLogout.js                   \
+    ui/bpm.js                         \
 	ui/btnMagnet.js                   \
 	ui/btnPlay.js                     \
 	ui/btnStop.js                     \
