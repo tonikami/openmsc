@@ -10,10 +10,7 @@
 
 	.placeholder {
 		display: none;
-		position: absolute;
-		left: 0;
-		right: 0;
-		top: 25%;
+        margin-top: 25%;
 		text-align: center;
 		color: $color_filesPlaceholder;
 
