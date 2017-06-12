@@ -5,10 +5,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var http = require('http');
-
+var passport = require('passport');
+var flash = require('connect-flash');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 var index = require('./routes/index');
-var music = require('./routes/music');
 var api = require('./routes/api');
+var mongoose = require('mongoose');
 
 var app = express();
 
@@ -25,14 +28,30 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'bower_components')));
+
+app.use(session({
+    secret: 'thisisoursupersecretkeylolxdxd1234',
+    maxAge: new Date(Date.now() + 3600000), //how long we store app session cookie
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection
+    }),
+    resave: true,
+    saveUninitialized: true
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+require('./config/passport.js')(app, passport);
+require('./routes/auth')(app, passport);
 
 app.use('/', index);
-app.use('/music', music);
 app.use('/api', api);
 
-var port = 8000;
+var port = process.env.PORT || 8000;
 
-var serve = app.listen(port, function () {
+var serve = http.createServer(app).listen(port, function () {
     console.log("server started at port" + port);
 });
 

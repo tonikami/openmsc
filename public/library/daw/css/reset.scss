@@ -1,0 +1,53 @@
+@font-face {
+	font-family: "LCDBOLD";
+	src: url("../fonts/LCDBOLD.eot");
+	src: local("LCDBOLD"),
+		url("../fonts/LCDBOLD.woff") format("woff"),
+		url("../fonts/LCDBOLD.ttf") format("truetype");
+}
+
+html, body {
+	height: 100%;
+}
+
+body {
+	overflow: hidden; // Deactivate the Apple's creepy scroll bounce effect.
+	margin: 0;
+}
+
+a {
+	outline: 0;
+	cursor: pointer;
+	text-decoration: none;
+	color: inherit;
+}
+
+input {
+	outline: 0;
+}
+
+.hidden {
+	display: none !important;
+}
+
+.no-transition {
+	transition: none !important;
+}
+
+.text-overflow {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+::-webkit-scrollbar {
+	width: $width_scrollbarSize;
+	height: $width_scrollbarSize;
+
+	&-thumb {
+		background: $color_scrollbarThumb;
+	}
+	&-track {
+		background: $color_scrollbarBg;
+	}
+}
