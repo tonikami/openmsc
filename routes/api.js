@@ -215,7 +215,6 @@ router.post('/upload/layer', function (req, res, next) {
     });
 });
 
-
 router.post('/upload/customSound', upload.single('file'), function (req, res, next) {
     res.send("File Successfully added");
 });
