@@ -1,0 +1,12 @@
+{
+    "type": "service_account",
+    "project_id": "flowing-maxim-170100",
+    "private_key_id": "3c9cc1f066e29c32ae9a3f7f5ca81852e4a447ba",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCnu5H95g1Xo2U7\n7DCHmXsgB4BGmGBsYLuSFSRNddIekzmxV/fywSxdzRxowdkbSP26R/hZVtoRbtQ/\nFOxw0FEI1wKzxkMzjIc78xsKgXp2CyJZ+lhHY7eaRNY/qUEo3XJ5uUwnPijLqm8W\n2DA2/Gq6yRGhq5VL0jjh46G3S/A2dLbMF2XPs8pelKX8YjhrWRhVjjEF4VUCK9f9\nlzr5f1+oV0MWV6gE6O9csGUBvpXuBGJjHsLh4XJB4wPlx9goTchPB3DS4f0FUH4C\nimBVbju582iVnGX8LwWiHm5FTrZNKxkCeDXfE8unTbK86jxDxcFBEY7kYY/7w1wn\nih89xB55AgMBAAECggEAK38NrdzRiu95Wh+2ugNIFZc8YZI0NwaivZAz+M5b7cfa\nBy47wzzq52xAOL5EMbos6fit42UNacXmznD7m4m56ePv9HSuipifnSE+2uuWuTPL\n9a9g4yptu1isgpe+qP08KWqu3+JTq/UHl9H6NtggSU3I/7bCIYZjb9ia4DCWG1if\nO2C4X+bHR3EoIZ66JJc1vYhodd76Dq/lqDQwbUMsrBpxQhV9GZb0uHnJ4udbxP2I\nM0etqQ1ZTVO6etJ53K6jXMOxzR1YHIeVbYCItKU4vYXOlRXx9swd7ac25nZhvK8P\ng3+dy973vmFh4xWwi7JISZYMHezbjLonklAd8tGZrQKBgQDcoxZF3n34mSaCnhZ+\ncezRnxSdmbBNCE94sk8wsoFNabD1qkUUKC2K1uT66jMd8wFZ6D/Mf5U16XnH3ZV2\nfDSQK42le3sQEhYeQBhCGEIUZVcXPR3zyCuhBYQ5e8jjpGn+1gdWaFw6QnXdDYlZ\n8jY1AQFRBf4TUPTZE1gWAz3E2wKBgQDCncaEczBRkIWB+AxvKlfUlReuDN1bGaFC\nRAIXio6iYX08C9oxbDVqWHoFr1k81kDCbHEyiR2cD+lCj6lLrXJZD4+wEJKLnP7Y\nP82A9fg1sIxozQAQjU6XyPoACmGAm9Fpq0WENAVBRGj3EsHSWIHqdTOZf7dpiwrw\n+S06GENAOwKBgFrulAVjt0M3y1lV0it2xIV4LMTvTGvTGv3Bb0XAq+29u4LkE+hE\nztBD1MdcsoiLWGk3gOPFSTeY6+nldu4ILpmkeZJUG9n5ukfpXpYO7Vz+jzAyrh+E\nxgZtAZu3WooHfu/aQdfo1unj7jOWmp8JZjHeIi7Ea3yGhwLYKBuaZmC1AoGAFKQ1\nVQD+o/gHIQTVFMlR7XsuusgkhjAOuX+LFUId5L0gUkkTiGBovfHKZ2X0ug4jajuk\nOe7vFAlf/S5Nj3hDA40x+UOYt3QcV4VU35O3EsK58bekhRzntBOd6HkxZDmimWmQ\nAvidghGmbGYx5oR6qwppQaOZKXmU3IAhOuMt5tcCgYEApWXwGpr3c9MLSpg/nWEm\nV+qukoL13v5wmnkGdR18ncHwaG/yEYddwmlE4Uid5/VRzUe+bF8C48T6CwpKC23M\nsDCmZdqvz9Qd/sUt3+3pXkzpkfnPEO66BuEmUBnLNHVOqolZyrvWkktYusDDKH2I\nbNmhmksgXSlwA6bHEFYoeDw=\n-----END PRIVATE KEY-----\n",
+    "client_email": "soundskey@flowing-maxim-170100.iam.gserviceaccount.com",
+    "client_id": "111528669706736314435",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://accounts.google.com/o/oauth2/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/soundskey%40flowing-maxim-170100.iam.gserviceaccount.com"
+}
