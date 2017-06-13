@@ -5,6 +5,8 @@ var router = express.Router();
 var ChangeVotes = require('./../models/ChangeVotes');
 var Change = require('./../models/Change');
 var Sound = require('./../models/Sound');
+var Message = require('./../models/Message');
+var User = require('./../models/User');
 var passportService = require('../config/passport');
 var passport = require('passport');
 var merge = require('merge');
@@ -221,4 +223,48 @@ router.get('/customSounds', function (req, res, next) {
             res.json(sounds);
         })
 });
+router.get('/messages', function (req, res, next) {
+    Message.find({})
+        .select('createdAt message author')
+        .sort('createdAt')
+        .populate('author')
+        .exec(function (err, messages) {
+            if (err) {
+                res.send({
+                    error: err
+                });
+            }
+            res.json(messages);
+        });
+});
+
+
+router.get('/:message/sendMessage/', function (req, res, next) {
+    console.log('creating message');
+    var message = new Message({
+        message: req.params.message,
+        author: req.user._id,
+    });
+    console.log('message created');
+    message.save(function (err, new_message) {
+        if (err) {
+            res.send({
+                error: err
+            });
+        }
+        new_message.populate('author', function (error, final_message) {
+            User.find({})
+                .exec(function (err, users) {
+                    if (err) {
+                        return console.error(err);
+                    }
+                    req.app.io.sockets.in("openmsc").emit('newMessage', final_message);
+                })
+
+            res.send(JSON.stringify(final_message));
+        });
+
+    });
+});
+
 module.exports = router;

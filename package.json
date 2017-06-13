@@ -30,6 +30,7 @@
     "pug": "^2.0.0-beta9",
     "serve-favicon": "^2.4.2",
     "simple-line-icons": "^2.4.1",
+    "socket.io": "^2.0.3",
     "tether": "^1.4.0"
   },
   "devDependencies": {
