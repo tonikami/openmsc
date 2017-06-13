@@ -1,24 +1,31 @@
 var express = require('express');
 var multer = require('multer');
+var gcs = require('multer-gcs');
 var router = express.Router();
 var Block = require('./../models/Block');
 var LayerVotes = require('./../models/LayerVotes');
+var Sound = require('./../models/Sound');
 var passportService = require('../config/passport');
 var passport = require('passport');
 var merge = require('merge');
 
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'public/sound');
-    },
+var storage = gcs({
     filename: function (req, file, cb) {
-        console.log(file.originalname);
-        cb(null, file.originalname);
-    }
-})
-var upload = multer({
-    storage: storage
 
+        cb(null, file.originalname);
+
+    },
+    bucket: 'openmscsounds', // Required : bucket name to upload 
+    projectId: 'flowing-maxim-170100', // Required : Google project ID 
+    keyFilename: 'keys/openmsc-3c9cc1f066e2.json', // Required : JSON credentials file for Google Cloud Storage 
+    acl: 'publicread' // Optional : Defaults to private 
+});
+
+var upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 50 * 1024 * 1024 // no larger than 50mb, you can change as needed.
+    }
 });
 
 var mongoose = require('mongoose');
@@ -216,14 +223,29 @@ router.post('/upload/layer', function (req, res, next) {
 });
 
 router.post('/upload/customSound', upload.single('file'), function (req, res, next) {
-    res.send("File Successfully added");
+    var sound = new Sound({
+        filename: req.file.filename,
+        url: 'https://storage.googleapis.com/openmscsounds/' + req.file.filename,
+        created: req.body.created
+    });
+    sound.save(function (err, new_sound) {
+        if (err) {
+            return console.error(err);
+        }
+        res.json(new_sound);
+    });
+
 });
+
 
 router.get('/customSounds', function (req, res, next) {
-    filesList = [];
-    var fs = require('fs');
-    var files = fs.readdirSync('public/sound');
-    res.send(JSON.stringify(files));
-});
+    Sound.find({})
+        .exec(function (err, sounds) {
+            if (err) {
+                return console.error(err);
+            }
 
+            res.json(sounds);
+        })
+});
 module.exports = router;
