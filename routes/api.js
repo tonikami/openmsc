@@ -1,6 +1,4 @@
 var express = require('express');
-var server = require('http').createServer();
-var io = require('socket.io')(server);
 var multer = require('multer');
 var gcs = require('multer-gcs');
 var router = express.Router();
@@ -9,6 +7,7 @@ var LayerVotes = require('./../models/LayerVotes');
 var Change = require('./../models/Change');
 var Sound = require('./../models/Sound');
 var Message = require('./../models/Message');
+var User = require('./../models/User');
 var passportService = require('../config/passport');
 var passport = require('passport');
 var merge = require('merge');
@@ -280,39 +279,46 @@ router.get('/customSounds', function (req, res, next) {
         })
 });
 
-router.get('/sendMessage/', function (req, res, next) {
-    // Send reply in conversation
+router.get('/messages', function (req, res, next) {
+    Message.find({})
+        .select('createdAt message author')
+        .sort('createdAt')
+        .populate('author')
+        .exec(function (err, messages) {
+            if (err) {
+                res.send({
+                    error: err
+                });
+            }
+            res.json(messages);
+        });
+});
+
+
+router.get('/:message/sendMessage/', function (req, res, next) {
+    console.log('creating message');
     var message = new Message({
         message: req.params.message,
-        user: req.user._id,
-        created: req.params.created
+        author: req.user._id,
     });
-
+    console.log('message created');
     message.save(function (err, new_message) {
         if (err) {
             res.send({
                 error: err
             });
         }
+        new_message.populate('author', function (error, final_message) {
+            User.find({})
+                .exec(function (err, users) {
+                    if (err) {
+                        return console.error(err);
+                    }
+                    req.app.io.sockets.in("openmsc").emit('newMessage', final_message);
+                })
 
-        new_message.populate('author', function (error, changed_message) {
-            console.log(changed_message);
-            //chaanged_message.select('username');
-            //res.send(JSON.stringify(new_item));
+            res.send(JSON.stringify(final_message));
         });
-
-        /* User.find({})
-             .exec(function (err, users) {
-                 if (err) {
-                     return console.error(err);
-                 }
-                 for (var user in users) {
-                     var currUserId = users._id;
-                     if (!currUserId.equals(req.user._id)) {
-                         req.app.io.sockets.in("openmsc").emit('newMessage', new_message);
-                     }
-                 }
-             })*/
 
     });
 });

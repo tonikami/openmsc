@@ -19,6 +19,7 @@
         function lg(a) {
             return console.log.apply(console, arguments), a;
         }
+
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
@@ -40,6 +41,14 @@
     <!-- -->
 
     <!-- Development -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+        socket.on('newMessage', function(message) {
+            console.log(message.author.username + message.message);
+        });
+
+    </script>
     <script src="/library/daw/featuresTest.js"></script>
 
     <script src="/library/daw/dep/keyboardRouter.min.js"></script>
