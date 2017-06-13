@@ -1,0 +1,93 @@
+<br>
+<div class="row">
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-8 text-center">
+        <div style="max-width: 900px; margin: auto;">
+            <ui-select ng-model="selectUniversity.selected" on-select="reloadPage($item)" theme="bootstrap" reset-search-input="false" style="width: 100%;" title="Choose a university">
+                <ui-select-match placeholder="Start typing a university name">
+                    Showing results for <strong>{{$select.selected}}</strong>
+                </ui-select-match>
+                <ui-select-choices repeat="university in universities track by $index" refresh="refreshUniversities($select.search)" refresh-delay="0">
+                    <div ng-bind-html="university | highlight: $select.search"></div>
+                </ui-select-choices>
+            </ui-select>
+ 
+            <br>
+
+            <div class="card text-center" ng-if="!shouldHideCard">
+                <div class="row" style="margin:0px;" ng-show="currentMatesList.houseImages.length > 0">
+                    <div uib-carousel active="active" interval="myInterval" no-wrap="noWrapSlides">
+                        <div uib-slide ng-repeat="houseImage in currentMatesList.houseImages track by $index" index="$index">
+                        <a ng-click="openLightboxModal($index)" style="cursor: pointer;">
+                            <img ng-src="{{houseImage.url}}" ng-click="" style="width: 100%; height: 200px; object-fit: cover;">
+                        </a>
+                        </div>
+                    </div>
+                </div>
+
+                <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
+
+                <div style="padding:20px;">
+                    <div class="row">
+                        <div class="col-sm-2" ng-repeat="user in currentMatesList.members">
+                            <div class="card user" style="padding: 10px; border-radius: 10px;" ng-click="showUserProfile(user._id)">
+                                <img ng-src="{{'https://storage.googleapis.com/mates-web-image-bucket/' +user._id+ '.jpg'}}" class="img-circle profile-picture-style small" onerror="this.src='images/profile_picture_placeholder.png';" />
+                                <h6>{{user.name.first}}</h6>
+                                <hr>
+                                <h6>{{user.uni.course}}</h6>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2" ng-repeat="i in currentMatesList.availableSpaces track by $index">
+                            <div class="card user" style="background: #F4F2F3; padding: 10px; border-radius: 10px;">
+                                <img ng-src="https://source.unsplash.com/collection/142563/55x55" class="img-circle" style="width: 55px;height: 55px; " />
+                                <hr>
+                                <h6><b>Available Space</b></h6>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <span ng-repeat="tag in currentMatesList.tags track by $index">
+                    <span class="label label-info">{{tag}}</span>
+                        </span>
+                    </div>
+                    <blockquote>
+                        <p>{{currentMatesList.summary}}</p>
+                        <small><cite title="Source Title">{{moment(currentMatesList.updatedAt).fromNow()}}</cite></small>
+                    </blockquote>
+                    <button type="button" class="btn btn-primary" ng-if="RequestButtonStatus==1"><i class="fa fa-refresh fa-spin" /> Loading...</button>
+                    <button type="button" class="btn btn-primary" ng-if="RequestButtonStatus==2" ng-click="cancelRequest(currentMatesList._id)">Request Sent</button>
+                    <button type="button" class="btn btn-primary" ng-if="RequestButtonStatus==3" ng-click="request(currentMatesList._id)">Request To Join</button>
+
+                    <ul class="pager">
+                        <li ng-hide="hidePreviousButton" class="previous">
+                            <a href ng-click="goPrevPage()">
+                                <i ng-hide="!loadingPrevious" class="fa fa-refresh fa-spin" /> Previous
+                            </a>
+                        </li>
+                        <li ng-hide="hideNextButton" class="next">
+                            <a href ng-click="goNextPage()">
+                    Next 
+                    <i ng-hide="!loadingNext" class="fa fa-refresh fa-spin"/>
+                </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <div class="card text-center" ng-if="shouldHideCard" style="padding:10px"> 
+                <p class="media-heading">There are no posts for {{selectUniversity.selected}} yet.</p>
+                <button type="button" class="btn btn-primary" ng-click="state.go('build')">Be the first to post</button>
+            </div>
+
+
+            
+        </div>
+
+    </div>
+    <div class="col-md-2">
+    </div>
+</div>

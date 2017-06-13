@@ -1,0 +1,145 @@
+<br>
+<div class="row">
+    <div class="col-sm-2">
+    </div>
+    <div class="col-sm-8">
+        <div class="row">
+            <div class="col-sm-4">
+                <button class="btn btn-info  btn-block" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">
+                    Invite Users To Join
+
+                </button>
+            </div>
+            <div class="col-sm-4">
+            </div>
+
+            <div class="col-sm-4">
+                <ui-select ng-model="selectedUserFromSearch.user" theme="bootstrap" reset-search-input="false" style="width: 100%;" title="Enter a user">
+                    <ui-select-match placeholder="Seach for a user...">
+                        {{$select.selected.name.first}} {{$select.selected.name.last}}
+                    </ui-select-match>
+                    <ui-select-choices repeat="user in searchedUsers track by $index" refresh="refreshSearchedUsers($select.search)" refresh-delay="0">
+                        <div ng-bind-html="user.name.first+' '+user.name.last | highlight: $select.search"></div>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+
+        <div class="card text-center collapse" style=" padding: 20px;" id="collapseExample">
+            <img ng-src="{{'https://storage.googleapis.com/mates-web-image-bucket/' +currentUser._id+ '.jpg'}}" class="img-circle profile-picture-style large" onerror="this.src='images/profile_picture_placeholder.png';" />
+            <h3 class="media-heading">{{currentUser.name.first}} {{currentUser.name.last}}<small> {{currentUser.uni.name}}</small></h3>
+            <span class="label label-success">{{currentUser.uni.course}}</span>
+            <span ng-repeat="tag in currentUser.description.descriptiveWords">
+                    <span class="label label-info">{{tag}}</span>
+            </span>
+            <hr> {{currentUser.description.bio}}
+            <br>
+            <br>
+
+            <button type="button" class="btn btn-primary" ng-if="InviteButtonStatus==1"><i class="fa fa-refresh fa-spin" /> Loading...</button>
+            <button type="button" class="btn btn-primary" ng-if="InviteButtonStatus==2" ng-click="cancelInvite(currentUser._id)">Invite Sent</button>
+            <button type="button" class="btn btn-primary" ng-if="InviteButtonStatus==3" ng-click="invite(currentUser._id)">Invite To Join</button>
+
+            <ul class="pager">
+                <li ng-hide="hidePreviousButton" class="previous">
+                    <a href ng-click="loadingPrevious||fetchPreviousPage()">
+                        <i ng-hide="!loadingPrevious" class="fa fa-refresh fa-spin" /> Previous
+                    </a>
+                </li>
+                <li ng-hide="hideNextButton" class="next">
+                    <a href ng-click="loadingNext||fetchNextPageData()">
+                    Next 
+                    <i ng-hide="!loadingNext" class="fa fa-refresh fa-spin"/>
+                </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-sm-2">
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-sm-2">
+    </div>
+    <div class="col-sm-8">
+        <div class="card" style="padding: 20px;">
+            <h2 style="margin: 0px;">My Mates List</h2>
+            <br>
+            <div class="row text-center">
+                <div class="col-sm-2" ng-repeat="user in myMatesList.members">
+                    <div class="card user" style="padding: 10px; border-radius: 10px;" ng-click="showUserProfile(user.user._id)">
+                        <img ng-src="{{'https://storage.googleapis.com/mates-web-image-bucket/' +user._id+ '.jpg'}}" class="img-circle profile-picture-style small" onerror="this.src='images/profile_picture_placeholder.png';" />
+                        <h6>{{user.name.first}}</h6>
+                    </div>
+                    <span style="margin-top:10px;" class="glyphicon glyphicon-remove" ng-hide="user._id==myMatesList.creator" ng-click="removeUser(user._id)" aria-hidden="true"></span>
+
+                </div>
+            </div>
+            <br>
+
+            <div class="well checkbox">
+                <label class="checkbox-inline" for="profile_searchable">
+                    <input type="checkbox" name="profile[searchable]" id="profile_searchable" value="true" checked="checked" ng-model="myMatesList.hasHouse"> I have a house
+                    <!-- and I am looking for additional housemates -->
+                </label>
+            </div>
+
+            <div ng-hide="!myMatesList.hasHouse">
+                <label for="max_people">House images</label>
+                <p></p><span flow-btn class="btn btn-primary btn-file">
+                                Upload House Images
+                                <input type="file" nv-file-select uploader="uploader" multiple/>
+                </span> </p>
+                <div class="row text-center" style="margin-left:0px; margin-right: 0px">
+                    <div ng-repeat="houseImage in myMatesList.houseImages" class="well col-sm-4">
+                        <img ng-src="{{houseImage.url}}" style="width: 100%; height: 200px; object-fit: cover;" />
+
+                        <button class="btn btn-info btn-sm" ng-click="removeHouseImage(houseImage._id)" style="margin-top:10px;">Remove</button>
+                    </div>
+                </div>
+            </div>
+
+            <form class="form-group">
+                <label for="bio">Summary</label>
+                <textarea class="form-control" rows="3" ng-model="myMatesList.summary"></textarea>
+            </form>
+
+            <form class="form-group">
+                <label for="max_people">Max People </label>
+                <select id="max_people" ng-model="myMatesList.max_people" class="form-control">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                </select>
+            </form>
+
+            <div class="well checkbox">
+                <label class="checkbox-inline" for="profile_searchable">
+                    <input type="checkbox" name="profile[searchable]" id="profile_searchable" value="true" checked="checked" ng-model="myMatesList.active"> Make this Mates List visible to all users
+                </label>
+            </div>
+            <button class="btn btn-info" data-toggle="collapse" data-target="#shareField">Share</button>
+            <div id="shareField" class="form-group collapse">
+                <label for="usr">Copy Shareable Link:</label>
+                <input type="text" class="form-control" id="usr" ng-value="'https://www.matesweb.co.uk/singlemateslist/'+myMatesList._id">
+            </div>
+
+            <button class="btn btn-primary" ng-click="saveChanges()">Save Changes</button>
+
+        </div>
+    </div>
+    <div class="col-sm-2">
+    </div>
+
+</div>

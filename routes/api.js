@@ -15,7 +15,7 @@ var storage = multer.diskStorage({
         console.log(file.originalname);
         cb(null, file.originalname);
     }
-})
+});
 var upload = multer({
     storage: storage
 
@@ -111,7 +111,6 @@ router.get('/:layerid/vote/decrement', function (req, res, next) {
         })
 });
 
-
 router.get('/:layerid/remove/vote', function (req, res, next) {
     if (!req.isAuthenticated()) {
         res.send('Failed');
@@ -180,6 +179,23 @@ router.get('/:layerid/totalVotes', function (req, res, next) {
         })
 });
 
+router.get('/:layerid/projectname', function (req, res, next) {
+    projectid.find({
+        projectid: req.params.layerid,
+    })
+        .exec(function(err, projectid) {
+        if (err) {
+            return console.error(err);
+        }
+        var projectname = 0;
+        for (var i = 0, i < projectid.length; i++){
+            projectname=projectid+1;
+        }
+        res.send(projectname);
+    })
+    
+})
+
 router.get('/blocks', function (req, res, next) {
     Block.find({})
         .exec(function (err, blocks) {
@@ -195,6 +211,7 @@ router.post('/upload/layer', function (req, res, next) {
     console.log(req.body);
     for (var i = 0; i < req.body.length; i++) {
         var block = new Block({
+            projectid: req.body[i].projectid,
             track: req.body[i].track,
             file: req.body[i].file,
             duration: req.body[i].duration,

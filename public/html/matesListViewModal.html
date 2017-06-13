@@ -1,0 +1,40 @@
+<div class="card text-center" style=" padding: 20px;">
+    <div class="row">
+        <div class="col-sm-2" ng-repeat="user in currentMatesList.members">
+            <div class="card user" style="padding: 10px; border-radius: 10px;width: 75px"
+                 ng-click="showUserProfile(user._id)">
+                <img ng-src="{{'https://storage.googleapis.com/mates-web-image-bucket/' +user._id+ '.jpg'}}"
+                     class="img-circle" style="width: 55px;height: 55px; "/>
+                <h6>{{user.name.first}}</h6>
+                <hr>
+                <h6>{{user.uni.course}}</h6>
+            </div>
+        </div>
+
+        <div class="col-sm-2" ng-repeat="i in currentMatesList.availableSpaces track by $index">
+            <div class="card user" style="background: #F4F2F3; padding: 10px; border-radius: 10px;">
+                <img ng-src="https://source.unsplash.com/collection/142563/55x55" class="img-circle"
+                     style="width: 55px;height: 55px; "/>
+                <hr>
+                <h6><b>Available Space</b></h6>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+                <span ng-repeat="tag in currentMatesList.tags">
+                    <span class="label label-info">{{tag}}</span>
+                </span>
+    </div>
+    <blockquote>
+        <p>{{currentMatesList.summary}}</p>
+        <small><cite>{{moment(currentMatesList.updatedAt).fromNow()}}</cite></small>
+    </blockquote>
+    <button ng-if="currentMatesList.offerId!=null" class="btn btn-primary" ng-click="accept(currentMatesList.offerId)">Accept</button>
+    <button ng-if="currentMatesList.offerId!=null"class="btn btn-warning" ng-click="ignoreUserOffer()">Ignore</button>
+    <div class="modal-footer">
+        <center>
+            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="close()">Close</button>
+        </center>
+    </div>
+</div>
