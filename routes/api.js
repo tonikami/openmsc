@@ -2,13 +2,13 @@ var express = require('express');
 var multer = require('multer');
 var gcs = require('multer-gcs');
 var router = express.Router();
-var Block = require('./../models/Block');
-var LayerVotes = require('./../models/LayerVotes');
+var ChangeVotes = require('./../models/ChangeVotes');
 var Change = require('./../models/Change');
 var Sound = require('./../models/Sound');
 var passportService = require('../config/passport');
 var passport = require('passport');
 var merge = require('merge');
+var async = require('async');
 
 var storage = gcs({
     filename: function (req, file, cb) {
@@ -43,15 +43,15 @@ router.get('/user', function (req, res, next) {
 });
 
 
-router.get('/:layerid/vote/increment', function (req, res, next) {
+router.get('/:changeid/vote/up', function (req, res, next) {
     if (!req.isAuthenticated()) {
         res.send('Failed');
         return;
     }
 
-    LayerVotes.findOneAndUpdate({
+    ChangeVotes.findOneAndUpdate({
         user: req.user._id,
-        layer: req.params.layerid
+        change: req.params.changeid
     }, {
         $set: {
             votedUp: true
@@ -66,14 +66,15 @@ router.get('/:layerid/vote/increment', function (req, res, next) {
     });
 });
 
-router.get('/:layerid/vote/decrement', function (req, res, next) {
+router.get('/:changeid/vote/down', function (req, res, next) {
     if (!req.isAuthenticated()) {
         res.send('Failed');
         return;
     }
-    LayerVotes.findOneAndUpdate({
+
+    ChangeVotes.findOneAndUpdate({
         user: req.user._id,
-        layer: req.params.layerid
+        change: req.params.changeid
     }, {
         $set: {
             votedUp: false
@@ -84,131 +85,99 @@ router.get('/:layerid/vote/decrement', function (req, res, next) {
         if (err) return res.send(500, {
             error: err
         });
-        return res.send("succesfully saved");
+        res.send("succesfully saved");
+        ChangeVotes.find({
+                change: req.params.changeid,
+            })
+            .exec(function (err, votes) {
+                if (err) {
+                    return console.error(err);
+                }
+                var totalVotes = 0;
+                for (var i = 0; i < votes.length; i++) {
+                    if (votes[i].votedUp == true) {
+                        totalVotes++;
+                    } else {
+                        totalVotes--;
+                    }
+                }
+
+                console.log(totalVotes);
+
+                if (totalVotes < 0) {
+                    Change.findOneAndRemove({
+                        _id: req.params.changeid
+                    }, function (err) {
+                        if (err) next(err);
+                    });
+                }
+            })
     });
 
-
-    LayerVotes.find({
-            layer: req.params.layerid,
-        })
-        .exec(function (err, votes) {
-            if (err) {
-                return console.error(err);
-            }
-
-            var totalVotes = 0;
-
-            for (var i = 0; i < votes.length; i++) {
-                if (votes[i].votedUp == true) {
-                    totalVotes++;
-                } else {
-                    totalVotes--;
-                }
-            }
-
-            console.log(totalVotes);
-
-
-            if (totalVotes < -2) {
-                Layer.findOneAndRemove({
-                    _id: req.params.layerid
-                }, function (err) {
-                    if (err) next(err);
-                });
-            }
-        })
 });
 
-
-router.get('/:layerid/remove/vote', function (req, res, next) {
-    if (!req.isAuthenticated()) {
-        res.send('Failed');
-        return;
-    }
-
-    LayerVotes.findOneAndRemove({
-        user: req.user._id,
-        layer: req.params.layerid
-    }, function (err) {
-        if (err) next(err);
-        res.send({
-            success: true
-        });
-    });
-});
-
-router.get('/:layerid/myVote', function (req, res, next) {
-    if (!req.isAuthenticated()) {
-        res.send('Failed');
-        return;
-    }
-
-    LayerVotes.findOne({
-            layer: req.params.layerid,
-            user: req.user._id
-        })
-        .exec(function (err, vote) {
-            if (err) {
-                return console.error(err);
-            }
-
-            if (vote) {
-                res.json(vote);
-            } else {
-                res.send({
-                    votedUp: null
-                });
-            }
-
-        })
-});
-
-router.get('/:layerid/totalVotes', function (req, res, next) {
-    LayerVotes.find({
-            layer: req.params.layerid,
-        })
-        .exec(function (err, votes) {
-            if (err) {
-                return console.error(err);
-            }
-
-            var totalVotes = 0;
-
-            for (var i = 0; i < votes.length; i++) {
-                if (votes[i].votedUp == true) {
-                    totalVotes++;
-                } else {
-                    totalVotes--;
-                }
-            }
-
-            res.send({
-                totalVotes: totalVotes
-            });
-        })
-});
-
-router.get('/blocks', function (req, res, next) {
-    Block.find({})
-        .exec(function (err, blocks) {
-            if (err) {
-                return console.error(err);
-            }
-
-            res.json(blocks);
-        })
-});
+//router.get('/:changeid/remove/vote', function (req, res, next) {
+//    if (!req.isAuthenticated()) {
+//        res.send('Failed');
+//        return;
+//    }
+//    
+//    LayerVotes.findOneAndRemove({
+//        user: req.user._id,
+//        layer: req.params.layerid
+//    }, function (err) {
+//        if (err) next(err);
+//        res.send({
+//            success: true
+//        });
+//    });
+//});
 
 router.get('/changes', function (req, res, next) {
     Change.find({})
+        .populate('creator', 'username')
+        .lean()
         .exec(function (err, changes) {
             if (err) {
                 return console.error(err);
             }
 
-            res.json(changes);
+            var calls = [];
+            changes.forEach(function (change) {
+                calls.push(function (callback) {
+                    getTotalVotes(change, callback);
+                });
+            })
+
+            async.parallel(calls, function (err) {
+                if (err) {
+                    return console.log(err);
+                }
+                res.json(changes);
+            });
         })
 });
+
+function getTotalVotes(change, callback) {
+    ChangeVotes.find({
+            change: change._id,
+        })
+        .exec(function (err, votes) {
+            if (err) {
+                return console.error(err);
+            }
+            var totalVotes = 0;
+            for (var i = 0; i < votes.length; i++) {
+                if (votes[i].votedUp == true) {
+                    totalVotes++;
+                } else {
+                    totalVotes--;
+                }
+            }
+            change.totalVotes = totalVotes;
+            callback(null);
+        })
+}
 
 router.post('/upload/change', function (req, res, next) {
     var change = new Change({
@@ -224,30 +193,6 @@ router.post('/upload/change', function (req, res, next) {
         res.json({
             success: true
         });
-    });
-});
-
-router.post('/upload/layer', function (req, res, next) {
-    console.log(req.body);
-    for (var i = 0; i < req.body.length; i++) {
-        var block = new Block({
-            track: req.body[i].track,
-            file: req.body[i].file,
-            duration: req.body[i].duration,
-            when: req.body[i].when,
-            offset: req.body[i].offset,
-            slip: req.body[i].slip,
-        });
-
-        block.save(function (err, doc) {
-            if (err) {
-                return console.error(err);
-            }
-        });
-    }
-
-    res.json({
-        success: true
     });
 });
 

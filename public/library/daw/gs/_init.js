@@ -1,12 +1,13 @@
 "use strict";
 
 window.gs = {
-	compositions: {},
-	file: {},
-	files: [],
-	sample: {},
-	samples: {
-		selected: {}
-	},
-	selectedSamples: []
+    compositions: {},
+    file: {},
+    files: [],
+    sample: {},
+    samples: {
+        selected: {}
+    },
+    selectedSamples: [],
+    change: {},
 };
