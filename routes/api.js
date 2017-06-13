@@ -187,11 +187,8 @@ router.get('/:layerid/projectname', function (req, res, next) {
         if (err) {
             return console.error(err);
         }
-        var projectname = 0;
-        for (var i = 0, i < projectid.length; i++){
-            projectname=projectid+1;
-        }
-        res.send(projectname);
+        var blocks = {[]}
+        res.send({block.projectid})
     })
     
 })
