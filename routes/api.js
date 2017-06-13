@@ -1,4 +1,6 @@
 var express = require('express');
+var server = require('http').createServer();
+var io = require('socket.io')(server);
 var multer = require('multer');
 var gcs = require('multer-gcs');
 var router = express.Router();
@@ -6,6 +8,7 @@ var Block = require('./../models/Block');
 var LayerVotes = require('./../models/LayerVotes');
 var Change = require('./../models/Change');
 var Sound = require('./../models/Sound');
+var Message = require('./../models/Message');
 var passportService = require('../config/passport');
 var passport = require('passport');
 var merge = require('merge');
@@ -265,4 +268,42 @@ router.get('/customSounds', function (req, res, next) {
             res.json(sounds);
         })
 });
+
+router.get('/sendMessage/', function (req, res, next) {
+    // Send reply in conversation
+    var message = new Message({
+        message: req.params.message,
+        user: req.user._id,
+        created: req.params.created
+    });
+
+    message.save(function (err, new_message) {
+        if (err) {
+            res.send({
+                error: err
+            });
+        }
+
+        new_message.populate('author', function (error, changed_message) {
+            console.log(changed_message);
+            //chaanged_message.select('username');
+            //res.send(JSON.stringify(new_item));
+        });
+
+        /* User.find({})
+             .exec(function (err, users) {
+                 if (err) {
+                     return console.error(err);
+                 }
+                 for (var user in users) {
+                     var currUserId = users._id;
+                     if (!currUserId.equals(req.user._id)) {
+                         req.app.io.sockets.in("openmsc").emit('newMessage', new_message);
+                     }
+                 }
+             })*/
+
+    });
+});
+
 module.exports = router;
