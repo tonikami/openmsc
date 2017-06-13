@@ -202,6 +202,17 @@ router.get('/blocks', function (req, res, next) {
         })
 });
 
+router.get('/changes', function (req, res, next) {
+    Change.find({})
+        .exec(function (err, changes) {
+            if (err) {
+                return console.error(err);
+            }
+
+            res.json(changes);
+        })
+});
+
 router.post('/upload/change', function (req, res, next) {
     var change = new Change({
         blocks: req.body,

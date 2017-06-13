@@ -1,6 +1,10 @@
 "use strict";
 
 gs.compositions.initServer = function () {
+    getFilesFromServer();
+}
+
+function getFilesFromServer() {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (xhr.readyState == XMLHttpRequest.DONE) {
@@ -26,6 +30,8 @@ function doBlob(resp, fileIndex) {
         fileIndex++;
         if (fileIndex != resp.length) {
             doBlob(resp, fileIndex);
+        } else {
+            getChangesFromServer();
         }
     });
 }
@@ -51,4 +57,39 @@ function blobToFile(theBlob, fileName) {
     theBlob.lastModifiedDate = new Date();
     theBlob.name = fileName;
     return theBlob;
+}
+
+function getChangesFromServer() {
+    var xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var response = JSON.parse(this.responseText);
+            response.forEach(function (change) {
+                change.blocks.forEach(function (sampleData) {
+                    buildSample(sampleData);
+                });
+            });
+        }
+    };
+
+    xmlhttp.open("GET", '/api/changes', true);
+    xmlhttp.send();
+}
+
+function showChange(change) {
+
+}
+
+function buildSample(sampleData) {
+    var smp = gs.sample.create(gs.files[sampleData.file], {
+        new: false
+    });
+
+    smp.data.gsfile.samplesToSet.push(smp);
+    gs.sample.inTrack(smp, sampleData.track);
+    gs.sample.when(smp, sampleData.when / ui.BPMem);
+    gs.sample.slip(smp, sampleData.slip / ui.BPMem);
+    gs.sample.duration(smp, sampleData.duration / ui.BPMem);
+    gs.composition.add(smp);
 }
