@@ -16,7 +16,7 @@
 	line-height: 40px;
 	color: $color_menuText;
 
-	.btn {
+	.btn2 {
 		box-sizing: border-box;
 		width: 40px;
 		font-size: 14px;
@@ -50,13 +50,13 @@
 	.stop {
 		@include writeBg( $color_stopBtn );
 	}
-	.btn.question {
+	.btn2.question {
 		margin-right: $marginBetweenBtn;
 		font-size: 32px;
 	}
 	#save {
 		.save,
-		.caret {
+		.caret2 {
 			@include writeBg( $save_bg );
 		}
 	}
