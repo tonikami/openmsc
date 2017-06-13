@@ -3,6 +3,7 @@ var multer = require('multer');
 var router = express.Router();
 var Block = require('./../models/Block');
 var LayerVotes = require('./../models/LayerVotes');
+var Change = require('./../models/Change');
 var passportService = require('../config/passport');
 var passport = require('passport');
 var merge = require('merge');
@@ -189,6 +190,23 @@ router.get('/blocks', function (req, res, next) {
 
             res.json(blocks);
         })
+});
+
+router.post('/upload/change', function (req, res, next) {
+    var change = new Change({
+        blocks: req.body,
+        creator: req.user._id
+    });
+
+    change.save(function (err, doc) {
+        if (err) {
+            return console.error(err);
+        }
+
+        res.json({
+            success: true
+        });
+    });
 });
 
 router.post('/upload/layer', function (req, res, next) {
