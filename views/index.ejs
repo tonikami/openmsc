@@ -46,13 +46,6 @@
 
     <!-- Development -->
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-        var socket = io();
-        socket.on('newMessage', function(message) {
-            console.log(message.author.username + ": " + message.message);
-        });
-
-    </script>
     <script src="/library/daw/featuresTest.js"></script>
 
     <script src="/library/daw/dep/keyboardRouter.min.js"></script>
@@ -88,7 +81,7 @@
     <script src="/library/daw/ui/btnLoginAccount.js"></script>
     <script src="/library/daw/ui/btnCreateAccount.js"></script>
     <script src="/library/daw/ui/btnLogout.js"></script>
-    <script src="/library/daw/ui/sndMessage.js"></script>
+    <script src="/library/daw/ui/sendMessage.js"></script>
     <script src="/library/daw/ui/getMessages.js"></script>
     <script src="/library/daw/ui/bpm.js"></script>
     <script src="/library/daw/ui/btnMagnet.js"></script>
@@ -97,6 +90,8 @@
     <script src="/library/daw/ui/btnUndo.js"></script>
     <script src="/library/daw/ui/btnRedo.js"></script>
     <script src="/library/daw/ui/clock.js"></script>
+    <script src="/library/daw/ui/getUser.js"></script>
+    <script src="/library/daw/ui/chat.js"></script>
     <script src="/library/daw/ui/currentTimeCursor.js"></script>
     <script src="/library/daw/ui/exportToWaveFile.js"></script>
     <script src="/library/daw/ui/filesCursor.js"></script>
@@ -108,6 +103,7 @@
     <script src="/library/daw/ui/timelineLoop.js"></script>
     <script src="/library/daw/ui/tracksBg.js"></script>
     <script src="/library/daw/ui/visual.js"></script>
+    <script src="/library/daw/ui/messageListener.js"></script>
     <script src="/library/daw/ui/_init.js"></script>
 
     <script src="/library/daw/ui/cursor.js"></script>
