@@ -29,12 +29,12 @@
                         direction = 'left';
                     }
                 }
-                sendMessage(new_message, direction);
+                display_message(new_message, direction);
             }
         });
         ui.messageListener(function (new_message) {
             var finalMessage = new_message.author.username + ": " + new_message.message;
-            sendMessage(finalMessage, 'right');
+            receive_message(finalMessage);
         })
         var getMessageText, message_side, sendMessage;
         message_side = 'right';
@@ -43,36 +43,55 @@
             $message_input = $('.message_input');
             return $message_input.val();
         };
-        sendMessage = function (text, direction) {
+        display_message = function (text, direction) {
             var $messages, message;
             if (text.trim() === '') {
                 return;
             }
-            $('.message_input').val('');
             $messages = $('.messages');
-            message_side = direction;
             message = new Message({
                 text: text,
-                message_side: message_side
+                message_side: direction
+            });
+            message.draw();
+        }
+        receive_message = function (text) {
+            var $messages, message;
+            if (text.trim() === '') {
+                return;
+            }
+            $messages = $('.messages');
+            message = new Message({
+                text: text,
+                message_side: 'right'
             });
             message.draw();
             return $messages.animate({
                 scrollTop: $messages.prop('scrollHeight')
             }, 300);
         };
-        $('.send_message').click(function (e) {
-            if (username) {
-                var mess = username + ": " + getMessageText();
-                ui.sendMessage(getMessageText());
-                sendMessage(mess, 'left');
+        sendMessage = function (text) {
+            var $messages, message;
+            if (text.trim() === '') {
+                return;
             }
-        });
+            $('.message_input').val('');
+            $messages = $('.messages');
+            message = new Message({
+                text: text,
+                message_side: 'left'
+            });
+            message.draw();
+            return $messages.animate({
+                scrollTop: $messages.prop('scrollHeight')
+            }, 300);
+        };
         $('.message_input').keyup(function (e) {
             if (e.which === 13) {
                 if (username) {
                     var mess = username + ": " + getMessageText();
                     ui.sendMessage(getMessageText());
-                    sendMessage(mess, 'left');
+                    sendMessage(mess);
                 }
             }
         });
