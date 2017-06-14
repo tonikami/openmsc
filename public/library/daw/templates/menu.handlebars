@@ -64,4 +64,26 @@
             </div>
         </div>
     </div>
+    
+    <div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Assign a key</h4>
+                </div>
+                <div class="modal-body">
+                    <fieldset>
+                        <div class="form-group">
+                            <input type="number" min="0" max="9" class="form-control" placeholder="key" name="key" type="text" id="lKey"> </div>
+                        <div class="form-group">
+                            <input type="number" min="1" max="42" class="form-control" placeholder="track" name="track" type="text" id="lTrack">
+                            <input type="hidden" id="lFileID">
+                        </div>
+                        <button class="btn btn-lg btn-success btn-block" id="btnAssignKey">Confirm</button>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

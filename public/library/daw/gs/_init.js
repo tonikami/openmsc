@@ -12,4 +12,7 @@ window.gs = {
     change: {
         selectedVote: {}
     },
+    numberKeys: {
+        keys: []
+    }
 };
