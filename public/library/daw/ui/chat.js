@@ -25,7 +25,7 @@
                 var new_message = allMessages[i].author.username + ": " + allMessages[i].message;
                 var direction = 'right';
                 if (username) {
-                    if (allMessages[i].author == username) {
+                    if (allMessages[i].author.username == username) {
                         direction = 'left';
                     }
                 }
