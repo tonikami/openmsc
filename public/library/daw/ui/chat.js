@@ -22,7 +22,7 @@
     $(function () {
         var messageHistory = ui.getMessages(function (allMessages) {
             for (var i in allMessages) {
-                var new_message = allMessages[i].author + ": " + allMessages[i].message;
+                var new_message = allMessages[i].author.username + ": " + allMessages[i].message;
                 var direction = 'right';
                 if (username) {
                     if (allMessages[i].author == username) {

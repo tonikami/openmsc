@@ -236,31 +236,17 @@ router.get('/customSounds', function (req, res, next) {
         })
 });
 router.get('/messages', function (req, res, next) {
-    var finalMessages = [];
+    //var finalMessages = [];
     Message.find({})
-        .select('createdAt message author')
-        .sort('createdAt')
+        .select('message author')
+        .sort('-createdAt')
+        .limit(12)
         .populate('author')
         .exec(function (err, messages) {
             if (err) {
-                res.send({
-                    error: err
-                });
+                console.log(err);
             }
-            for (var i in messages) {
-                if (i == 12) {
-                    res.json(finalMessages);
-                    return;
-                }
-                var currAuthor = messages[i].author.username;
-                var currMessage = messages[i].message;
-                var curr = {
-                    author: currAuthor,
-                    message: currMessage
-                }
-                finalMessages.push(curr);
-            }
-            res.json(finalMessages);
+            res.json(messages);
         });
 });
 

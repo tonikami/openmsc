@@ -4,7 +4,7 @@ ui.getMessages = function (callback) {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
             var messages = xmlHttp.response;
-            callback(messages)
+            callback(messages.reverse());
         }
     }
     xmlHttp.open("GET", '/api/messages', true); // true for asynchronous 
