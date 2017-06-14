@@ -34,7 +34,7 @@
         });
         ui.messageListener(function (new_message) {
             var finalMessage = new_message.author.username + "\n" + new_message.message;
-            sendMessage(finalMessage);
+            sendMessage(finalMessage, 'right');
         })
         var getMessageText, message_side, sendMessage;
         message_side = 'right';
