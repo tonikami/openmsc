@@ -1,6 +1,6 @@
 (function () {
     var Message;
-    var usernme;
+    var username;
     ui.getUser(function (u) {
         username = u;
     })
@@ -24,8 +24,10 @@
             for (var i in allMessages) {
                 var new_message = allMessages[i].author + ": " + allMessages[i].message;
                 var direction = 'right';
-                if (allMessages[i].author == username) {
-                    direction = 'left';
+                if (username) {
+                    if (allMessages[i].author == username) {
+                        direction = 'left';
+                    }
                 }
                 sendMessage(new_message, direction);
             }

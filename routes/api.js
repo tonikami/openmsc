@@ -248,7 +248,7 @@ router.get('/messages', function (req, res, next) {
                 });
             }
             for (var i in messages) {
-                if (i == 30) {
+                if (i == 12) {
                     res.json(finalMessages);
                     return;
                 }
