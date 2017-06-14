@@ -32,7 +32,14 @@ var upload = multer({
 });
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://adib:Tundib95@ds153501.mlab.com:53501/openmsc');
+mongoose.connect('mongodb://adib:Tundib95@ds153501.mlab.com:53501/openmsc', {
+    server: {
+        socketOptions: {
+            socketTimeoutMS: 60000,
+            connectionTimeout: 60000
+        }
+    }
+});
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
