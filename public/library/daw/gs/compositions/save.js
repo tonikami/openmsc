@@ -15,12 +15,14 @@ gs.compositions.save = function (cmp) {
     //    }
 
     function save_to_server() {
-        console.log('Saving to server');
-
         var new_samples = gs.composition.samples.filter(function (sample) {
             return sample.meta_data.new == true;
         })
-
+        
+        if (new_samples.length == 0) {
+            return;
+        }
+        
         var reqParam = new_samples.map(function (sample) {
             return {
                 track: sample.data.track.id,
