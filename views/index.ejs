@@ -45,7 +45,7 @@
     <script>
         var socket = io();
         socket.on('newMessage', function(message) {
-            console.log(message.author.username + message.message);
+            console.log(message.author.username + ": " + message.message);
         });
 
     </script>
@@ -84,6 +84,8 @@
     <script src="/library/daw/ui/btnLoginAccount.js"></script>
     <script src="/library/daw/ui/btnCreateAccount.js"></script>
     <script src="/library/daw/ui/btnLogout.js"></script>
+    <script src="/library/daw/ui/sndMessage.js"></script>
+    <script src="/library/daw/ui/getMessages.js"></script>
     <script src="/library/daw/ui/bpm.js"></script>
     <script src="/library/daw/ui/btnMagnet.js"></script>
     <script src="/library/daw/ui/btnPlay.js"></script>
@@ -103,8 +105,6 @@
     <script src="/library/daw/ui/tracksBg.js"></script>
     <script src="/library/daw/ui/visual.js"></script>
     <script src="/library/daw/ui/_init.js"></script>
-    <script src="/library/daw/ui/sndMessage.js"></script>
-    <script src="/library/daw/ui/getMessages.js"></script>
 
     <script src="/library/daw/ui/cursor.js"></script>
     <script src="/library/daw/ui/getGridSec.js"></script>

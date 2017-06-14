@@ -32,7 +32,14 @@ var upload = multer({
 });
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://adib:Tundib95@ds153501.mlab.com:53501/openmsc');
+mongoose.connect('mongodb://adib:Tundib95@ds153501.mlab.com:53501/openmsc', {
+    server: {
+        socketOptions: {
+            socketTimeoutMS: 60000,
+            connectionTimeout: 60000
+        }
+    }
+});
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -224,6 +231,7 @@ router.get('/customSounds', function (req, res, next) {
         })
 });
 router.get('/messages', function (req, res, next) {
+    var finalMessages = [];
     Message.find({})
         .select('createdAt message author')
         .sort('createdAt')
@@ -234,7 +242,19 @@ router.get('/messages', function (req, res, next) {
                     error: err
                 });
             }
-            res.json(messages);
+            for (var i in messages) {
+                if (i == 30) {
+                    return;
+                }
+                var currAuthor = messages[i].author.username;
+                var currMessage = messages[i].message;
+                var curr = {
+                    author: currAuthor,
+                    message: currMessage
+                }
+                finalMessages.push(curr);
+            }
+            res.json(finalMessages);
         });
 });
 
