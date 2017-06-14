@@ -48,9 +48,9 @@ templates['itemBuffer'] = template({"compiler":[7,">= 4.0.0"],"main":function(co
 templates['itemChange'] = template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<li class=\"list-group-item\">\r\n    <div class=\"row text-center\" id=\"dropdown-detail-1\" data-toggle=\"detail-1\">\r\n        <div class=\"col-xs-2\">\r\n            <div class=\"row\">\r\n                <span id=\"voteUp\" class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span>\r\n                <h5 id=\"voteAmount\">"
+  return "<li class=\"list-group-item\">\r\n    <div class=\"row text-center\" id=\"dropdown-detail-1\" data-toggle=\"detail-1\">\r\n        <div class=\"col-xs-2\">\r\n            <div class=\"row\">\r\n                <span id=\"voteUp\"  class=\"fa fa-chevron-up vote-buttons\" aria-hidden=\"true\"></span>\r\n                <h5 id=\"voteAmount\">"
     + alias4(((helper = (helper = helpers.voteAmount || (depth0 != null ? depth0.voteAmount : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"voteAmount","hash":{},"data":data}) : helper)))
-    + "</h5>\r\n                <span id=\"voteDown\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-xs-10 text-left\">\r\n            <h5><b>"
+    + "</h5>\r\n                <span id=\"voteDown\" class=\"fa fa-chevron-down vote-buttons\" aria-hidden=\"true\"></span>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-xs-10 text-left\">\r\n            <h5><b>"
     + alias4(((helper = (helper = helpers.username || (depth0 != null ? depth0.username : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"username","hash":{},"data":data}) : helper)))
     + "</b> added "
     + alias4(((helper = (helper = helpers.blocksAmount || (depth0 != null ? depth0.blocksAmount : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"blocksAmount","hash":{},"data":data}) : helper)))
@@ -80,7 +80,7 @@ templates['panel'] = template({"compiler":[7,">= 4.0.0"],"main":function(contain
     + "</div>\r\n";
 },"usePartial":true,"useData":true});
 templates['save'] = template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div id=\"save\" class=\"border\">\r\n	<span data-edit=\"save\" class=\"btn2 inshadow icon fw save\" title=\"Save (Ctrl + S)\"></span>\r\n	<input id=\"saveCheckbox\" type=\"checkbox\"/>\r\n	<label for=\"saveCheckbox\"mak></label>\r\n	<div class=\"dropdown\">\r\n		<div class=\"title\">Current composition :</div>\r\n		<a href=\"#\" id=\"exportToWaveFile\">Export to Wave file</a>\r\n		<div class=\"title\">All compositions :</div>\r\n		<div class=\"list\"></div>\r\n	</div>\r\n</div>\r\n";
+    return "<div id=\"save\" class=\"border\">\r\n    <button  data-edit=\"save\" type=\"button\" class=\"btn btn-primary save_changes\">Save Changes</button>\r\n\r\n<!--\r\n    <span data-edit=\"save\" class=\"btn2 inshadow icon fw save\" title=\"Save (Ctrl + S)\"></span>\r\n    <h5>Save</h5>\r\n-->\r\n    <input id=\"saveCheckbox\" type=\"checkbox\" />\r\n    <label for=\"saveCheckbox\" mak></label>\r\n    <div class=\"dropdown\">\r\n        <div class=\"title\">Current composition :</div>\r\n        <a href=\"#\" id=\"exportToWaveFile\">Export to Wave file</a>\r\n        <div class=\"title\">All compositions :</div>\r\n        <div class=\"list\"></div>\r\n    </div>\r\n</div>";
 },"useData":true});
 templates['saveComposition'] = template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return "<a href=\"#\" class=\"saveComposition\">\r\n	<div class=\"name\"></div>\r\n	<span class=\"bpm\"></span>\r\n	<span class=\"duration\"></span>\r\n</a>\r\n";
