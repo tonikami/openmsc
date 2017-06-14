@@ -76,3 +76,32 @@
         });
     });
 }.call(this));
+
+
+$(function () {
+    $(".top_menu").click(function () {
+        console.log('Click');
+        if ($(this).parent().hasClass('mini')) {
+            console.log('maximising');
+
+            $(this).parent().removeClass('mini').addClass('normal');
+            $('.messangerBody').animate({
+                height: "400px"
+            }, 500).show();
+
+            setTimeout(function () {
+                $('.bottom_wrapper').show();
+            }, 500);
+        } else {
+            console.log('minimizing');
+
+            $(this).parent().removeClass('normal').addClass('mini');
+            $('.messangerBody').animate({
+                height: "0px"
+            }, 500).show();
+            setTimeout(function () {
+                $('.bottom_wrapper').hide();
+            }, 500);
+        }
+    });
+})
