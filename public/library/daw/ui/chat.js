@@ -51,7 +51,7 @@
         $('.send_message').click(function (e) {
             if (username) {
                 var mess = username + ": " + getMessageText();
-                ui.sendMessage(mess);
+                ui.sendMessage(getMessageText());
                 sendMessage(mess);
             }
         });
@@ -59,7 +59,7 @@
             if (e.which === 13) {
                 if (username) {
                     var mess = username + ": " + getMessageText();
-                    ui.sendMessage(mess);
+                    ui.sendMessage(getMessageText());
                     sendMessage(mess);
                 }
             }
