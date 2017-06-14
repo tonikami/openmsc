@@ -33,7 +33,7 @@
             }
         });
         ui.messageListener(function (new_message) {
-            var finalMessage = new_message.author.username + "\n" + new_message.message;
+            var finalMessage = new_message.author.username + ": " + new_message.message;
             sendMessage(finalMessage, 'right');
         })
         var getMessageText, message_side, sendMessage;
