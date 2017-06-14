@@ -1,14 +1,24 @@
 gs.change.voteDown = function (change) {
-    change.elVoteAmount.textContent = change.itemChangeData.voteAmount--;
+    if (change.votedUp == undefined) {
+        change.totalVotes = change.totalVotes - 1;
+        updateServer();
+    } else if (change.votedUp) {
+        change.totalVotes = change.totalVotes - 2;
+        updateServer();
+    }
 
-    var xmlhttp = new XMLHttpRequest();
+    function updateServer() {
+        change.elVoteAmount.textContent = change.totalVotes;
+        gs.change.selectedVote(change);
 
-    xmlhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            console.log('Changes Saved');
-        }
-    };
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log('Changes Saved');
+            }
+        };
 
-    xmlhttp.open("GET", '/api/' + change._id + '/vote/down', true);
-    xmlhttp.send();
+        xmlhttp.open("GET", '/api/' + change._id + '/vote/down', true);
+        xmlhttp.send();
+    }
 }

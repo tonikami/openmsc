@@ -113,7 +113,7 @@ router.get('/:changeid/vote/down', function (req, res, next) {
 
                 console.log(totalVotes);
 
-                if (totalVotes < 0) {
+                if (totalVotes < -2) {
                     Change.findOneAndRemove({
                         _id: req.params.changeid
                     }, function (err) {
@@ -154,7 +154,7 @@ router.get('/changes', function (req, res, next) {
             var calls = [];
             changes.forEach(function (change) {
                 calls.push(function (callback) {
-                    getTotalVotes(change, callback);
+                    addVoteData(change, callback, req);
                 });
             })
 
@@ -167,7 +167,7 @@ router.get('/changes', function (req, res, next) {
         })
 });
 
-function getTotalVotes(change, callback) {
+function addVoteData(change, callback, req) {
     ChangeVotes.find({
             change: change._id,
         })
@@ -176,13 +176,18 @@ function getTotalVotes(change, callback) {
                 return console.error(err);
             }
             var totalVotes = 0;
-            for (var i = 0; i < votes.length; i++) {
-                if (votes[i].votedUp == true) {
+            votes.forEach(function (vote) {
+                if (vote.votedUp == true) {
                     totalVotes++;
                 } else {
                     totalVotes--;
                 }
-            }
+
+                if (vote.user.equals(req.user._id)) {
+                    change.votedUp = vote.votedUp;
+                };
+            })
+
             change.totalVotes = totalVotes;
             callback(null);
         })

@@ -13,6 +13,8 @@ gs.change.create = function (change) {
     change.elVoteDown = change.elChange.querySelector("#voteDown");
     change.elVoteAmount = change.elChange.querySelector("#voteAmount");
 
+    gs.change.selectedVote(change);
+
     change.elVoteUp.onclick = gs.change.voteUp.bind(null, change);
     change.elVoteDown.onclick = gs.change.voteDown.bind(null, change);
     change.elChange.onclick = function () {
@@ -20,7 +22,7 @@ gs.change.create = function (change) {
             gs.selectedChange.elChange.classList.remove('active');
         }
         gs.samples.selected.unselect();
-        
+
         gs.selectedChange = change;
         change.elChange.classList.add("active");
         change.samples.forEach(function (sample) {
