@@ -15,11 +15,12 @@
     <link rel="manifest" href="/library/daw/manifest.json" />
     <link rel="shortcut icon" href="/library/daw/assets/favicon.png" />
     <link rel="stylesheet" href="/library/daw/bin/gs-daw.min.css" />
+    <link rel="stylesheet" href="/library/daw/css_new/style.css" />
+
     <script>
         function lg(a) {
             return console.log.apply(console, arguments), a;
         }
-
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
@@ -30,6 +31,8 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script src="https://use.fontawesome.com/022b573027.js"></script>
 </head>
 
 
@@ -44,10 +47,14 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var socket = io();
+<<<<<<< HEAD
         socket.on('newMessage', function(message) {
             console.log(message.author.username + ": " + message.message);
+=======
+        socket.on('newMessage', function (message) {
+            console.log(message.author.username + message.message);
+>>>>>>> 98f48734157c960bba5ff65fd6ec502c82508637
         });
-
     </script>
     <script src="/library/daw/featuresTest.js"></script>
 
@@ -156,6 +163,7 @@
     <script src="/library/daw/gs/change/create.js"></script>
     <script src="/library/daw/gs/change/voteUp.js"></script>
     <script src="/library/daw/gs/change/voteDown.js"></script>
+    <script src="/library/daw/gs/change/selectedVote.js"></script>
 
     <script src="/library/daw/gs/events/bodyClick.js"></script>
     <script src="/library/daw/gs/events/clockUnits.js"></script>

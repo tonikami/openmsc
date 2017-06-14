@@ -9,5 +9,7 @@ window.gs = {
         selected: {}
     },
     selectedSamples: [],
-    change: {},
+    change: {
+        selectedVote: {}
+    },
 };

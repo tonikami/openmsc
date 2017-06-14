@@ -1,0 +1,7 @@
+.vote-buttons:hover {
+    color: royalblue;
+}
+
+.vote-buttons.selected {
+    color: royalblue;
+}

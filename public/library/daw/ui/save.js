@@ -9,7 +9,7 @@ ui.initElement( "save", function( el ) {
 			var el = e.target;
 
 			e.stopPropagation();
-			if ( el.classList.contains( "save" ) ) {
+			if ( el.classList.contains( "save_changes" ) ) {
 				gs.compositions.saveCurrent();
 			}
 		},
