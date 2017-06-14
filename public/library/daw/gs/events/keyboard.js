@@ -14,7 +14,7 @@ keyboardRouter(
 //	{ fn: keyTool, keys: [ "b" ], name: "paint" },
 //	{ fn: keyTool, keys: [ "h" ], name: "hand" },
 
-	{ fn: gs.playStop,                keys: [ " " ] },
+//	{ fn: gs.playStop,                keys: [ " " ] },
 	{ fn: gs.playPause,               keys: [ "ctrl", " " ] },
 	{ fn: gs.samples.selected.delete, keys: [ "delete" ] },
 //	{ fn: ui.btnMagnet.toggle,        keys: [ "g" ] },

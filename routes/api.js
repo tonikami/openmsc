@@ -183,7 +183,7 @@ function addVoteData(change, callback, req) {
                     totalVotes--;
                 }
 
-                if (vote.user.equals(req.user._id)) {
+                if (req.user && vote.user.equals(req.user._id)) {
                     change.votedUp = vote.votedUp;
                 };
             })

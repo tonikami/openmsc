@@ -8,6 +8,7 @@ gs.change.voteDown = function (change) {
     }
 
     function updateServer() {
+        change.votedUp = false;
         change.elVoteAmount.textContent = change.totalVotes;
         gs.change.selectedVote(change);
 
