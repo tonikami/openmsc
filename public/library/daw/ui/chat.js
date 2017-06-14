@@ -54,6 +54,9 @@
                 message_side: direction
             });
             message.draw();
+            return $messages.animate({
+                scrollTop: $messages.prop('scrollHeight')
+            }, 0);
         }
         receive_message = function (text) {
             var $messages, message;
