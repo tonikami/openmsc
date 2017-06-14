@@ -14,13 +14,15 @@ var api = require('./routes/api');
 var mongoose = require('mongoose');
 var exec = require('child_process').exec;
 
-exec('node_modules/handlebars/bin/handlebars public/library/daw/templates -f public/library/daw/templates/__templates.js', (error, stdout, stderr) => {
-  if (error) {
-    console.error(`exec error: ${error}`);
-    return;
-  }
-  console.log('Creating __templates.js');
+exec('node ./node_modules/handlebars/bin/handlebars public/library/daw/templates -f public/library/daw/templates/__templates.js', (error, stdout, stderr) => {
+    if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+    }
+    console.log('Creating __templates.js');
 });
+
+
 
 
 
