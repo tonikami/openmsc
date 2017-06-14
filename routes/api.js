@@ -249,6 +249,7 @@ router.get('/messages', function (req, res, next) {
             }
             for (var i in messages) {
                 if (i == 30) {
+                    res.json(finalMessages);
                     return;
                 }
                 var currAuthor = messages[i].author.username;
