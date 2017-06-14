@@ -21,6 +21,7 @@
         function lg(a) {
             return console.log.apply(console, arguments), a;
         }
+
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
@@ -47,14 +48,10 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var socket = io();
-<<<<<<< HEAD
         socket.on('newMessage', function(message) {
             console.log(message.author.username + ": " + message.message);
-=======
-        socket.on('newMessage', function (message) {
-            console.log(message.author.username + message.message);
->>>>>>> 98f48734157c960bba5ff65fd6ec502c82508637
         });
+
     </script>
     <script src="/library/daw/featuresTest.js"></script>
 
