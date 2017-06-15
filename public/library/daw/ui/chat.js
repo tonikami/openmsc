@@ -5,12 +5,14 @@
         username = u;
     })
     Message = function (arg) {
-        this.text = arg.text, this.message_side = arg.message_side;
+        this.text = arg.text, this.message_side = arg.message_side, this.usernameText = arg.usernameText;
+        console.log(this);
         this.draw = function (_this) {
             return function () {
                 var $message;
                 $message = $($('.message_template').clone().html());
                 $message.addClass(_this.message_side).find('.text').html(_this.text);
+                $message.addClass(_this.message_side).find('.usernameText').html(_this.usernameText);
                 $('.messages').append($message);
                 return setTimeout(function () {
                     return $message.addClass('appeared');
@@ -22,19 +24,21 @@
     $(function () {
         var messageHistory = ui.getMessages(function (allMessages) {
             for (var i in allMessages) {
-                var new_message = allMessages[i].author.username + ": " + allMessages[i].message;
+                var author = allMessages[i].author.username;
+                var message = allMessages[i].message;
                 var direction = 'right';
                 if (username) {
                     if (allMessages[i].author.username == username) {
                         direction = 'left';
                     }
                 }
-                sendMessage(new_message, direction);
+                sendMessage(message, author, direction);
             }
         });
         ui.messageListener(function (new_message) {
-            var finalMessage = new_message.author.username + ": " + new_message.message;
-            sendMessage(finalMessage, 'right');
+            var author = new_message.author.username;
+            var message = new_message.message;
+            sendMessage(message, uthor, 'right');
         })
         var getMessageText, message_side, sendMessage;
         message_side = 'right';
@@ -43,7 +47,7 @@
             $message_input = $('.message_input');
             return $message_input.val();
         };
-        sendMessage = function (text, direction) {
+        sendMessage = function (text, usernameText, direction) {
             var $messages, message;
             if (text.trim() === '') {
                 return;
@@ -52,6 +56,7 @@
             $messages = $('.messages');
             message_side = direction;
             message = new Message({
+                usernameText: usernameText,
                 text: text,
                 message_side: message_side
             });

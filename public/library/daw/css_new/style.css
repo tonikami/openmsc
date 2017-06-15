@@ -110,6 +110,10 @@ body {
     color: #c48843;
 }
 
+.messages .message.left .usernameText {
+    color: #c48843;
+}
+
 .messages .message.right .avatar {
     background-color: #fdbf68;
     float: right;
@@ -128,6 +132,10 @@ body {
 }
 
 .messages .message.right .text {
+    color: #45829b;
+}
+
+.messages .message.right .usernameText {
     color: #45829b;
 }
 
@@ -173,6 +181,11 @@ body {
 }
 
 .messages .message .text_wrapper .text {
+    font-size: 18px;
+    font-weight: 300;
+}
+
+.messages .message .text_wrapper .usernameText {
     font-size: 18px;
     font-weight: 300;
 }
@@ -225,7 +238,7 @@ body {
     background-color: #fff;
 }
 
-.bottom_wrapper .send_message .text {
+.bottom_wrapper .send_message .usernameText {
     font-size: 18px;
     font-weight: 300;
     display: inline-block;
