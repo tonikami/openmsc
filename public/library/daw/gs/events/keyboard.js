@@ -22,7 +22,17 @@ keyboardRouter(
 	{ fn: gs.samples.selected.paste,  keys: [ "ctrl", "v" ] },
 	{ fn: gs.history.undo,            keys: [ "ctrl", "z" ] },
 	{ fn: gs.history.redo,            keys: [ "ctrl", "shift", "z" ] },
-	{ fn: gs.compositions.saveCurrent, keys: [ "ctrl", "s" ] }
+	{ fn: gs.compositions.saveCurrent, keys: [ "ctrl", "s" ] },
+    { fn: gs.numberKeys.press, when: "down", keys: [ "0" ] },
+    { fn: gs.numberKeys.press, when: "down", keys: [ "1" ] },
+    { fn: gs.numberKeys.press, when: "down", keys: [ "2" ] },
+    { fn: gs.numberKeys.press, when: "down", keys: [ "3" ] },
+    { fn: gs.numberKeys.press, when: "down", keys: [ "4" ] },
+    { fn: gs.numberKeys.press, when: "down", keys: [ "5" ] },
+    { fn: gs.numberKeys.press, when: "down", keys: [ "6" ] },
+    { fn: gs.numberKeys.press, when: "down", keys: [ "7" ] },
+    { fn: gs.numberKeys.press, when: "down", keys: [ "8" ] },
+    { fn: gs.numberKeys.press, when: "down", keys: [ "9" ] }
 );
 
 var oldTool;

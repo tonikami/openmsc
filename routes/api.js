@@ -240,7 +240,7 @@ router.get('/messages', function (req, res, next) {
     Message.find({})
         .select('message author')
         .sort('-createdAt')
-        .limit(12)
+        .limit(30)
         .populate('author')
         .exec(function (err, messages) {
             if (err) {
