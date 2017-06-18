@@ -26,7 +26,7 @@ gs.file.create = function( file ) {
 	}
 	that.elFile.onclick = gs.file.click.bind( null, that );
 	that.elFile.ondragstart = gs.file.dragstart.bind( null, that );
-	that.elFile.oncontextmenu = function() { return false; };
+	that.elFile.oncontextmenu = gs.file.assign.bind( null, that );
 	that.elFile.onmousedown = function( e ) {
 		if ( e.button !== 0 ) {
 			gs.file.stop();

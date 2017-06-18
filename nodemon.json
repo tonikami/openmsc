@@ -1,0 +1,4 @@
+{
+    "ignore": ["__templates.js"],
+    "ext": "js json handlebars html ejs"
+}

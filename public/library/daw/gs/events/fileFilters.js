@@ -1,7 +1,6 @@
 "use strict";
 
 ( function() {
-
 ui.dom.filesFilters.onclick =
 ui.dom.filesFilters.oncontextmenu = function() { return false; };
 ui.dom.filesFilters.onmouseup = function( e ) {

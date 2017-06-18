@@ -6,8 +6,9 @@ var MessageSchema = mongoose.Schema({
     author: {
         type: Schema.Types.ObjectId,
         ref: 'User'
-    },
-    created: Number
+    }
+}, {
+    timestamps: true // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
 });
 
 module.exports = mongoose.model('Message', MessageSchema);

@@ -65,31 +65,13 @@ function getChangesFromServer() {
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             var response = JSON.parse(this.responseText);
-            response.forEach(function (change) {
-                change.blocks.forEach(function (sampleData) {
-                    buildSample(sampleData);
-                });
+            
+            response.reverse().forEach(function (change) {
+                gs.change.create(change);
             });
         }
     };
 
     xmlhttp.open("GET", '/api/changes', true);
     xmlhttp.send();
-}
-
-function showChange(change) {
-
-}
-
-function buildSample(sampleData) {
-    var smp = gs.sample.create(gs.files[sampleData.file], {
-        new: false
-    });
-
-    smp.data.gsfile.samplesToSet.push(smp);
-    gs.sample.inTrack(smp, sampleData.track);
-    gs.sample.when(smp, sampleData.when / ui.BPMem);
-    gs.sample.slip(smp, sampleData.slip / ui.BPMem);
-    gs.sample.duration(smp, sampleData.duration / ui.BPMem);
-    gs.composition.add(smp);
 }

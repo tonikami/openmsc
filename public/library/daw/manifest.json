@@ -1,7 +1,7 @@
 {
-	"name": "GridSound",
-	"short_name": "GS",
-	"description": "A free HTML5 DAW (digital audio workstation).",
+	"name": "OpenMSC",
+	"short_name": "OM",
+	"description": "An open source music collaboration tool",
 	"start_url": "/",
 	"scope": "/",
 	"display": "standalone",

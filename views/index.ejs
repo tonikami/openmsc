@@ -2,23 +2,26 @@
 <html>
 
 <head>
-    <title>GridSound</title>
+    <title>OpenMSC</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, user-scalable=no" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="GridSound (an open-source audio sequencer)" />
-    <meta property="og:url" content="https://gridsound.github.io/" />
+    <meta property="og:title" content="OpenMSC (an open-source music producing tool)" />
+    <meta property="og:url" content="https://open-msc.herokuapp.com" />
     <meta property="og:image" content="https://gridsound.github.io/assets/og-image.jpg" />
     <meta property="og:image:width" content="800" />
     <meta property="og:image:height" content="400" />
     <meta name="theme-color" content="#508ea9" />
+    
     <link rel="manifest" href="/library/daw/manifest.json" />
     <link rel="shortcut icon" href="/library/daw/assets/favicon.png" />
     <link rel="stylesheet" href="/library/daw/bin/gs-daw.min.css" />
+    <link rel="stylesheet" href="/library/daw/css_new/style.css" />
     <script>
         function lg(a) {
             return console.log.apply(console, arguments), a;
         }
+
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
@@ -29,6 +32,8 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script src="https://use.fontawesome.com/022b573027.js"></script>
 </head>
 
 
@@ -40,6 +45,7 @@
     <!-- -->
 
     <!-- Development -->
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/library/daw/featuresTest.js"></script>
 
     <script src="/library/daw/dep/keyboardRouter.min.js"></script>
@@ -60,6 +66,7 @@
     <script src="/library/daw/gs/_init.js"></script>
     <script src="/library/daw/gs/loop.js"></script>
     <script src="/library/daw/gs/playPauseStop.js"></script>
+    <script src="/library/daw/gs/file/assign.js"></script>
     <script src="/library/daw/gs/file/click.js"></script>
     <script src="/library/daw/gs/file/create.js"></script>
     <script src="/library/daw/gs/file/delete.js"></script>
@@ -72,9 +79,12 @@
     <script src="/library/daw/gs/history/actions.js"></script>
 
     <script src="/library/daw/ui/ui.js"></script>
+    <script src="/library/daw/ui/btnAssignKey.js"></script>
     <script src="/library/daw/ui/btnLoginAccount.js"></script>
     <script src="/library/daw/ui/btnCreateAccount.js"></script>
     <script src="/library/daw/ui/btnLogout.js"></script>
+    <script src="/library/daw/ui/sendMessage.js"></script>
+    <script src="/library/daw/ui/getMessages.js"></script>
     <script src="/library/daw/ui/bpm.js"></script>
     <script src="/library/daw/ui/btnMagnet.js"></script>
     <script src="/library/daw/ui/btnPlay.js"></script>
@@ -82,6 +92,8 @@
     <script src="/library/daw/ui/btnUndo.js"></script>
     <script src="/library/daw/ui/btnRedo.js"></script>
     <script src="/library/daw/ui/clock.js"></script>
+    <script src="/library/daw/ui/getUser.js"></script>
+    <script src="/library/daw/ui/chat.js"></script>
     <script src="/library/daw/ui/currentTimeCursor.js"></script>
     <script src="/library/daw/ui/exportToWaveFile.js"></script>
     <script src="/library/daw/ui/filesCursor.js"></script>
@@ -93,8 +105,9 @@
     <script src="/library/daw/ui/timelineLoop.js"></script>
     <script src="/library/daw/ui/tracksBg.js"></script>
     <script src="/library/daw/ui/visual.js"></script>
+    <script src="/library/daw/ui/messageListener.js"></script>
     <script src="/library/daw/ui/_init.js"></script>
-
+    
     <script src="/library/daw/ui/cursor.js"></script>
     <script src="/library/daw/ui/getGridSec.js"></script>
     <script src="/library/daw/ui/getTrackFromPageY.js"></script>
@@ -114,6 +127,10 @@
     <script src="/library/daw/gs/currentTime.js"></script>
     <script src="/library/daw/gs/reset.js"></script>
     <script src="/library/daw/gs/file/dragstart.js"></script>
+    
+    <script src="/library/daw/gs/numberKeys/_init.js"></script>
+    <script src="/library/daw/gs/numberKeys/assign.js"></script>
+    <script src="/library/daw/gs/numberKeys/press.js"></script>
 
     <script src="/library/daw/gs/compositions/init.js"></script>
     <script src="/library/daw/gs/compositions/load.js"></script>
@@ -141,6 +158,11 @@
     <script src="/library/daw/gs/samples/selected/slip.js"></script>
     <script src="/library/daw/gs/samples/selected/crop.js"></script>
     <script src="/library/daw/gs/samples/selected/unselect.js"></script>
+
+    <script src="/library/daw/gs/change/create.js"></script>
+    <script src="/library/daw/gs/change/voteUp.js"></script>
+    <script src="/library/daw/gs/change/voteDown.js"></script>
+    <script src="/library/daw/gs/change/selectedVote.js"></script>
 
     <script src="/library/daw/gs/events/bodyClick.js"></script>
     <script src="/library/daw/gs/events/clockUnits.js"></script>
