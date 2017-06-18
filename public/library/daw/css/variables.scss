@@ -1,0 +1,108 @@
+$COLOR_MAIN: lighten( #142b35, 5 );
+$COLOR_SELECTION: #ff3636;
+
+// ---------------------------------------
+
+$color_appBg: lighten( grayscale( $COLOR_MAIN ), 10 );
+$width_scrollbarSize: 5px;
+$color_scrollbarBg: #222;
+$color_scrollbarThumb: #888;
+
+// .item
+$item_height: 38px;
+$item_bg: #2a2a2a;
+$item_bg_hover: #080808;
+$item_border: 1px solid #000;
+$item_color: #ddd;
+$item_color_hover: #fff;
+$item_nameFontSize: 12px;
+$item_padding: .3em;
+$item_padding_hover: $item_padding + .5em;
+$item_iconMargin: .3em;
+$item_waveFill: #5c557b;
+
+// .track
+$track_height: 50px;
+$track_namesBorder: 1px solid #151515;
+$track_linesBorderColor: #090909;
+$track_linesBorder: 1px solid $track_linesBorderColor;
+$track_namesBg: darken( $color_appBg, 6.2 );
+$track_bg_off: rgba( #000, .2 );
+$track_firstBorder: rgba( #fff, .05 );
+$track_firstBorder_off: rgba( #000, .2 );
+$track_toggleWidth: 18px;
+$track_spanEditableEmpty: rgba( #fff, .2 );
+$track_backBg: $COLOR_MAIN;
+$track_backBgEven: darken( $track_backBg, 2 );
+
+// .gridBlock
+$gridBlock_bg: rgba( #000, .5 );
+$gridBlock_radius: 2px;
+$gridBlock_headHeight: 16px;
+$gridBlock_headPadding: .4em;
+$gridBlock_fontSize: 11px;
+$gridBlock_fontSize_small: 11px;
+$gridBlock_headBg: #667;
+$gridBlock_borderBottom: 2px solid $gridBlock_headBg;
+$gridBlock_cropWidth: 10px;
+$gridBlock_cropBg: rgba( #fff, .2 );
+$gridBlock_headBg_selected: #a93636;
+$gridBlock_opacity_mute: .5;
+$gridBlock_contentOpacity_small: .2;
+$gridBlock_waveformFill: #fff;
+
+// #timeline
+$timeline_bgColor: darken( $COLOR_MAIN, 10 );
+$timeline_border: 1px solid #000;
+
+// .timelineBeat
+$timelineBeat_color: lighten( grayscale( $timeline_bgColor ), 30 );
+$timelineBeat_4nColor: lighten( $timelineBeat_color, 20 );
+$timelineBeat_fontSize: 12px;
+$timelineBeat_4nFontSize: 14px;
+
+// #timelineLoop
+$timelineLoop_outerFilter: rgba( #000, .35 );
+$timelineLoop_borderWidth: 2px;
+$timelineLoop_widthCrop: 10px;
+$timelineLoop_borderColor: lighten( $COLOR_MAIN, 50 );
+$timelineLoop_bgColor: rgba( $timelineLoop_borderColor, .05 );
+
+// #save
+$save_dropdownPadding: 5px;
+$save_bg: lighten( adjust_hue( lighten( $COLOR_MAIN, 4 ), 170deg ), 10 );
+$save_dropdownWidth: 234px;
+$save_dropdownRadius: 4px;
+$save_dropdownShadow: 6px 6px 20px rgba( #000, .5 );
+
+$color_panelNav: darken( $color_appBg, 5 );
+$color_visualBg: darken( $COLOR_MAIN, 6 );
+
+$color_clock: #ccc;
+$color_clockStroke: #000;
+
+$color_menuText: $color_clock;
+$color_playBtn: lighten( $COLOR_MAIN, 4 );
+$color_stopBtn: lighten( $color_appBg, 8 );
+$lighten_toolHover: 5%;
+$lighten_toolSelected: 10%;
+$color_toolBorder: #1c1c27;
+
+$color_bpmBg: darken( $color_appBg, 6.2 );
+$color_bpmUnit: #666;
+
+$color_taskBg: darken( $color_appBg, 10% );
+$color_taskHoverBg: darken( $color_taskBg, 10% );
+
+$color_filesBg: #1c1c1c;
+$color_fileFiltersBg: rgba( #000, .35 );
+$color_filesPlaceholder: $color_fileFiltersBg;
+$color_fileWaveform: lighten( $COLOR_MAIN, 10% );
+
+$color_squareSelectionBorder: $COLOR_SELECTION;
+$color_squareSelectionBg: rgba( $COLOR_SELECTION, .3 );
+
+$color_currentTimeArrow: #9ac060;
+$shadow_currentTimeArrow: 0 0 3px rgba( $color_currentTimeArrow, .8 );
+$color_currentTimeCursorBg: rgba( #ffa, .4 );
+$color_currentTimeCursorShadow: #50ff00;

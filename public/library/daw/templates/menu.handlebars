@@ -1,0 +1,65 @@
+<div id="menu">
+    <span id="btnPlay" class="btn2 border inshadow icon play" title="Play/pause (press Space, hold Ctrl for pause)"></span>
+    <span id="btnStop" class="btn2 border inshadow icon stop" title="Stop (press Space)"></span> {{> bpm }} {{> save }}
+    <a data-option="magnet" id="btnMagnet" class="btn2 small icon fw magnet" title="Toggle magnetism (press G)"></a>
+    <div class="sep"></div>
+    <a data-tool="select" class="btn2 small icon fw tool-select" title="Select (hold Shift or press V)"></a>
+    <a data-tool="paint" class="btn2 small icon fw tool-paint" title="Paint (press B)"></a>
+    <a data-tool="delete" class="btn2 small icon fw tool-delete" title="Delete (press D)"></a>
+    <a data-tool="mute" class="btn2 small icon fw tool-mute" title="Mute (press M)" style="display: none;"></a>
+    <a data-tool="slip" class="btn2 small icon fw tool-slip" title="Slip (press S)"></a>
+    <a data-tool="cut" class="btn2 small icon fw tool-cut" title="Cut (press C)"></a>
+    <a data-tool="hand" class="btn2 small icon fw tool-hand" title="Hand (hold Alt or press H)"></a>
+    <a data-tool="zoom" class="btn2 small icon fw tool-zoom" title="Zoom (hold Ctrl or press Z)"></a>
+    <div class="flex1"></div>
+
+    <span class="text" style="margin-right: 10px;" id="accountArea_SignedOut">
+        <button type="button" class="btn btn-primary btn-sm" id="btnLogin" data-toggle="modal" data-target="#loginModal" style="background: #214656; margin-right: 10px;"> Login </button>
+        <button type="button" class="btn btn-primary btn-sm"  id="btnRegister" data-toggle="modal" data-target="#registerModal" style="background: #214656"> Register </button>
+    </span>
+
+    <span class="text" style="margin-right: 10px;" id="accountArea_SignedIn">
+        <span id="loggedInUsername"></span>
+    <button type="button" class="btn btn-primary btn-sm" id="btnLogout" style="background: #214656"> Logout </button>
+    </span>
+
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Login</h4> </div>
+                <div class="modal-body">
+                    <fieldset>
+                        <div class="form-group">
+                            <input class="form-control" placeholder="Username" name="username" type="text" id="lUsername"> </div>
+                        <div class="form-group">
+                            <input class="form-control" placeholder="Password" name="password" type="password" value="" id="lPassword"> </div>
+                        <button class="btn btn-lg btn-success btn-block" id="btnLoginAccount">Login</button>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Register</h4> </div>
+                <div class="modal-body">
+                    <fieldset>
+                        <div class="form-group">
+                            <input class="form-control" placeholder="Username" name="username" type="text" id="rUsername"> </div>
+                        <div class="form-group">
+                            <input class="form-control" placeholder="E-mail" name="email" type="text" id="rEmail"> </div>
+                        <div class="form-group">
+                            <input class="form-control" placeholder="Password" name="password" type="password" value="" id="rPassword"> </div>
+                        <button class="btn btn-lg btn-success btn-block" id="btnCreateAccount"> Create Account </button>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
