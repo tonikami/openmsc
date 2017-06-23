@@ -111,7 +111,7 @@ body {
 }
 
 .messages .message.left .usernameText {
-    color: #c48843;
+    color: #C71585;
 }
 
 .messages .message.right .avatar {
@@ -136,7 +136,7 @@ body {
 }
 
 .messages .message.right .usernameText {
-    color: #45829b;
+    color: #C71585;
 }
 
 .messages .message.appeared {

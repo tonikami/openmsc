@@ -6,7 +6,6 @@
     })
     Message = function (arg) {
         this.text = arg.text, this.message_side = arg.message_side, this.usernameText = arg.usernameText;
-        console.log(this);
         this.draw = function (_this) {
             return function () {
                 var $message;
@@ -29,10 +28,11 @@
                 var direction = 'left';
                 if (username) {
                     if (allMessages[i].author.username == username) {
+                        author = '';
                         direction = 'right';
                     }
                 }
-                display_message(message, '', direction);
+                display_message(message, author, direction);
             }
         });
         ui.messageListener(function (new_message) {
@@ -79,7 +79,7 @@
                 scrollTop: $messages.prop('scrollHeight')
             }, 300);
         };
-        sendMessage = function (text, usernameText) {
+        sendMessage = function (text) {
             var $messages, message;
             if (text.trim() === '') {
                 return;
@@ -87,7 +87,7 @@
             $('.message_input').val('');
             $messages = $('.messages');
             message = new Message({
-                usernameText: usernameText,
+                usernameText: '',
                 text: text,
                 message_side: 'right'
             });
@@ -100,7 +100,7 @@
             if (e.which === 13) {
                 if (username) {
                     ui.sendMessage(getMessageText());
-                    sendMessage(getMessageText(), username);
+                    sendMessage(getMessageText());
                 }
             }
         });
