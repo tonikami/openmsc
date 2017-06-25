@@ -187,8 +187,8 @@ router.get('/:layerid/projectname', function (req, res, next) {
         if (err) {
             return console.error(err);
         }
-        var blocks = {[]}
-        res.send({block.projectid})
+        var blocks = [];
+        res.send({blocks});
     })
     
 })
