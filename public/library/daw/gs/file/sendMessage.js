@@ -1,6 +1,6 @@
 "use strict";
 
-ui.sendMessage = function (message) {
+gs.file.sendMessage = function (message) {
     if (message != "") {
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function () {

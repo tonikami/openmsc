@@ -1,7 +1,7 @@
 (function () {
     var Message;
     var username;
-    ui.getUser(function (u) {
+    gs.file.getUser(function (u) {
         username = u;
     })
     Message = function (arg) {
@@ -21,7 +21,7 @@
         return this;
     };
     $(function () {
-        var messageHistory = ui.getMessages(function (allMessages) {
+        var messageHistory = gs.file.getMessages(function (allMessages) {
             for (var i in allMessages) {
                 var author = allMessages[i].author.username;
                 var message = allMessages[i].message;
@@ -35,7 +35,7 @@
                 display_message(message, author, direction);
             }
         });
-        ui.messageListener(function (new_message) {
+        gs.file.messageListener(function (new_message) {
             var author = new_message.author.username;
             var message = new_message.message;
             receive_message(message, author);
@@ -99,7 +99,7 @@
         $('.message_input').keyup(function (e) {
             if (e.which === 13) {
                 if (username) {
-                    ui.sendMessage(getMessageText());
+                    gs.file.sendMessage(getMessageText());
                     sendMessage(getMessageText());
                 }
             }
