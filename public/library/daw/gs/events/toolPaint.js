@@ -59,6 +59,9 @@ ui.tool.paint = {
 	},
 	mousemove: function( e, secRel ) {
 		if ( _smp ) {
+            if (!_smp.meta_data.new) {
+                return;
+            }
 			// Changes tracks:
 			if ( !cropping ) {
 				e = e.target;

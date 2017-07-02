@@ -1,56 +1,30 @@
 <section id="files">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Recent Changes</h3>
+    <div class="panel panel-default" style="height: 50%; overflow-y: scroll; margin: 0px; background: #4b4b4b; border-width: 0px;">
+        <div class="panel-heading text-center" style="background: #3e3e3e">
+            <a>
+                <h4 class="panel-title">Recent Changes</h4>
+            </a>
         </div>
-        <ul class="list-group">
-            <li class="list-group-item">
-                <div class="row text-center" id="dropdown-detail-1" data-toggle="detail-1">
-                    <div class="col-xs-2">
-                        <div class="row">
-                            <span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>
-                            <h5>0</h5>
-                            <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
-                        </div>
-                    </div>
-                    <div class="col-xs-10 text-left">
-                        <h5><a>Tonikami</a> added 3 blocks</h5>
-                        <small>3 hours ago</small>
-                    </div>
-                </div>
-            </li>
-            <li class="list-group-item">
-                <div class="row text-center" id="dropdown-detail-1" data-toggle="detail-1">
-                    <div class="col-xs-2">
-                        <div class="row">
-                            <span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>
-                            <h5>0</h5>
-                            <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
-                        </div>
-                    </div>
-                    <div class="col-xs-10 text-left">
-                        <h5><a>AdibP</a> added 10 blocks</h5>
-                        <small>5 hours ago</small>
-                    </div>
-                </div>
-            </li>
+        <ul id="changesList" class="list-group">
         </ul>
     </div>
-    <div>
+    <div class="panel panel-default" style="height: 50%; overflow-y: scroll; margin: 0px; background: #4b4b4b; border-width: 0px;">
+        <div class="panel-heading text-center" style="background: #3e3e3e">
+            <a>
+                <h4 class="panel-title">Sounds</h4>
+            </a>
+        </div>
         <input id="filesInput" type="file" />
         <div id="filesCursor" class="cursor"></div>
         <nav id="filesFilters">
-            <a href="#" class="used">Used</a>
-            <a href="#" class="loaded">Loaded</a>
-            <a href="#" class="unloaded">Unloaded</a>
-        </nav>
-        <div id="filesList" class="list"></div>
-        <div class="placeholder">
             <i class="icon file-audio"></i>
-            <br/>
-            <b>Drop audio files here</b>
-        </div>
+            <b>&nbsp Drop audio files here </b>
+            <!--
+<a href="#" class="used">Used</a>
+<a href="#" class="loaded">Loaded</a>
+<a href="#" class="unloaded">Unloaded</a>
+-->
+        </nav>
+        <div id="filesList" class="list" span="100"></div>
     </div>
-
-
 </section>
