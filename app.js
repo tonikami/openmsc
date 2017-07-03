@@ -12,19 +12,6 @@ var MongoStore = require('connect-mongo')(session);
 var index = require('./routes/index');
 var api = require('./routes/api');
 var mongoose = require('mongoose');
-var exec = require('child_process').exec;
-
-exec('node ./node_modules/handlebars/bin/handlebars public/library/daw/templates -f public/library/daw/templates/__templates.js', (error, stdout, stderr) => {
-    if (error) {
-        console.error(`exec error: ${error}`);
-        return;
-    }
-    console.log('Creating __templates.js');
-});
-
-
-
-
 
 var app = express();
 
@@ -64,28 +51,9 @@ app.use('/api', api);
 
 var port = process.env.PORT || 8000;
 
-var server = http.createServer(app).listen(port, function () {
+var serve = http.createServer(app).listen(port, function () {
     console.log("server started at port" + port);
 });
-var io = require('socket.io')(server);
-
-var socketEvents = function (io) {
-    io.on('connection', function (socket) {
-        console.log('a user connected');
-        socket.join("openmsc");
-
-        socket.on('disconnect', function () {
-            console.log('user disconnected');
-        });
-    });
-};
-socketEvents(io);
-app.io = io;
-
-
-
-
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

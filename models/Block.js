@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var blockSchema = mongoose.Schema({
+    projectid: Number,
     duration: Number,
     when: Number,
     slip: Number,

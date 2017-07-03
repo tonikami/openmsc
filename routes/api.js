@@ -16,7 +16,6 @@ var storage = gcs({
     filename: function (req, file, cb) {
 
         cb(null, file.originalname);
-
     },
     bucket: 'openmscsounds', // Required : bucket name to upload 
     projectId: 'flowing-maxim-170100', // Required : Google project ID 
@@ -110,7 +109,6 @@ router.get('/:changeid/vote/down', function (req, res, next) {
                         totalVotes--;
                     }
                 }
-
                 console.log(totalVotes);
 
                 if (totalVotes < -2) {
@@ -210,6 +208,7 @@ router.post('/upload/change', function (req, res, next) {
     });
 });
 
+
 router.post('/upload/customSound', upload.single('file'), function (req, res, next) {
     var sound = new Sound({
         filename: req.file.filename,
@@ -222,10 +221,7 @@ router.post('/upload/customSound', upload.single('file'), function (req, res, ne
         }
         res.json(new_sound);
     });
-
 });
-
-
 router.get('/customSounds', function (req, res, next) {
     Sound.find({})
         .exec(function (err, sounds) {

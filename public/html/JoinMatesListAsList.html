@@ -1,0 +1,73 @@
+<br>
+<div class="row">
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-8">
+        <div class="list-group" ng-repeat="post in listResults">
+            <div href="#" class="list-group-item">
+                <div class="row" style="height: 100%;">
+                    <div class="col-sm-9">
+                        <!--<h4 class="list-group-item-heading">List group item heading</h4>-->
+                        <img ng-src="{{'https://storage.googleapis.com/mates-web-image-bucket/' +member.user._id+ '.jpg'}}" class="img-circle" style="width: 55px;height: 55px;margin-right:10px" ng-repeat="member in post.members" ng-click="showUserProfile(member.user._id)"/>
+                        <br>
+                        <span ng-repeat="tag in getTags(post.members)"><span class="label label-info" style="margin-left: 10px;">{{tag}}</span></span>
+                    </div>
+
+                    <div class="col-sm-3" style="height: 100%;">
+                        <br>
+                        <button type="button" class="btn btn-primary pull-right">Request To Join</button>
+                        <!--<p><small><em>{{UpdatedAtService.timeSince(post.updated_at)}} ago</em></small></p>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="pagination">
+            <li ng-class="{disabled:currentPage===1}"><a href="#">&laquo;</a></li>
+            <li ng-repeat="i in getPaginationArray()" ng-class="{active:i+1==currentPage}"><a href ng-click="goToPage(i+1)">{{i+1}}</a></li>
+            <!---->
+            <li ng-class="{disabled:totalNumPages<2 || currentPage === totalNumPages}"><a href="#">&raquo;</a></li>
+        </ul>
+
+    </div>
+    <div class="col-md-2">
+    </div>
+</div>
+
+
+
+
+<!--<div class="card text-center" style=" padding: 20px;">-->
+    <!--<div class="row">-->
+        <!--<div class="col-sm-2" ng-repeat="user in currentList.members">-->
+            <!--<div class="card user" style="padding: 10px; border-radius: 10px;" ng-click="showUserProfile(user.user._id)">-->
+                <!--<img src="https://unsplash.it/200/?random" class="img-circle" style="width: 55px;height: 55px; "/>-->
+                <!--<h6>{{user.user.name.first}}</h6> <hr>-->
+                <!--<h6>{{user.user.uni.course}}</h6>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<br>-->
+    <!--<div class="row">-->
+        <!--<span class="label label-info">#Travelling</span>-->
+        <!--<span class="label label-info">#American Football</span>-->
+        <!--<span class="label label-info">#Gym</span>-->
+        <!--<span class="label label-info">#Swimming</span>-->
+        <!--<span class="label label-info">#Gaming</span>-->
+    <!--</div>-->
+
+    <!--<blockquote>-->
+        <!--<p>{{currentList.summary}}</p>-->
+        <!--<small><cite title="Source Title">Updated 1 day ago</cite></small>-->
+
+    <!--</blockquote>-->
+    <!--<button type="button" class="btn btn-primary">Request To Join</button>-->
+
+
+
+    <!--<ul class="pager">-->
+        <!--<li class="previous"><a  ng-click="prev()" ng-hide="currentIndex===0">Previous</a></li>-->
+        <!--<li class="next"><a ng-click="next()" ng-hide="currentIndex==matesList.length">Next</a></li>-->
+    <!--</ul>-->
+
+<!--</div>-->

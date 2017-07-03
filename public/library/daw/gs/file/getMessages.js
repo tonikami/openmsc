@@ -1,4 +1,6 @@
-ui.getMessages = function (callback) {
+"use strict";
+
+gs.file.getMessages = function (callback) {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.responseType = "json";
     xmlHttp.onreadystatechange = function () {

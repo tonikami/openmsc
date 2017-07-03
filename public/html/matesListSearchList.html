@@ -1,0 +1,50 @@
+
+<div class="row">
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-8">
+        <div class="rcorners2">
+            <div class="row">
+                <div class="col-sm-2" ng-repeat="user in currentList.members">
+
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <span class="label label-primary">#Travelling</span>
+                <span class="label label-primary">#American Football</span>
+                <span class="label label-primary">#Gym</span>
+                <span class="label label-primary">#Swimming</span>
+                <span class="label label-primary">#Gaming</span>
+            </div>
+
+            <blockquote>
+                <p>{{currentList.summary}}</p>
+                <small><cite title="Source Title">{{currentList.members[0].user.name.first}}</cite></small>
+            </blockquote>
+
+
+
+            <!-- bottom -->
+            <div style="position: absolute;bottom:0;width: 100%;margin-bottom: 20px;" class="row">
+                <div class="col-sm-4">
+                    <button class="btn btn-success pull-right" ng-click="prev()" ng-hide="currentIndex===0">
+                        <span class="glyphicon glyphicon-chevron-left"></span> Previous</button>
+                </div>
+                <div class="col-sm-4"><button class="btn btn-success" style="margin-right: 30px;" ng-click="listMode()">
+                    <span class="glyphicon glyphicon-th-list"></span> List</button></div>
+                <div class="col-sm-4"><button class="btn btn-success pull-left" ng-click="next()" ng-hide="currentIndex==matesList.length">
+                    <span class="glyphicon glyphicon-chevron-right"></span> Next</button></div>
+            </div>
+
+        </div>
+
+
+        <!-- list version here -->
+
+
+    </div>
+    <div class="col-md-2">
+    </div>
+</div>
+

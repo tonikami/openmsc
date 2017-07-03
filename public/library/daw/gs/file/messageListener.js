@@ -1,6 +1,8 @@
-ui.messageListener = function (messageReceived) {
+"use strict";
+
+gs.file.messageListener = function (messageReceived) {
     var username;
-    ui.getUser(function (u) {
+    gs.file.getUser(function (u) {
         username = u;
     })
     var socket = io();
