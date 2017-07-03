@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 
 var changeSchema = mongoose.Schema({
     blocks: [{
+        projectid: Number,
         duration: Number,
         when: Number,
         slip: Number,
