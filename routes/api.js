@@ -245,8 +245,6 @@ router.get('/messages', function (req, res, next) {
             res.json(messages);
         });
 });
-
-
 router.get('/:message/sendMessage/', function (req, res, next) {
     console.log('creating message');
     var message = new Message({
@@ -273,6 +271,16 @@ router.get('/:message/sendMessage/', function (req, res, next) {
         });
 
     });
+});
+
+router.get('/projectid', function (req, res, next) {
+    projectid.find({})
+        .exec(function (err, projectid) {
+            if (err) {
+                console.log(err);
+            }
+            res.json(Change);
+        });
 });
 
 module.exports = router;
